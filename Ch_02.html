@@ -117,13 +117,13 @@
     </div>
 
     <script>
-      const tabs = Array.from(document.querySelectorAll('.tab'));
-      const sections = Array.from(document.querySelectorAll('main section'));
-      function activate(target) {
-        tabs.forEach((tab) => tab.setAttribute('aria-selected', tab.dataset.target === target ? 'true' : 'false'));
-        sections.forEach((section) => section.classList.toggle('active', section.id === target));
+      const tabButtons = Array.from(document.querySelectorAll('.tab'));
+      const contentSections = Array.from(document.querySelectorAll('main section'));
+      function activateTab(target) {
+        tabButtons.forEach((tab) => tab.setAttribute('aria-selected', tab.dataset.target === target ? 'true' : 'false'));
+        contentSections.forEach((section) => section.classList.toggle('active', section.id === target));
       }
-      tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab.dataset.target)));
+      tabButtons.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.target)));
     </script>
   </body>
 </html>
