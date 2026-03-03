@@ -1,431 +1,164 @@
-import React, { useState } from 'react';
-import { 
-  Shield, 
-  Lock, 
-  DollarSign, 
-  BookOpen, 
-  AlertTriangle, 
-  Scale, 
-  CheckCircle2, 
-  XCircle, 
-  FileText, 
-  EyeOff, 
-  Briefcase, 
-  ArrowDown,
-  Gavel
-} from 'lucide-react';
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protecting Trade Secrets — Chapter 1</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      }
+      header { text-align: center; padding: 1.5rem; margin-bottom: 1rem; }
+      h1 { margin: 0; font-size: clamp(1.6rem, 3.2vw, 2.2rem); }
+      h2 { margin-top: 0; }
+      p { color: var(--muted); }
 
-export default function App() {
-  const [activeTab, setActiveTab] = useState('elements');
+      .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
+      .tab {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: #334155;
+        border-radius: 10px;
+        padding: 0.65rem 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .tab[aria-selected="true"] {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
 
-  const tabs = [
-    { id: 'elements', label: '1. Three Elements', icon: Shield },
-    { id: 'landscape', label: '2. IP Landscape', icon: BookOpen },
-    { id: 'misappropriation', label: '3. Misappropriation', icon: AlertTriangle },
-    { id: 'remedies', label: '4. Remedies', icon: Scale },
-  ];
+      main { padding: 1.25rem; min-height: 540px; }
+      section { display: none; animation: fade 0.2s ease; }
+      section.active { display: block; }
+      @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans p-4 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
-        {/* Header */}
-        <header className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 text-center">
-          <h1 className="text-3xl font-bold text-slate-900 mb-2">Protecting Trade Secrets</h1>
-          <p className="text-slate-500 text-lg">Chapter 1: Companion Diagrams & Visualizations</p>
-        </header>
+      .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; }
+      .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; }
+      .panel { border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem; background: #fff; }
+      .panel h3 { margin-top: 0; }
+      ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+      li + li { margin-top: 0.35rem; }
+      .note {
+        margin-top: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #f1f5f9;
+        padding: 0.9rem;
+      }
+      .small { font-size: 0.92rem; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="card">
+        <h1>Protecting Trade Secrets</h1>
+        <p>Chapter 1: Companion Diagrams &amp; Visualizations</p>
+      </header>
 
-        {/* Navigation */}
-        <nav className="flex flex-wrap gap-2 justify-center">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-lg font-medium transition-all duration-200 ${
-                  isActive 
-                    ? 'bg-blue-600 text-white shadow-md' 
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:border-slate-300'
-                }`}
-              >
-                <Icon size={18} />
-                {tab.label}
-              </button>
-            );
-          })}
-        </nav>
+      <nav class="tabs" role="tablist" aria-label="Chapter sections">
+        <button id="tab-elements" class="tab" role="tab" aria-controls="elements" aria-selected="true" tabindex="0" data-target="elements">1. Three Elements</button>
+        <button id="tab-landscape" class="tab" role="tab" aria-controls="landscape" aria-selected="false" tabindex="-1" data-target="landscape">2. IP Landscape</button>
+        <button id="tab-misappropriation" class="tab" role="tab" aria-controls="misappropriation" aria-selected="false" tabindex="-1" data-target="misappropriation">3. Misappropriation</button>
+        <button id="tab-remedies" class="tab" role="tab" aria-controls="remedies" aria-selected="false" tabindex="-1" data-target="remedies">4. Remedies</button>
+      </nav>
 
-        {/* Content Area */}
-        <main className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 min-h-[600px]">
-          {activeTab === 'elements' && <ElementsDiagram />}
-          {activeTab === 'landscape' && <IPLandscapeDiagram />}
-          {activeTab === 'misappropriation' && <MisappropriationDiagram />}
-          {activeTab === 'remedies' && <RemediesDiagram />}
-        </main>
+      <main class="card">
+        <section id="elements" class="active" role="tabpanel" aria-labelledby="tab-elements" tabindex="0">
+          <h2>The Three Essential Elements</h2>
+          <p class="small">Under the UTSA, information must meet all three criteria simultaneously to qualify for trade secret protection.</p>
+          <div class="grid-3">
+            <article class="panel"><h3>1. Information</h3><ul><li>Concrete, definable content</li><li>Formulas &amp; recipes</li><li>Algorithms &amp; programs</li><li>Methods &amp; techniques</li></ul></article>
+            <article class="panel"><h3>2. Economic Value</h3><ul><li>Value derives from secrecy</li><li>Not generally known</li><li>Not readily ascertainable</li><li>Competitive edge</li></ul></article>
+            <article class="panel"><h3>3. Reasonable Efforts</h3><ul><li>NDA and contract controls</li><li>Password protections</li><li>Need-to-know access</li><li>Confidential markings</li></ul></article>
+          </div>
+          <div class="note"><strong>Result:</strong> Protection can last indefinitely while secrecy is maintained.</div>
+        </section>
 
-      </div>
+        <section id="landscape" role="tabpanel" aria-labelledby="tab-landscape" tabindex="0">
+          <h2>The Intellectual Property Framework</h2>
+          <p class="small">Comparing the four primary forms of intellectual property.</p>
+          <div class="grid-2">
+            <article class="panel"><h3>Trade Secret</h3><ul><li>Hidden methods, formulas, data</li><li>Requires secrecy + value</li><li>Indefinite until leaked</li><li>No registration required</li></ul></article>
+            <article class="panel"><h3>Patent</h3><ul><li>Novel inventions &amp; processes</li><li>Requires public disclosure</li><li>Typically 20 years</li><li>Government registration</li></ul></article>
+            <article class="panel"><h3>Copyright</h3><ul><li>Original creative expression</li><li>Fixed in tangible medium</li><li>Life + 70 years</li><li>Protects expression, not idea</li></ul></article>
+            <article class="panel"><h3>Trademark</h3><ul><li>Brand names and logos</li><li>Public use in commerce</li><li>Can be indefinite</li><li>Prevents consumer confusion</li></ul></article>
+          </div>
+        </section>
+
+        <section id="misappropriation" role="tabpanel" aria-labelledby="tab-misappropriation" tabindex="0">
+          <h2>Misappropriation vs. Proper Means</h2>
+          <div class="grid-3">
+            <article class="panel"><h3>Proper Means (Lawful)</h3><ul><li>Independent discovery</li><li>Reverse engineering public product</li><li>Public-source information</li></ul><p><strong>No Liability</strong></p></article>
+            <article class="panel"><h3>Improper Acquisition (Unlawful)</h3><ul><li>Theft or trespass</li><li>Hacking / cyber espionage</li><li>Bribery / inducing NDA breach</li></ul><p><strong>Misappropriation</strong></p></article>
+            <article class="panel"><h3>Improper Use / Disclosure (Unlawful)</h3><ul><li>Exceeding NDA scope</li><li>Unauthorized external sharing</li><li>Using entrusted data to compete</li></ul><p><strong>Misappropriation</strong></p></article>
+          </div>
+        </section>
+
+        <section id="remedies" role="tabpanel" aria-labelledby="tab-remedies" tabindex="0">
+          <h2>Remedies for Misappropriation</h2>
+          <div class="grid-2">
+            <article class="panel"><h3>1. Injunctive Relief</h3><ul><li>Preliminary injunction during litigation</li><li>Permanent injunction post-trial</li><li>Possible head-start injunction</li></ul></article>
+            <article class="panel"><h3>2. Monetary Damages</h3><ul><li>Actual loss</li><li>Unjust enrichment</li><li>Reasonable royalty</li></ul></article>
+          </div>
+          <div class="note"><strong>3. Enhanced Damages &amp; Fees:</strong> For willful and malicious conduct, courts may award exemplary damages and attorney fees.</div>
+        </section>
+      </main>
     </div>
-  );
-}
 
-// ----------------------------------------------------------------------
-// Diagram 1: Three Elements of a Trade Secret
-// ----------------------------------------------------------------------
-function ElementsDiagram() {
-  return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="text-center max-w-2xl mx-auto mb-10">
-        <h2 className="text-2xl font-bold text-slate-900 mb-3">The Three Essential Elements</h2>
-        <p className="text-slate-600">
-          Under the UTSA, information must meet all three criteria simultaneously to qualify for trade secret protection. If any pillar falls, the protection collapses.
-        </p>
-      </div>
+    <script>
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      const sections = Array.from(document.querySelectorAll('main section'));
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
-        {/* Element 1 */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-6 relative z-10 flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-blue-600 text-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-            <FileText size={32} />
-          </div>
-          <h3 className="text-lg font-bold text-blue-900 mb-2">1. Information</h3>
-          <p className="text-sm text-blue-800 mb-4">
-            Must be concrete, definable content (not a vague idea).
-          </p>
-          <ul className="text-sm text-blue-700 space-y-1 text-left w-full bg-white/50 p-3 rounded-lg">
-            <li>• Formulas & Recipes</li>
-            <li>• Algorithms & Programs</li>
-            <li>• Compilations (Customer lists)</li>
-            <li>• Methods & Techniques</li>
-          </ul>
-        </div>
+      function activateTab(targetId) {
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.target === targetId;
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          tab.setAttribute('tabindex', isActive ? '0' : '-1');
+        });
+        sections.forEach((section) => {
+          section.classList.toggle('active', section.id === targetId);
+        });
+      }
 
-        {/* Connector (Desktop only) */}
-        <div className="hidden md:flex absolute top-1/2 left-[20%] right-[20%] h-1 bg-blue-100 -translate-y-1/2 z-0"></div>
-
-        {/* Element 2 */}
-        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-6 relative z-10 flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-emerald-600 text-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-            <DollarSign size={32} />
-          </div>
-          <h3 className="text-lg font-bold text-emerald-900 mb-2">2. Economic Value</h3>
-          <p className="text-sm text-emerald-800 mb-4">
-            Must derive value specifically from being kept hidden.
-          </p>
-          <ul className="text-sm text-emerald-700 space-y-1 text-left w-full bg-white/50 p-3 rounded-lg">
-            <li>• Not generally known</li>
-            <li>• Not readily ascertainable</li>
-            <li>• Grants a competitive edge</li>
-            <li>• Costly/difficult to replicate</li>
-          </ul>
-        </div>
-
-        {/* Element 3 */}
-        <div className="bg-amber-50 border border-amber-100 rounded-xl p-6 relative z-10 flex flex-col items-center text-center">
-          <div className="w-16 h-16 bg-amber-600 text-white rounded-full flex items-center justify-center mb-4 shadow-sm">
-            <Lock size={32} />
-          </div>
-          <h3 className="text-lg font-bold text-amber-900 mb-2">3. Reasonable Efforts</h3>
-          <p className="text-sm text-amber-800 mb-4">
-            The owner must actively treat the information as a secret.
-          </p>
-          <ul className="text-sm text-amber-700 space-y-1 text-left w-full bg-white/50 p-3 rounded-lg">
-            <li>• Non-Disclosure Agreements</li>
-            <li>• Password protections</li>
-            <li>• Need-to-know access controls</li>
-            <li>• "Confidential" markings</li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="mt-8 bg-slate-100 p-6 rounded-xl border border-slate-200 text-center">
-        <h4 className="font-bold text-slate-800 flex items-center justify-center gap-2 mb-2">
-          <Shield className="text-blue-600" /> The Result: Trade Secret Protection
-        </h4>
-        <p className="text-sm text-slate-600">
-          Unlike patents, protection lasts indefinitely as long as these three elements are maintained. There is no expiration date, but a single public disclosure can destroy it instantly.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// ----------------------------------------------------------------------
-// Diagram 2: IP Landscape
-// ----------------------------------------------------------------------
-function IPLandscapeDiagram() {
-  const ipTypes = [
-    {
-      title: 'Trade Secret',
-      icon: EyeOff,
-      color: 'bg-blue-600',
-      bgColor: 'bg-blue-50',
-      borderColor: 'border-blue-200',
-      textColor: 'text-blue-900',
-      features: [
-        { label: 'Subject Matter', value: 'Hidden methods, formulas, data' },
-        { label: 'Requirement', value: 'Absolute Secrecy + Value' },
-        { label: 'Duration', value: 'Indefinite (until leaked)' },
-        { label: 'Registration', value: 'None required' },
-        { label: 'Vulnerability', value: 'Reverse engineering is lawful' }
-      ]
-    },
-    {
-      title: 'Patent',
-      icon: FileText,
-      color: 'bg-emerald-600',
-      bgColor: 'bg-emerald-50',
-      borderColor: 'border-emerald-200',
-      textColor: 'text-emerald-900',
-      features: [
-        { label: 'Subject Matter', value: 'Novel inventions & processes' },
-        { label: 'Requirement', value: 'Full Public Disclosure' },
-        { label: 'Duration', value: 'Typically 20 years' },
-        { label: 'Registration', value: 'Rigorous government exam' },
-        { label: 'Protection', value: 'Blocks independent discovery' }
-      ]
-    },
-    {
-      title: 'Copyright',
-      icon: BookOpen,
-      color: 'bg-purple-600',
-      bgColor: 'bg-purple-50',
-      borderColor: 'border-purple-200',
-      textColor: 'text-purple-900',
-      features: [
-        { label: 'Subject Matter', value: 'Original creative expressions' },
-        { label: 'Requirement', value: 'Fixed in tangible medium' },
-        { label: 'Duration', value: 'Life of author + 70 years' },
-        { label: 'Registration', value: 'Optional (but needed to sue)' },
-        { label: 'Protection', value: 'Blocks copying, not underlying idea' }
-      ]
-    },
-    {
-      title: 'Trademark',
-      icon: Briefcase,
-      color: 'bg-amber-600',
-      bgColor: 'bg-amber-50',
-      borderColor: 'border-amber-200',
-      textColor: 'text-amber-900',
-      features: [
-        { label: 'Subject Matter', value: 'Brand names, logos, slogans' },
-        { label: 'Requirement', value: 'Public Use in Commerce' },
-        { label: 'Duration', value: 'Indefinite (if used actively)' },
-        { label: 'Registration', value: 'Optional (but highly beneficial)' },
-        { label: 'Protection', value: 'Prevents consumer confusion' }
-      ]
-    }
-  ];
-
-  return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-       <div className="text-center max-w-2xl mx-auto mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-3">The Intellectual Property Framework</h2>
-        <p className="text-slate-600">
-          Comparing the four primary forms of intellectual property. Note the foundational tradeoff between Trade Secrets (which demand silence) and Patents (which demand disclosure).
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {ipTypes.map((ip, idx) => {
-          const Icon = ip.icon;
-          return (
-            <div key={idx} className={`border ${ip.borderColor} ${ip.bgColor} rounded-xl p-5 shadow-sm`}>
-              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-slate-200/50">
-                <div className={`${ip.color} text-white p-2 rounded-lg`}>
-                  <Icon size={24} />
-                </div>
-                <h3 className={`text-xl font-bold ${ip.textColor}`}>{ip.title}</h3>
-              </div>
-              <div className="space-y-3">
-                {ip.features.map((feat, fIdx) => (
-                  <div key={fIdx} className="flex flex-col sm:flex-row sm:justify-between text-sm">
-                    <span className="font-semibold text-slate-700 sm:w-1/3">{feat.label}:</span>
-                    <span className="text-slate-600 sm:w-2/3 sm:text-right">{feat.value}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )
-        })}
-      </div>
-    </div>
-  );
-}
-
-// ----------------------------------------------------------------------
-// Diagram 3: Misappropriation Flowchart
-// ----------------------------------------------------------------------
-function MisappropriationDiagram() {
-  return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="text-center max-w-2xl mx-auto mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-3">Misappropriation vs. Proper Means</h2>
-        <p className="text-slate-600">
-          Trade secret law does not create a monopoly on knowledge. It only punishes the crossing of ethical and legal boundaries.
-        </p>
-      </div>
-
-      <div className="max-w-4xl mx-auto">
-        {/* Start Point */}
-        <div className="flex justify-center mb-6">
-          <div className="bg-slate-800 text-white px-6 py-3 rounded-lg font-bold shadow-md">
-            Competitor Obtains the Information
-          </div>
-        </div>
-
-        {/* Branching Lines */}
-        <div className="flex justify-center relative h-12">
-          <div className="absolute top-0 w-1/2 md:w-2/3 border-t-2 border-slate-300"></div>
-          <div className="absolute top-0 left-1/4 md:left-1/6 h-full border-l-2 border-slate-300"></div>
-          <div className="absolute top-0 h-full border-l-2 border-slate-300"></div>
-          <div className="absolute top-0 right-1/4 md:right-1/6 h-full border-r-2 border-slate-300"></div>
-        </div>
-
-        {/* Three Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
-          
-          {/* Column 1: Proper Means */}
-          <div className="flex flex-col items-center">
-            <div className="bg-emerald-100 border-2 border-emerald-300 rounded-lg p-4 w-full text-center h-full">
-              <h3 className="font-bold text-emerald-900 mb-2">Proper Means</h3>
-              <ul className="text-sm text-emerald-800 space-y-2 mb-4">
-                <li className="bg-white/60 p-2 rounded">Independent Discovery</li>
-                <li className="bg-white/60 p-2 rounded">Reverse Engineering of public product</li>
-                <li className="bg-white/60 p-2 rounded">Information gathered from public sources</li>
-              </ul>
-              <div className="mt-auto">
-                <ArrowDown className="mx-auto text-emerald-500 mb-2" />
-                <div className="bg-emerald-600 text-white p-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm">
-                  <CheckCircle2 size={18} /> Fair Competition
-                </div>
-                <p className="text-xs text-emerald-700 mt-2 font-medium">No Liability</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Column 2: Improper Acquisition */}
-          <div className="flex flex-col items-center">
-            <div className="bg-red-50 border-2 border-red-200 rounded-lg p-4 w-full text-center h-full">
-              <h3 className="font-bold text-red-900 mb-2">Improper Acquisition</h3>
-              <ul className="text-sm text-red-800 space-y-2 mb-4">
-                <li className="bg-white/60 p-2 rounded">Theft or Trespass</li>
-                <li className="bg-white/60 p-2 rounded">Hacking / Cyber Espionage</li>
-                <li className="bg-white/60 p-2 rounded">Bribery / Inducing Breach of NDA</li>
-              </ul>
-              <div className="mt-auto">
-                <ArrowDown className="mx-auto text-red-400 mb-2" />
-                <div className="bg-red-600 text-white p-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm">
-                  <XCircle size={18} /> Misappropriation
-                </div>
-                <p className="text-xs text-red-700 mt-2 font-medium">Direct Violation of Law</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Column 3: Improper Use/Disclosure */}
-          <div className="flex flex-col items-center">
-            <div className="bg-orange-50 border-2 border-orange-200 rounded-lg p-4 w-full text-center h-full">
-              <h3 className="font-bold text-orange-900 mb-2">Improper Use / Disclosure</h3>
-              <p className="text-xs text-orange-700 mb-2 italic">Acquired legally, but used illegally</p>
-              <ul className="text-sm text-orange-800 space-y-2 mb-4">
-                <li className="bg-white/60 p-2 rounded">Exceeding NDA scope</li>
-                <li className="bg-white/60 p-2 rounded">Employee sharing data externally</li>
-                <li className="bg-white/60 p-2 rounded">Using vendor data to compete</li>
-              </ul>
-              <div className="mt-auto">
-                <ArrowDown className="mx-auto text-orange-400 mb-2" />
-                <div className="bg-orange-600 text-white p-3 rounded-lg font-bold flex items-center justify-center gap-2 shadow-sm">
-                  <XCircle size={18} /> Misappropriation
-                </div>
-                <p className="text-xs text-orange-700 mt-2 font-medium">Breach of Duty / Trust</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ----------------------------------------------------------------------
-// Diagram 4: Remedies Overview
-// ----------------------------------------------------------------------
-function RemediesDiagram() {
-  return (
-    <div className="space-y-8 animate-in fade-in duration-500">
-      <div className="text-center max-w-2xl mx-auto mb-8">
-        <h2 className="text-2xl font-bold text-slate-900 mb-3">Remedies for Misappropriation</h2>
-        <p className="text-slate-600">
-          When secrecy is breached, courts utilize a blend of equitable and monetary remedies to stop the bleeding, restore the owner, and punish severe misconduct.
-        </p>
-      </div>
-
-      <div className="flex flex-col md:flex-row gap-6 max-w-5xl mx-auto">
-        
-        {/* Equitable Relief */}
-        <div className="flex-1 bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-          <div className="bg-slate-100 p-4 border-b border-slate-200 flex items-center gap-3">
-            <Scale className="text-slate-700" size={24} />
-            <h3 className="font-bold text-lg text-slate-800">1. Injunctive Relief</h3>
-          </div>
-          <div className="p-5 space-y-4 flex-1">
-            <div className="border-l-4 border-blue-500 pl-4 py-1">
-              <h4 className="font-bold text-slate-800">Preliminary Injunction</h4>
-              <p className="text-sm text-slate-600 mt-1">Stops the bleeding immediately during litigation. Requires showing irreparable harm (loss of exclusivity).</p>
-            </div>
-            <div className="border-l-4 border-indigo-500 pl-4 py-1">
-              <h4 className="font-bold text-slate-800">Permanent Injunction</h4>
-              <p className="text-sm text-slate-600 mt-1">Issued post-trial. Can include a "Head Start" injunction (banning use for the time it would have taken to develop lawfully).</p>
-            </div>
-            <div className="border-l-4 border-purple-500 pl-4 py-1">
-              <h4 className="font-bold text-slate-800">Exceptional Equitable Relief</h4>
-              <p className="text-sm text-slate-600 mt-1">E.g., Production injunctions (banning manufacture of tainted products) or mandated code destruction.</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Monetary Damages */}
-        <div className="flex-1 bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col">
-          <div className="bg-slate-100 p-4 border-b border-slate-200 flex items-center gap-3">
-            <DollarSign className="text-emerald-600" size={24} />
-            <h3 className="font-bold text-lg text-slate-800">2. Monetary Damages</h3>
-          </div>
-          <div className="p-5 space-y-4 flex-1">
-            <div className="border-l-4 border-emerald-400 pl-4 py-1">
-              <h4 className="font-bold text-slate-800">Actual Loss</h4>
-              <p className="text-sm text-slate-600 mt-1">The plaintiff's lost profits resulting from the misappropriation (often requires expert economic analysis).</p>
-            </div>
-            <div className="border-l-4 border-emerald-500 pl-4 py-1">
-              <h4 className="font-bold text-slate-800">Unjust Enrichment</h4>
-              <p className="text-sm text-slate-600 mt-1">The defendant's wrongful gains/profits derived from cheating and avoiding R&D costs.</p>
-            </div>
-            <div className="border-l-4 border-emerald-600 pl-4 py-1">
-              <h4 className="font-bold text-slate-800">Reasonable Royalty</h4>
-              <p className="text-sm text-slate-600 mt-1">Used when actual loss/enrichment is too speculative. Simulates a hypothetical licensing negotiation.</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Enhanced Damages Section */}
-      <div className="max-w-5xl mx-auto">
-        <div className="bg-red-50 border border-red-200 rounded-xl p-6 flex flex-col md:flex-row items-center gap-6 shadow-sm">
-          <div className="bg-red-100 text-red-600 p-4 rounded-full flex-shrink-0">
-            <Gavel size={32} />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-red-900 mb-1">3. Enhanced Damages & Fees (For Bad Faith)</h3>
-            <p className="text-sm text-red-800 leading-relaxed">
-              If the misappropriation is proven to be <strong>"willful and malicious"</strong>, courts may award <strong>Exemplary (Punitive) Damages</strong>—often capping at twice the compensatory amount (effectively allowing treble damages). Courts may also shift <strong>Attorneys' Fees</strong> to the prevailing party to penalize bad-faith litigation or malicious theft.
-            </p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  );
-}
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => activateTab(tab.dataset.target));
+        tab.addEventListener('keydown', (event) => {
+          const index = tabs.indexOf(tab);
+          let nextIndex = index;
+          if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+          if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = tabs.length - 1;
+          if (nextIndex !== index) {
+            event.preventDefault();
+            const nextTab = tabs[nextIndex];
+            activateTab(nextTab.dataset.target);
+            nextTab.focus();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
