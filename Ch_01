@@ -78,14 +78,14 @@
       </header>
 
       <nav class="tabs" role="tablist" aria-label="Chapter sections">
-        <button class="tab" role="tab" aria-selected="true" data-target="elements">1. Three Elements</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="landscape">2. IP Landscape</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="misappropriation">3. Misappropriation</button>
-        <button class="tab" role="tab" aria-selected="false" data-target="remedies">4. Remedies</button>
+        <button id="tab-elements" class="tab" role="tab" aria-controls="elements" aria-selected="true" tabindex="0" data-target="elements">1. Three Elements</button>
+        <button id="tab-landscape" class="tab" role="tab" aria-controls="landscape" aria-selected="false" tabindex="-1" data-target="landscape">2. IP Landscape</button>
+        <button id="tab-misappropriation" class="tab" role="tab" aria-controls="misappropriation" aria-selected="false" tabindex="-1" data-target="misappropriation">3. Misappropriation</button>
+        <button id="tab-remedies" class="tab" role="tab" aria-controls="remedies" aria-selected="false" tabindex="-1" data-target="remedies">4. Remedies</button>
       </nav>
 
       <main class="card">
-        <section id="elements" class="active" role="tabpanel">
+        <section id="elements" class="active" role="tabpanel" aria-labelledby="tab-elements" tabindex="0">
           <h2>The Three Essential Elements</h2>
           <p class="small">Under the UTSA, information must meet all three criteria simultaneously to qualify for trade secret protection.</p>
           <div class="grid-3">
@@ -96,7 +96,7 @@
           <div class="note"><strong>Result:</strong> Protection can last indefinitely while secrecy is maintained.</div>
         </section>
 
-        <section id="landscape" role="tabpanel">
+        <section id="landscape" role="tabpanel" aria-labelledby="tab-landscape" tabindex="0">
           <h2>The Intellectual Property Framework</h2>
           <p class="small">Comparing the four primary forms of intellectual property.</p>
           <div class="grid-2">
@@ -107,16 +107,16 @@
           </div>
         </section>
 
-        <section id="misappropriation" role="tabpanel">
+        <section id="misappropriation" role="tabpanel" aria-labelledby="tab-misappropriation" tabindex="0">
           <h2>Misappropriation vs. Proper Means</h2>
           <div class="grid-3">
-            <article class="panel"><h3>Proper Means ✅</h3><ul><li>Independent discovery</li><li>Reverse engineering public product</li><li>Public-source information</li></ul><p><strong>No Liability</strong></p></article>
-            <article class="panel"><h3>Improper Acquisition ❌</h3><ul><li>Theft or trespass</li><li>Hacking / cyber espionage</li><li>Bribery / inducing NDA breach</li></ul><p><strong>Misappropriation</strong></p></article>
-            <article class="panel"><h3>Improper Use / Disclosure ❌</h3><ul><li>Exceeding NDA scope</li><li>Unauthorized external sharing</li><li>Using entrusted data to compete</li></ul><p><strong>Misappropriation</strong></p></article>
+            <article class="panel"><h3>Proper Means (Lawful)</h3><ul><li>Independent discovery</li><li>Reverse engineering public product</li><li>Public-source information</li></ul><p><strong>No Liability</strong></p></article>
+            <article class="panel"><h3>Improper Acquisition (Unlawful)</h3><ul><li>Theft or trespass</li><li>Hacking / cyber espionage</li><li>Bribery / inducing NDA breach</li></ul><p><strong>Misappropriation</strong></p></article>
+            <article class="panel"><h3>Improper Use / Disclosure (Unlawful)</h3><ul><li>Exceeding NDA scope</li><li>Unauthorized external sharing</li><li>Using entrusted data to compete</li></ul><p><strong>Misappropriation</strong></p></article>
           </div>
         </section>
 
-        <section id="remedies" role="tabpanel">
+        <section id="remedies" role="tabpanel" aria-labelledby="tab-remedies" tabindex="0">
           <h2>Remedies for Misappropriation</h2>
           <div class="grid-2">
             <article class="panel"><h3>1. Injunctive Relief</h3><ul><li>Preliminary injunction during litigation</li><li>Permanent injunction post-trial</li><li>Possible head-start injunction</li></ul></article>
@@ -135,6 +135,7 @@
         tabs.forEach((tab) => {
           const isActive = tab.dataset.target === targetId;
           tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          tab.setAttribute('tabindex', isActive ? '0' : '-1');
         });
         sections.forEach((section) => {
           section.classList.toggle('active', section.id === targetId);
@@ -143,6 +144,20 @@
 
       tabs.forEach((tab) => {
         tab.addEventListener('click', () => activateTab(tab.dataset.target));
+        tab.addEventListener('keydown', (event) => {
+          const index = tabs.indexOf(tab);
+          let nextIndex = index;
+          if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+          if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = tabs.length - 1;
+          if (nextIndex !== index) {
+            event.preventDefault();
+            const nextTab = tabs[nextIndex];
+            activateTab(nextTab.dataset.target);
+            nextTab.focus();
+          }
+        });
       });
     </script>
   </body>
