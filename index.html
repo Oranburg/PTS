@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protecting Trade Secrets — Companion Site</title>
+    <meta
+      name="description"
+      content="Interactive companion tools for the Protecting Trade Secrets casebook, audiobook, and podcast."
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #2563eb;
+        --primary-2: #1d4ed8;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      a { color: inherit; }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      }
+
+      header.card { padding: 1.5rem; }
+      h1 { margin: 0; font-size: clamp(1.8rem, 3vw, 2.3rem); letter-spacing: -0.02em; }
+      .sub { margin: 0.5rem 0 0; color: var(--muted); line-height: 1.5; }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+      @media (max-width: 900px) {
+        .grid { grid-template-columns: 1fr; }
+      }
+
+      .section { padding: 1.25rem; }
+      .section h2 { margin-top: 0; }
+
+      .buttons { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.75rem; }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.95rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        text-decoration: none;
+        font-weight: 700;
+        background: #fff;
+      }
+      .btn.primary {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+      .btn.primary:hover { background: var(--primary-2); border-color: var(--primary-2); }
+      .btn:hover { border-color: #cbd5e1; }
+
+      ul { margin: 0.5rem 0 0; padding-left: 1.1rem; color: var(--muted); }
+      li + li { margin-top: 0.35rem; }
+
+      .note {
+        margin-top: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #f1f5f9;
+        padding: 0.9rem;
+        color: var(--muted);
+      }
+
+      .embedWrap { overflow: hidden; border-radius: 12px; border: 1px solid var(--border); background: #fff; }
+      footer { margin-top: 1rem; padding: 1rem; text-align: center; color: var(--muted); font-size: 0.95rem; }
+      .small { font-size: 0.95rem; color: var(--muted); }
+      .label { font-weight: 800; color: #0f172a; }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrap">
+      <header class="card">
+        <h1>Protecting Trade Secrets — Companion Site</h1>
+        <p class="sub">
+          Interactive tools and visualizations to support the <span class="label">casebook</span>,
+          the forthcoming <span class="label">audiobook</span>, and the
+          <span class="label">Organized: The Business Law Breakdown</span> podcast.
+        </p>
+
+        <div class="buttons">
+          <a class="btn primary" href="https://cap-press.com/books/isbn/9781531034375/Protecting-Trade-Secrets" target="_blank" rel="noopener noreferrer">
+            Buy the Casebook (CAP)
+          </a>
+
+          <!-- These links assume you rename files; see note below -->
+          <a class="btn" href="ch-01.html">Chapter 1 — Companion Diagrams</a>
+          <a class="btn" href="ch-02.html">Chapter 2 — Inventory &amp; Classification Tools</a>
+        </div>
+
+        <div class="note">
+          <strong>For students:</strong> Use these pages to “learn by doing”—complete assignments, practice
+          identifying trade secrets, and build an inventory / classification system.
+          <br />
+          <strong>For practitioners:</strong> Use the checklists and tools to operationalize “reasonable efforts,”
+          and to maintain an actionable trade secret register.
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="card section">
+          <h2>What’s here</h2>
+          <ul>
+            <li><strong>Chapter 1</strong>: diagrams and visualizations (UTSA elements, IP landscape, misappropriation, remedies).</li>
+            <li><strong>Chapter 2</strong>: interactive identification audit, classification tiers, legal case lessons, and an inventory ledger.</li>
+          </ul>
+          <p class="small" style="margin-top: 0.75rem;">
+            Tip: If you’re using GitHub Pages, keep files as plain <code>.html</code> so they run in any browser with no build tools.
+          </p>
+        </section>
+
+        <section class="card section">
+          <h2>Podcast (Season 12)</h2>
+          <div class="embedWrap">
+            <iframe
+              style="border: none; min-width: min(100%, 430px); height: 315px;"
+              title="Organized: The Business Law Breakdown"
+              src="https://www.podbean.com/player-v2/?i=p6w7w-1260bda-pbblog-playlist&share=1&download=1&rtl=0&fonts=Trebuchet%20MS&skin=3267a3&font-color=auto&logo_link=episode_page&order=serial&limit=30&filter=season&season=12&ss=4fd5d0446d6f9ac6ae4a92fa2eee7c9f&btn-skin=666666&size=315"
+              width="100%"
+              height="315"
+              loading="lazy"
+              allowfullscreen="allowfullscreen"
+            ></iframe>
+          </div>
+          <p class="small" style="margin-top: 0.75rem;">
+            If the embed doesn’t load, your browser may be blocking third-party content; try allowing it for this site.
+          </p>
+        </section>
+      </div>
+
+      <footer class="card">
+        © 2026 Seth C. Oranburg. Companion materials for “Protecting Trade Secrets.”
+      </footer>
+    </div>
+  </body>
+</html>
