@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protecting Trade Secrets — Chapter 5</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #1d4ed8;
+        --accent: #6366f1;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: var(--text); background: var(--bg); }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+      .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; }
+      header { text-align: center; padding: 1.2rem; margin-bottom: 1rem; }
+      h1 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+      h2 { margin-top: 0; }
+      p { color: var(--muted); }
+      .tabs { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-bottom: 1rem; }
+      .tab { border: 1px solid var(--border); background: #fff; border-radius: 10px; padding: .65rem .9rem; font-weight: 600; cursor: pointer; }
+      .tab[aria-selected="true"] { background: var(--primary); border-color: var(--primary); color: #fff; }
+      main { padding: 1.2rem; }
+      section { display: none; }
+      section.active { display: block; }
+      .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: .8rem; }
+      .panel { border: 1px solid var(--border); border-radius: 12px; padding: .9rem; background: #fff; }
+      .panel h3 { margin-top: 0; }
+      .badge { display: inline-block; font-size: .7rem; font-weight: 700; background: #eef2ff; color: #312e81; border-radius: 999px; padding: .15rem .5rem; margin-bottom: .4rem; }
+      ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+      li + li { margin-top: .35rem; }
+      label { font-weight: 700; color: var(--text); display: block; margin-bottom: .25rem; }
+      select, input[type="radio"] { font: inherit; }
+      .field { margin-bottom: .8rem; }
+      .summary { margin-top: .6rem; padding: .75rem; border-radius: 10px; border: 1px dashed var(--border); background: #f8fafc; }
+      .topNav { display: flex; justify-content: space-between; align-items: center; gap: .75rem; margin-bottom: 0.75rem; }
+      .topNav a { text-decoration: none; font-weight: 700; color: var(--primary); }
+      .topNav a:hover { text-decoration: underline; }
+      button.refresh { background: var(--primary); color: #fff; border: none; padding: .7rem 1rem; border-radius: 10px; font-weight: 700; cursor: pointer; }
+      button.refresh:hover { background: #1e40af; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="topNav">
+        <a href="index.html">← Back to Index</a>
+        <a href="ch-06.html">Next: Chapter 6</a>
+      </nav>
+
+      <header class="card">
+        <h1>Protecting Trade Secrets</h1>
+        <p>Chapter 5: External Mitigation — Containment-by-Design</p>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Chapter sections">
+        <button class="tab" role="tab" aria-selected="true" data-target="relationship">Relationship</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="contract">Contract Lab</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="systems">System Controls</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="summary">Stage Output</button>
+      </nav>
+
+      <main class="card">
+        <section id="relationship" class="active">
+          <h2>Who are you sharing with?</h2>
+          <p class="small">Pick the relationship to tailor obligations and controls.</p>
+          <div class="grid-2">
+            <div class="panel">
+              <div class="field">
+                <label><input type="radio" name="relationship" value="vendor" checked /> Vendor (services or tooling)</label>
+              </div>
+              <div class="field">
+                <label><input type="radio" name="relationship" value="collaborator" /> Collaborator / JV</label>
+              </div>
+              <div class="field">
+                <label><input type="radio" name="relationship" value="customer" /> Customer (licensing / access)</label>
+              </div>
+              <div class="field">
+                <label><input type="radio" name="relationship" value="distributor" /> Distributor / Channel partner</label>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Risk Posture</h3>
+              <div id="relationshipNote" class="summary"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contract">
+          <h2>Contract Architecture Lab</h2>
+          <p class="small">Pick default clauses to drive the playbook.</p>
+          <div class="grid-2">
+            <div class="panel">
+              <div class="field">
+                <label for="auditRights">Audit Rights</label>
+                <select id="auditRights">
+                  <option value="none">None</option>
+                  <option value="annual">Annual audit</option>
+                  <option value="triggered">Triggered on incident</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="backgroundIP">Background IP</label>
+                <select id="backgroundIP">
+                  <option value="silent">Silent</option>
+                  <option value="defined">Defined</option>
+                  <option value="ringfenced">Ring-fenced from deliverables</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="reverseEngineer">Reverse Engineering</label>
+                <select id="reverseEngineer">
+                  <option value="silent">Silent</option>
+                  <option value="prohibited">Prohibited</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="breachNotice">Breach Notice</label>
+                <select id="breachNotice">
+                  <option value="none">None</option>
+                  <option value="72hr">72-hour notice</option>
+                  <option value="immediate">Immediate notice</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Clause Check</h3>
+              <div id="contractNotes" class="summary"></div>
+              <p class="small">Teach: flow-down obligations, background IP carve-outs, and how breach notice timing affects incident response.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="systems">
+          <h2>System Controls</h2>
+          <p class="small">Pair the contract with technical safeguards.</p>
+          <div class="grid-2">
+            <div class="panel">
+              <div class="field">
+                <label for="dataRoom">Data Room</label>
+                <select id="dataRoom">
+                  <option value="open">Shared folder (open)</option>
+                  <option value="vdr">Virtual data room (gated)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="credentials">Credentials</label>
+                <select id="credentials">
+                  <option value="manual">Manual provisioning</option>
+                  <option value="auto">Auto-expire / auto-revoke</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="apiControl">API &amp; Access</label>
+                <select id="apiControl">
+                  <option value="none">No rate limits</option>
+                  <option value="limited">Rate-limited</option>
+                  <option value="sunset">Time-boxed / feature flag</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="nda">NDA Status</label>
+                <select id="nda">
+                  <option value="missing">Missing</option>
+                  <option value="present">Present + signed</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Containment Moves</h3>
+              <div id="systemNotes" class="summary"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="summary">
+          <h2>Stage Output</h2>
+          <p class="small">Snapshot of controls to implement.</p>
+          <div class="panel">
+            <div id="stageSummary" class="summary"></div>
+            <button class="refresh" type="button" id="refreshStage">Refresh summary</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const tabButtons = Array.from(document.querySelectorAll('.tab'));
+      const sections = Array.from(document.querySelectorAll('main section'));
+      function activateTab(target) {
+        tabButtons.forEach((tab) => tab.setAttribute('aria-selected', tab.dataset.target === target ? 'true' : 'false'));
+        sections.forEach((section) => section.classList.toggle('active', section.id === target));
+      }
+      tabButtons.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.target)));
+
+      const relationshipNote = document.getElementById('relationshipNote');
+      const relationshipRadios = Array.from(document.querySelectorAll('input[name="relationship"]'));
+      const relationshipMessages = {
+        vendor: 'Vendors need least-privilege access and clear data return/delete obligations. Require SOC reporting where applicable.',
+        collaborator: 'Collaborators blur ownership — define background IP, joint IP, and publication rights before sharing.',
+        customer: 'Customers may push for reverse-engineer rights; restrict to evaluation and watermark deliverables.',
+        distributor: 'Distributors require brand controls and clear flow-downs to sub-distributors.'
+      };
+      function renderRelationship() {
+        const picked = relationshipRadios.find((r) => r.checked);
+        relationshipNote.textContent = relationshipMessages[picked.value];
+      }
+      relationshipRadios.forEach((radio) => radio.addEventListener('change', () => { renderRelationship(); renderSummary(); }));
+
+      const auditRights = document.getElementById('auditRights');
+      const backgroundIP = document.getElementById('backgroundIP');
+      const reverseEngineer = document.getElementById('reverseEngineer');
+      const breachNotice = document.getElementById('breachNotice');
+      const contractNotes = document.getElementById('contractNotes');
+
+      function renderContract() {
+        const notes = [];
+        if (auditRights.value === 'none') notes.push('No audit rights — rely on logging and attestations.');
+        if (auditRights.value === 'annual') notes.push('Annual audit keeps partners honest without overwhelming them.');
+        if (auditRights.value === 'triggered') notes.push('Triggered audits align with incident response timing.');
+
+        if (backgroundIP.value === 'silent') notes.push('Define background IP to avoid accidental transfer.');
+        if (backgroundIP.value === 'ringfenced') notes.push('Ring-fence background IP; grant limited license only.');
+
+        if (reverseEngineer.value === 'silent') notes.push('Add anti–reverse engineering to preserve secrecy.');
+        else notes.push('Reverse engineering is barred — good for SaaS and SDKs.');
+
+        if (breachNotice.value === 'none') notes.push('Add breach notice to coordinate containment.');
+        if (breachNotice.value === '72hr') notes.push('72-hour notice matches many security frameworks.');
+        if (breachNotice.value === 'immediate') notes.push('Immediate notice for crown-jewel exchanges.');
+
+        contractNotes.innerHTML = notes.map((n) => `<div>• ${n}</div>`).join('');
+      }
+
+      const dataRoom = document.getElementById('dataRoom');
+      const credentials = document.getElementById('credentials');
+      const apiControl = document.getElementById('apiControl');
+      const nda = document.getElementById('nda');
+      const systemNotes = document.getElementById('systemNotes');
+
+      function renderSystems() {
+        const lines = [];
+        lines.push(dataRoom.value === 'vdr' ? 'Use a VDR with watermarks and expiry.' : 'Shared folders are risky — log downloads at minimum.');
+        lines.push(credentials.value === 'auto' ? 'Auto-expire credentials after the project ends.' : 'Manual credentialing: set reminders to revoke.');
+        lines.push(apiControl.value === 'none' ? 'No API throttling — add limits and logging.' : 'API limits shrink the blast radius.');
+        lines.push(nda.value === 'missing' ? 'NDA missing: execute before sharing.' : 'NDA in place — map who is covered.');
+        systemNotes.innerHTML = lines.map((l) => `<div>• ${l}</div>`).join('');
+      }
+
+      const stageSummary = document.getElementById('stageSummary');
+      const refreshStage = document.getElementById('refreshStage');
+
+      function renderSummary() {
+        const rel = relationshipRadios.find((r) => r.checked).value;
+        const items = [
+          relationshipMessages[rel],
+          auditRights.value === 'none' ? 'Add at least triggered audit rights.' : `Audit rights: ${auditRights.options[auditRights.selectedIndex].text}.`,
+          backgroundIP.value === 'silent' ? 'Define and ring-fence background IP.' : `Background IP stance: ${backgroundIP.options[backgroundIP.selectedIndex].text}.`,
+          reverseEngineer.value === 'prohibited' ? 'Reverse engineering is prohibited — remind partners in onboarding.' : 'Add anti–reverse engineering language.',
+          breachNotice.value === 'none' ? 'Add breach notice to sync incident response.' : `Breach notice timing: ${breachNotice.options[breachNotice.selectedIndex].text}.`,
+          dataRoom.value === 'vdr' ? 'Use a virtual data room with expiring links.' : 'If sharing folders, set download limits and revoke access dates.',
+          credentials.value === 'auto' ? 'Automate credential revocation when the project ends.' : 'Schedule credential cleanup dates.',
+          apiControl.value === 'sunset' ? 'Time-box API keys; rotate often.' : 'Add rate limits / feature flags to control API use.',
+          nda.value === 'missing' ? 'Execute an NDA before exchanging anything sensitive.' : 'Confirm NDA covers all recipients and affiliates.'
+        ];
+        stageSummary.innerHTML = items.map((i) => `<div>• ${i}</div>`).join('');
+      }
+
+      [auditRights, backgroundIP, reverseEngineer, breachNotice].forEach((el) => el.addEventListener('change', () => { renderContract(); renderSummary(); }));
+      [dataRoom, credentials, apiControl, nda].forEach((el) => el.addEventListener('change', () => { renderSystems(); renderSummary(); }));
+      refreshStage.addEventListener('click', () => { renderRelationship(); renderContract(); renderSystems(); renderSummary(); });
+
+      renderRelationship();
+      renderContract();
+      renderSystems();
+      renderSummary();
+    </script>
+  </body>
+</html>
