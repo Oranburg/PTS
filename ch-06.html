@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protecting Trade Secrets — Chapter 6</title>
+    <style>
+      :root {
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #0ea5e9;
+        --accent: #1d4ed8;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: var(--text); background: var(--bg); }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+      .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; }
+      header { text-align: center; padding: 1.2rem; margin-bottom: 1rem; }
+      h1 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.2rem); }
+      h2 { margin-top: 0; }
+      p { color: var(--muted); }
+      .tabs { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; margin-bottom: 1rem; }
+      .tab { border: 1px solid var(--border); background: #fff; border-radius: 10px; padding: .65rem .9rem; font-weight: 600; cursor: pointer; }
+      .tab[aria-selected="true"] { background: var(--primary); border-color: var(--primary); color: #0f172a; }
+      main { padding: 1.2rem; }
+      section { display: none; }
+      section.active { display: block; }
+      .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: .8rem; }
+      .panel { border: 1px solid var(--border); border-radius: 12px; padding: .9rem; background: #fff; }
+      .panel h3 { margin-top: 0; }
+      ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+      li + li { margin-top: .35rem; }
+      label { font-weight: 700; color: var(--text); display: block; margin-bottom: .25rem; }
+      select, input[type="radio"], input[type="checkbox"] { font: inherit; }
+      .field { margin-bottom: .8rem; }
+      .summary { margin-top: .6rem; padding: .75rem; border-radius: 10px; border: 1px dashed var(--border); background: #f8fafc; }
+      .topNav { display: flex; justify-content: space-between; align-items: center; gap: .75rem; margin-bottom: 0.75rem; }
+      .topNav a { text-decoration: none; font-weight: 700; color: var(--accent); }
+      .topNav a:hover { text-decoration: underline; }
+      .badge { display: inline-block; font-size: .7rem; font-weight: 700; background: #e0f2fe; color: #075985; border-radius: 999px; padding: .15rem .5rem; margin-bottom: .4rem; }
+      .status { font-weight: 800; }
+      .good { color: #0f766e; }
+      .warn { color: #b45309; }
+      .alert { color: #b91c1c; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav class="topNav">
+        <a href="index.html">← Back to Index</a>
+        <a href="ch-07.html">Next: Chapter 7</a>
+      </nav>
+
+      <header class="card">
+        <h1>Protecting Trade Secrets</h1>
+        <p>Chapter 6: Litigation Command Center — Enforcement &amp; Remedies</p>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Chapter sections">
+        <button class="tab" role="tab" aria-selected="true" data-target="complaint">Complaint</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="injunction">Emergency Relief</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="damages">Damages</button>
+      </nav>
+
+      <main class="card">
+        <section id="complaint" class="active">
+          <h2>Pleadings Readiness</h2>
+          <p class="small">Set the levers to see if your complaint survives Rule 12.</p>
+          <div class="grid-2">
+            <div class="panel">
+              <div class="field">
+                <label for="particularity">Describe the Secret</label>
+                <select id="particularity">
+                  <option value="vague">“proprietary data” (vague)</option>
+                  <option value="specific">Specific descriptions (particularity)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="efforts">Reasonable Efforts</label>
+                <select id="efforts">
+                  <option value="none">Not documented</option>
+                  <option value="documented">Documented controls</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="conduct">Defendant Conduct</label>
+                <select id="conduct">
+                  <option value="compete">Inevitable disclosure risk</option>
+                  <option value="breach">NDA breach / improper use</option>
+                  <option value="hack">Hacking / theft</option>
+                </select>
+              </div>
+            </div>
+            <div class="panel">
+              <h3>Result</h3>
+              <div id="complaintResult" class="summary"></div>
+              <p class="small">Teach: <strong>IDX v. Epic</strong> (particularity) and how over-claiming can backfire.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="injunction">
+          <h2>Emergency Relief Board</h2>
+          <p class="small">Toggle the DTSA §1836(b)(2) factors (civil seizure) and traditional equitable factors.</p>
+          <div class="grid-2">
+            <div class="panel">
+              <div class="field">
+                <label for="reliefType">Relief Type</label>
+                <select id="reliefType">
+                  <option value="prelim">Preliminary injunction</option>
+                  <option value="seizure">Civil seizure</option>
+                  <option value="permanent">Permanent injunction</option>
+                </select>
+              </div>
+              <div class="field"><label><input type="checkbox" id="harm" checked /> Immediate irreparable harm</label></div>
+              <div class="field"><label><input type="checkbox" id="likelihood" checked /> Likelihood of success</label></div>
+              <div class="field"><label><input type="checkbox" id="spoliation" /> Risk of spoliation / movement</label></div>
+              <div class="field"><label><input type="checkbox" id="necessity" checked /> Relief narrowly tailored / necessary</label></div>
+              <div class="field"><label><input type="checkbox" id="possession" /> Defendant possesses the materials</label></div>
+            </div>
+            <div class="panel">
+              <h3>Relief Outlook</h3>
+              <div id="injunctionResult" class="summary"></div>
+              <p class="small">Reminder: civil seizure is “nuclear” — consider it only when notice would defeat the purpose.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="damages">
+          <h2>Damages Paths</h2>
+          <p class="small">Pick the theory and aggravating factors.</p>
+          <div class="grid-2">
+            <div class="panel">
+              <div class="field">
+                <label for="theory">Theory</label>
+                <select id="theory">
+                  <option value="actual">Actual loss</option>
+                  <option value="unjust">Unjust enrichment</option>
+                  <option value="royalty">Reasonable royalty</option>
+                </select>
+              </div>
+              <div class="field"><label><input type="checkbox" id="willful" /> Willful &amp; malicious</label></div>
+              <div class="field"><label><input type="checkbox" id="scienter" /> Bad faith / malice proven</label></div>
+            </div>
+            <div class="panel">
+              <h3>Remedy Snapshot</h3>
+              <div id="damagesResult" class="summary"></div>
+              <p class="small">Use this to explain why documentation of value and efforts drives the award.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const tabButtons = Array.from(document.querySelectorAll('.tab'));
+      const sections = Array.from(document.querySelectorAll('main section'));
+      function activateTab(target) {
+        tabButtons.forEach((tab) => tab.setAttribute('aria-selected', tab.dataset.target === target ? 'true' : 'false'));
+        sections.forEach((section) => section.classList.toggle('active', section.id === target));
+      }
+      tabButtons.forEach((tab) => tab.addEventListener('click', () => activateTab(tab.dataset.target)));
+
+      const particularity = document.getElementById('particularity');
+      const efforts = document.getElementById('efforts');
+      const conduct = document.getElementById('conduct');
+      const complaintResult = document.getElementById('complaintResult');
+
+      function renderComplaint() {
+        const messages = [];
+        if (particularity.value === 'vague') {
+          messages.push('<span class="alert status">Too vague — risk dismissal.</span>');
+        } else {
+          messages.push('<span class="good status">Particularity satisfied.</span>');
+        }
+        messages.push(efforts.value === 'documented' ? 'Efforts documented (NDA, access, labels).' : '<span class="warn">Document reasonable efforts before filing.</span>');
+        messages.push(conduct.value === 'hack' ? 'Theft / hacking supports higher urgency relief.' : 'Frame the conduct clearly (breach vs inevitable disclosure).');
+        complaintResult.innerHTML = messages.map((m) => `<div>${m}</div>`).join('');
+      }
+
+      const reliefType = document.getElementById('reliefType');
+      const harm = document.getElementById('harm');
+      const likelihood = document.getElementById('likelihood');
+      const spoliation = document.getElementById('spoliation');
+      const necessity = document.getElementById('necessity');
+      const possession = document.getElementById('possession');
+      const injunctionResult = document.getElementById('injunctionResult');
+
+      function renderInjunction() {
+        const checks = [harm, likelihood, necessity].filter((c) => c.checked).length;
+        const strongCase = checks === 3 && (reliefType.value !== 'seizure' || spoliation.checked || possession.checked);
+        const lines = [];
+        lines.push(`<span class="status ${strongCase ? 'good' : 'warn'}">${strongCase ? 'Relief likely if evidence is solid.' : 'Tighten your showing before filing.'}</span>`);
+        if (reliefType.value === 'seizure') {
+          lines.push(spoliation.checked ? 'Spoliation risk supports seizure.' : '<span class="warn">Civil seizure is rare — show spoliation or movement risk.</span>');
+          lines.push(possession.checked ? 'Target controls the materials.' : '<span class="warn">Show that defendant actually holds the trade secrets.</span>');
+        } else {
+          lines.push('Balance of equities and public interest still apply.');
+        }
+        injunctionResult.innerHTML = lines.map((l) => `<div>${l}</div>`).join('');
+      }
+
+      const theory = document.getElementById('theory');
+      const willful = document.getElementById('willful');
+      const scienter = document.getElementById('scienter');
+      const damagesResult = document.getElementById('damagesResult');
+
+      function renderDamages() {
+        const items = [];
+        if (theory.value === 'actual') items.push('Actual loss: prove causation + quantifiable harm.');
+        if (theory.value === 'unjust') items.push('Unjust enrichment: focus on defendant’s gain.');
+        if (theory.value === 'royalty') items.push('Reasonable royalty: useful where damages are hard to quantify.');
+        if (willful.checked || scienter.checked) {
+          items.push('<span class="good">Enhanced damages and fees are in play (willful/malicious).</span>');
+        } else {
+          items.push('No willfulness — expect baseline remedies.');
+        }
+        damagesResult.innerHTML = items.map((i) => `<div>${i}</div>`).join('');
+      }
+
+      [particularity, efforts, conduct].forEach((el) => el.addEventListener('change', renderComplaint));
+      [reliefType, harm, likelihood, spoliation, necessity, possession].forEach((el) => el.addEventListener('change', renderInjunction));
+      [theory, willful, scienter].forEach((el) => el.addEventListener('change', renderDamages));
+
+      renderComplaint();
+      renderInjunction();
+      renderDamages();
+    </script>
+  </body>
+</html>
