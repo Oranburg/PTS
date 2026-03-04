@@ -99,6 +99,11 @@ function GrowthCrucible({ state, setState, onNext }) {
     if (state.nda === 'fragile' && state.culture === 'fragile') {
       return {
         theme: 'rose',
+        wrapClass: 'bg-rose-50 border-rose-200',
+        headingClass: 'text-rose-800',
+        bodyClass: 'text-rose-900',
+        statusClass: 'bg-white/60 text-rose-900',
+        iconClass: 'text-rose-600',
         heading: "Structural Fragility Detected",
         body: "Overbroad confidentiality agreements that sweep in information beyond what is necessary to protect a legitimate business interest risk being treated like de facto non-competes — and courts increasingly apply default unenforceability rules to them. (Hrdy & Seaman, 'Beyond Trade Secrecy,' Yale L.J. 2024.) Static onboarding produces a culture where employees cannot distinguish what actually requires protection, making secrecy norms impossible to enforce.",
         risk: "HIGH",
@@ -108,6 +113,11 @@ function GrowthCrucible({ state, setState, onNext }) {
     } else if (state.nda === 'resilient' && state.culture === 'resilient') {
       return {
         theme: 'emerald',
+        wrapClass: 'bg-emerald-50 border-emerald-200',
+        headingClass: 'text-emerald-800',
+        bodyClass: 'text-emerald-900',
+        statusClass: 'bg-white/60 text-emerald-900',
+        iconClass: 'text-emerald-600',
         heading: "Dynamic Capability Achieved",
         body: "Tiered agreements calibrated to actual exposure are more enforceable and create sharper employee awareness of protected material. Research suggests that organizations that treat secrecy protection as an operational practice — not merely a legal compliance layer — achieve stronger internal information integration: employees share more freely within protected channels precisely because boundaries are clear. (See Andreicovici et al., SSRN 2023, on trade secret protection and internal transparency.)",
         risk: "LOW",
@@ -117,6 +127,11 @@ function GrowthCrucible({ state, setState, onNext }) {
     } else {
       return {
         theme: 'amber',
+        wrapClass: 'bg-amber-50 border-amber-200',
+        headingClass: 'text-amber-800',
+        bodyClass: 'text-amber-900',
+        statusClass: 'bg-white/60 text-amber-900',
+        iconClass: 'text-amber-600',
         heading: "Partial Protection — Residual Exposure",
         body: "One dimension of your Contract-Culture Interface is sound; the other creates systemic vulnerability. A strong agreement paired with a static culture produces paper protections that collapse in practice. A strong culture without calibrated agreements creates enforcement gaps in litigation.",
         risk: "MODERATE",
@@ -193,14 +208,14 @@ function GrowthCrucible({ state, setState, onNext }) {
                 <p className="font-medium">Select options to view structural analysis.</p>
               </div>
             ) : (
-              <div className={`rounded-3xl p-8 border-2 transition-all duration-300 flex flex-col h-full bg-${feedback.theme}-50 border-${feedback.theme}-200`}>
-                <h3 className={`text-2xl font-bold mb-4 text-${feedback.theme}-800`}>{feedback.heading}</h3>
-                <p className={`text-sm leading-relaxed mb-8 text-${feedback.theme}-900 flex-1`}>
+              <div className={`rounded-3xl p-8 border-2 transition-all duration-300 flex flex-col h-full ${feedback.wrapClass}`}>
+                <h3 className={`text-2xl font-bold mb-4 ${feedback.headingClass}`}>{feedback.heading}</h3>
+                <p className={`text-sm leading-relaxed mb-8 flex-1 ${feedback.bodyClass}`}>
                   {feedback.body}
                 </p>
                 
-                <div className={`p-4 rounded-xl font-bold text-sm bg-white/60 text-${feedback.theme}-900 flex items-center gap-3`}>
-                  <AlertTriangle size={18} className={`text-${feedback.theme}-600 shrink-0`} />
+                <div className={`p-4 rounded-xl font-bold text-sm flex items-center gap-3 ${feedback.statusClass}`}>
+                  <AlertTriangle size={18} className={`shrink-0 ${feedback.iconClass}`} />
                   <span>Risk Level: {feedback.risk} — {feedback.statusText}</span>
                 </div>
 
@@ -226,6 +241,12 @@ function GrowthCrucible({ state, setState, onNext }) {
 
 // --- TAB 2: THE FRONTIER STRESS TEST ---
 function FrontierStressTest({ state, setState, onNext }) {
+
+  const THEME_CLASSES = {
+    rose:    { wrap: 'bg-rose-50 border-rose-200 text-rose-900' },
+    amber:   { wrap: 'bg-amber-50 border-amber-200 text-amber-900' },
+    emerald: { wrap: 'bg-emerald-50 border-emerald-200 text-emerald-900' },
+  };
 
   const getAIFeedback = () => {
     if (state.ai === 'open') return { theme: 'rose', text: "Open-source AI tools transmit prompts to third-party servers. Any trade secret embedded in a prompt or output is potentially disclosed to the model provider and exposed in training data. This is the 'Information Paradox' at scale: the tool that accelerates innovation simultaneously destroys the secrecy on which legal protection depends." };
@@ -308,7 +329,7 @@ function FrontierStressTest({ state, setState, onNext }) {
             
             {/* AI Feedback */}
             {aiFeedback ? (
-              <div className={`p-6 rounded-2xl border-2 transition-all duration-300 bg-${aiFeedback.theme}-50 border-${aiFeedback.theme}-200 text-${aiFeedback.theme}-900`}>
+              <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${THEME_CLASSES[aiFeedback.theme].wrap}`}>
                 <h4 className="font-bold text-sm uppercase tracking-widest mb-2 opacity-80">AI Integration Analysis</h4>
                 <p className="text-sm leading-relaxed">{aiFeedback.text}</p>
               </div>
@@ -320,7 +341,7 @@ function FrontierStressTest({ state, setState, onNext }) {
 
             {/* EU Feedback */}
             {euFeedback ? (
-              <div className={`p-6 rounded-2xl border-2 transition-all duration-300 bg-${euFeedback.theme}-50 border-${euFeedback.theme}-200 text-${euFeedback.theme}-900`}>
+              <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${THEME_CLASSES[euFeedback.theme].wrap}`}>
                 <h4 className="font-bold text-sm uppercase tracking-widest mb-2 opacity-80">EU Alignment Analysis</h4>
                 <p className="text-sm leading-relaxed">{euFeedback.text}</p>
               </div>
