@@ -323,7 +323,7 @@
             <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
                 <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-1">Required Role Assignment</p>
                 <p class="text-sm text-emerald-900 leading-relaxed">
-                    Assign exactly one <strong>Project Manager</strong> in Section 02. That assigned Project Manager is the person who submits the final charter deliverable to Canvas.
+                    Assign exactly one <strong>Project Manager</strong> in the Roles &amp; Ownership section. That assigned Project Manager is the person who submits the final charter deliverable to Canvas.
                 </p>
             </div>
 
@@ -1062,7 +1062,7 @@
                 if (roleEl && roleEl.value === 'pm') pmCount++;
             }
             if (pmCount !== 1) {
-                alert('Section 02 requires exactly one Project Manager role assignment. Please assign one (and only one) Project Manager before exporting or printing.');
+                alert('Please assign exactly one Project Manager in the Roles & Ownership section before exporting or printing.');
                 return false;
             }
             return true;
