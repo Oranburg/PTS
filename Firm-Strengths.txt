@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firm Persona & Strengths Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .serif { font-family: 'Libre Baskerville', serif; }
+
+        /* Custom Radio Button Styles */
+        .scale-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .scale-btn.selected {
+            background-color: #1e3a8a; /* blue-900 */
+            color: white;
+            border-color: #1e3a8a;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-select {
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+        }
+        .card-select:hover {
+            border-color: #93c5fd;
+            background-color: #f0f9ff;
+        }
+        .card-select.selected {
+            border-color: #1e3a8a;
+            background-color: #eff6ff;
+            box-shadow: 0 0 0 2px #1e3a8a;
+        }
+
+        /* Smooth Step Transitions */
+        .step-container {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Result Card Polish */
+        .gradient-bg {
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+        }
+    </style>
+</head>
+<body class="text-slate-800 min-h-screen flex flex-col">
+
+    <!-- No-Save Warning Banner (No Print) -->
+    <div class="w-full bg-amber-50 border-b-2 border-amber-400 py-3 px-4 sticky top-0 z-50 no-print">
+        <div class="max-w-3xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-amber-500">⚠️</span>
+                <p class="text-[11px] text-amber-700 leading-snug">
+                    <strong>Your profile is not saved to any server.</strong> Complete all steps and download before closing this tab.
+                </p>
+            </div>
+            <button onclick="downloadWord()" class="text-[10px] font-black bg-amber-500 text-white px-3 py-1.5 rounded hover:bg-amber-600 transition uppercase tracking-widest whitespace-nowrap">Save Now →</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-[48px] z-10 no-print">
+        <div class="max-w-3xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <a href="index.html" class="text-xs text-slate-400 hover:text-slate-700 transition mr-3">← Dashboard</a>
+                <div class="font-black tracking-tighter text-xl text-slate-900 uppercase">
+                    Firm<span class="text-blue-700">Persona</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <div id="save-status" class="text-[10px] font-bold text-green-600 uppercase tracking-widest opacity-0 transition-opacity duration-300">
+                    Saved
+                </div>
+                <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400" id="progress-indicator">
+                    Pre-Charter Assessment
+                </div>
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 h-1">
+            <div id="progress-bar" class="bg-blue-700 h-1 transition-all duration-500 ease-out" style="width: 0%;"></div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow flex items-center justify-center p-4 py-8">
+        <div class="w-full max-w-3xl">
+
+            <!-- STEP 0: Intro -->
+            <div id="step-0" class="step-container bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+                <div class="bg-slate-900 text-white p-8 md:p-12 text-center">
+                    <h1 class="serif text-3xl md:text-4xl font-bold mb-4">Discover Your Firm Persona</h1>
+                    <p class="text-slate-300 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
+                        High-performing legal teams are built on complementary strengths and shared vulnerability, not identical skillsets. 
+                    </p>
+                </div>
+                <div class="p-8 md:p-12 bg-white">
+                    <div class="grid md:grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 class="font-black text-xs uppercase tracking-widest text-blue-700 mb-2">The "I" Skills</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">We will assess your individual proficiencies (Research, Editing, Management) to identify your comparative advantage for the project.</p>
+                        </div>
+                        <div>
+                            <h3 class="font-black text-xs uppercase tracking-widest text-emerald-700 mb-2">The "We" Skills</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">We will identify your "Danger Zone" under pressure. Naming your blind spots builds the collective efficacy required for true teamwork.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-slate-100 pt-8">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Enter your name to begin:</label>
+                        <input type="text" id="user-name" placeholder="First & Last Name" class="w-full border-b-2 border-slate-200 py-3 text-lg font-bold outline-none focus:border-blue-700 transition-colors mb-6">
+                        <button onclick="nextStep(1)" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-blue-900/20">
+                            Start Assessment →
+                        </button>
+                        <p id="error-0" class="text-red-500 text-xs font-bold mt-3 text-center hidden">Please enter your name to continue.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 1: Working Cadence -->
+            <div id="step-1" class="step-container hidden bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-slate-200">
+                <h2 class="serif text-2xl font-bold text-slate-900 mb-2">Pacing & Cadence</h2>
+                <p class="text-sm text-slate-500 mb-8">What is your natural pacing style for large, multi-week projects?</p>
+
+                <div class="space-y-4" id="cadence-options">
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-5" onclick="selectCard('cadence', 'planner', this)">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl">🗓️</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900">The Planner</h3>
+                                <p class="text-xs text-slate-500 mt-1">I finish things days in advance to allow for rigorous review. I dislike last-minute rushes.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-5" onclick="selectCard('cadence', 'pacer', this)">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl">🏃</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900">The Pacer</h3>
+                                <p class="text-xs text-slate-500 mt-1">I map out the timeline and do a consistent amount of work every single day until completion.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-5" onclick="selectCard('cadence', 'sprinter', this)">
+                        <div class="flex items-center gap-4">
+                            <div class="text-3xl">⚡</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900">The Sprinter</h3>
+                                <p class="text-xs text-slate-500 mt-1">I do my highest-cognition, most synthetic work under pressure in the final 48 hours.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <button onclick="prevStep(0)" class="text-sm font-bold text-slate-400 hover:text-slate-800 transition">← Back</button>
+                    <button onclick="nextStep(2, 'cadence')" class="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-lg font-bold transition">Next →</button>
+                </div>
+                <p id="error-1" class="text-red-500 text-xs font-bold mt-3 text-right hidden">Please select an option.</p>
+            </div>
+
+            <!-- STEP 2: The "I" Skills (Forced Ranking) -->
+            <div id="step-2" class="step-container hidden bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-slate-200">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="serif text-2xl font-bold text-slate-900">Core Proficiencies</h2>
+                    <span class="bg-blue-100 text-blue-800 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded">"I" Skills</span>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+                    <p class="text-sm text-blue-900 leading-relaxed font-semibold">
+                        Force-rank your confidence in these tasks from 1 (Lowest) to 5 (Highest).
+                    </p>
+                    <p class="text-xs text-blue-800 leading-relaxed mt-1">
+                        <strong>You must use each number exactly once.</strong> This forces you to identify your <em>comparative advantage</em>. If you select a number already in use, it will move to your new selection.
+                    </p>
+                </div>
+
+                <div class="space-y-8" id="skills-container">
+                    <!-- Skills Injected via JS to keep HTML clean -->
+                </div>
+
+                <div class="mt-10 flex justify-between items-center pt-6 border-t border-slate-100">
+                    <button onclick="prevStep(1)" class="text-sm font-bold text-slate-400 hover:text-slate-800 transition">← Back</button>
+                    <button onclick="nextStep(3, 'skills')" class="bg-slate-900 hover:bg-black text-white px-8 py-3 rounded-lg font-bold transition">Next →</button>
+                </div>
+                <p id="error-2" class="text-red-500 text-xs font-bold mt-3 text-right hidden">Please assign a unique rating (1-5) to all 5 skills.</p>
+            </div>
+
+            <!-- STEP 3: The "We" Skills (Danger Zone) -->
+            <div id="step-3" class="step-container hidden bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-slate-200">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="serif text-2xl font-bold text-slate-900">Your "Danger Zone"</h2>
+                    <span class="bg-emerald-100 text-emerald-800 text-[9px] font-black uppercase tracking-widest px-2 py-1 rounded">"We" Skills</span>
+                </div>
+                <p class="text-sm text-slate-500 mb-6">Every professional has a blind spot under pressure. What happens to you when deadlines approach and stress is high?</p>
+
+                <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-6">
+                    <p class="text-[10px] text-slate-500 uppercase font-black tracking-widest mb-1">Why we ask this</p>
+                    <p class="text-xs text-slate-600 leading-relaxed italic">Research (Spiro & Fisher, 2024) shows that "collective efficacy" requires social sensitivity and the ability to acknowledge mistakes. Naming your flaw now gives your team permission to manage it later.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4" id="danger-options">
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-4 text-center" onclick="selectCard('danger', 'ghost', this)">
+                        <div class="text-2xl mb-2">👻</div>
+                        <h3 class="font-bold text-slate-900 text-sm">The Ghost</h3>
+                        <p class="text-[10px] text-slate-500 mt-2">When overwhelmed, I tend to go quiet, avoid messages, and isolate.</p>
+                    </div>
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-4 text-center" onclick="selectCard('danger', 'dictator', this)">
+                        <div class="text-2xl mb-2">👑</div>
+                        <h3 class="font-bold text-slate-900 text-sm">The Dictator</h3>
+                        <p class="text-[10px] text-slate-500 mt-2">Under pressure, I take over, rewrite others' work, and micromanage.</p>
+                    </div>
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-4 text-center" onclick="selectCard('danger', 'perfectionist', this)">
+                        <div class="text-2xl mb-2">🔍</div>
+                        <h3 class="font-bold text-slate-900 text-sm">The Perfectionist</h3>
+                        <p class="text-[10px] text-slate-500 mt-2">I get stuck researching or tweaking minor details and miss the big picture.</p>
+                    </div>
+                    <div class="card-select border-2 border-slate-200 rounded-xl p-4 text-center" onclick="selectCard('danger', 'yesperson', this)">
+                        <div class="text-2xl mb-2">🤝</div>
+                        <h3 class="font-bold text-slate-900 text-sm">The Yes-Person</h3>
+                        <p class="text-[10px] text-slate-500 mt-2">I take on too much work to avoid conflict, leading to burnout and missed tasks.</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <button onclick="prevStep(2)" class="text-sm font-bold text-slate-400 hover:text-slate-800 transition">← Back</button>
+                    <button onclick="generateResults()" class="bg-blue-700 hover:bg-blue-800 text-white px-8 py-3 rounded-lg font-bold transition shadow-lg shadow-blue-900/20">Generate Profile →</button>
+                </div>
+                <p id="error-3" class="text-red-500 text-xs font-bold mt-3 text-right hidden">Please select your Danger Zone.</p>
+            </div>
+
+            <!-- STEP 4: Results (The Persona Card) -->
+            <div id="step-4" class="step-container hidden">
+                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-slate-200">
+                    <!-- ID Card Header -->
+                    <div class="gradient-bg p-8 text-white relative overflow-hidden">
+                        <!-- Decorative bg -->
+                        <div class="absolute -right-10 -top-10 opacity-10">
+                            <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <div class="relative z-10 flex justify-between items-end">
+                            <div>
+                                <p class="text-[10px] font-black uppercase tracking-widest text-blue-300 mb-1">Firm Persona Profile</p>
+                                <h2 id="res-name" class="serif text-3xl font-bold">Name</h2>
+                                <p id="res-archetype" class="text-sm font-medium text-blue-100 mt-1 italic">The Strategic Synthesizer</p>
+                            </div>
+                            <div class="text-right">
+                                <span id="res-cadence-badge" class="bg-white/20 backdrop-blur border border-white/30 px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">
+                                    Pacer
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-8">
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-8">
+                            <h4 class="text-[10px] font-black uppercase tracking-widest text-amber-800 mb-1">Vulnerability Disclosure</h4>
+                            <p class="text-sm text-amber-900"><strong>Danger Zone:</strong> <span id="res-danger" class="font-semibold">The Dictator</span></p>
+                            <p class="text-xs text-amber-700 mt-1"><em>"Team, please hold me accountable if you see me doing this under pressure."</em></p>
+                        </div>
+
+                        <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 border-b border-slate-100 pb-2">Recommended Charter Roles</h4>
+                        <p class="text-xs text-slate-500 mb-4">Based on your highest proficiencies, volunteer for one of these roles when filling out Section 02 of the Team Charter:</p>
+                        
+                        <div class="space-y-3" id="res-roles">
+                            <!-- Roles injected here -->
+                        </div>
+
+                        <!-- Accountability Anchors (Written Commitments) -->
+                        <div class="mt-8 space-y-5 border-t border-slate-100 pt-6">
+                            <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Accountability Anchors</p>
+                            <p class="text-xs text-slate-500 italic mb-4">Complete these before your team's charter session. They become the baseline for peer evaluation at end of term.</p>
+                            
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Your Value Proposition (3–5 sentences)</label>
+                                <textarea id="value-prop" rows="4" 
+                                    placeholder="Describe the specific contribution you will make to the TSPP. Reference your archetype, your highest-ranked skill, and the stage(s) where your contribution will be most critical. Be specific enough that a teammate could hold you to it."
+                                    class="w-full border border-slate-200 rounded-lg p-3 text-sm outline-none focus:ring-2 focus:ring-blue-700 transition resize-none"></textarea>
+                                <p class="text-right text-[9px] text-slate-400 mt-1"><span id="wc-vp">0</span> words</p>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Behavioral Commitment</label>
+                                <input id="commit-1" type="text" 
+                                    placeholder="Something specific I will consistently do — e.g., 'Send the PM a Sunday 6 PM status update without being asked.'"
+                                    class="w-full border-b border-slate-200 py-2 text-sm outline-none focus:border-blue-700 transition bg-transparent">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Risk Acknowledgment</label>
+                                <input id="commit-2" type="text" 
+                                    placeholder="One way my Danger Zone could create friction — e.g., 'As a Perfectionist, I may slow QC. I commit to flagging when I need more time rather than going silent.'"
+                                    class="w-full border-b border-slate-200 py-2 text-sm outline-none focus:border-blue-700 transition bg-transparent">
+                            </div>
+                        </div>
+
+                        <!-- CTA Actions -->
+                        <div class="mt-10 p-6 bg-slate-50 rounded-xl text-center border border-slate-200">
+                            <p class="text-sm font-bold text-slate-800 mb-2">Circle up with your team.</p>
+                            <p class="text-xs text-slate-600 mb-4">Share your top recommended role, your Danger Zone, and your commitments.</p>
+                            <div class="flex flex-wrap justify-center gap-3 mt-4">
+                                <button onclick="window.print()" class="text-[10px] font-bold uppercase tracking-widest text-blue-700 border border-blue-200 px-4 py-2 rounded-full bg-white hover:bg-blue-50 transition">Download PDF</button>
+                                <button onclick="downloadWord()" class="text-[10px] font-bold uppercase tracking-widest text-slate-700 border border-slate-200 px-4 py-2 rounded-full bg-white hover:bg-slate-50 transition">Download Word</button>
+                                <a href="charter.html" class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 border border-emerald-200 px-4 py-2 rounded-full bg-white hover:bg-emerald-50 transition">Open Team Charter →</a>
+                                <button onclick="window.location.reload()" class="text-[10px] font-bold uppercase tracking-widest text-slate-400 border border-slate-100 px-4 py-2 rounded-full bg-white hover:bg-slate-50 transition">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-6 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400 no-print">
+        &copy; 2026 Seth C. Oranburg
+    </footer>
+
+    <script>
+        const STORAGE_KEY = 'unh-pts-2026-tspp-persona';
+
+        // State
+        const state = {
+            name: '',
+            cadence: '',
+            skills: {
+                research: 0,
+                drafting: 0,
+                editing: 0,
+                pm: 0,
+                format: 0
+            },
+            danger: ''
+        };
+
+        // Skill Configurations
+        const skillsConfig = [
+            { id: 'research', label: 'Factual & Legal Research', desc: 'Digging into cases, statutes, and client files.' },
+            { id: 'drafting', label: 'Substantive Drafting', desc: 'Writing clear, persuasive legal prose from scratch.' },
+            { id: 'editing', label: 'Synthesis & Editing', desc: 'Making different pieces sound like "one voice."' },
+            { id: 'pm', label: 'Project Management', desc: 'Setting timelines, organizing files, enforcing deadlines.' },
+            { id: 'format', label: 'Formatting & QC', desc: 'Perfecting citations, layout, and document packaging.' }
+        ];
+
+        // Mapping Skills to Charter Roles (Matches the Team Charter tool exact strings)
+        const roleMapping = {
+            research: [
+                { title: 'Research Coordinator', desc: 'Primary docket work and fact-finding.' },
+                { title: 'Devil\'s Advocate', desc: 'Critical assumption challenger and stress-tester.' },
+                { title: 'Junior Research Coordinator', desc: 'Citation support and independent verification.' }
+            ],
+            drafting: [
+                { title: 'Lead Editor', desc: 'Drafting oversight and narrative flow.' },
+                { title: 'Client Relationship Lead', desc: 'Ensuring the tone is actionable for the client.' }
+            ],
+            editing: [
+                { title: 'Lead Editor', desc: 'Synthesis, narrative flow, and one-firm voice.' },
+                { title: 'Knowledge Integrator', desc: 'Cross-section consistency and logical chain auditor.' }
+            ],
+            pm: [
+                { title: 'Project Manager', desc: 'Coordination, timeline, and internal accountability.' },
+                { title: 'Timeline Tracker', desc: 'Deadline monitoring and early warning system.' },
+                { title: 'Deputy Project Manager', desc: 'Backup coordination and risk monitoring.' }
+            ],
+            format: [
+                { title: 'Technical Lead', desc: 'Formatting, LMS packaging, and document control.' },
+                { title: 'Compliance & QC Lead', desc: 'Citation verification and AI policy audit.' },
+                { title: 'Scribe / Meeting Recorder', desc: 'Decision documentation and institutional memory.' }
+            ]
+        };
+
+        // Initialize UI
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSkills();
+            loadFromStorage();
+            
+            // Wire auto-save events for inputs/textareas
+            document.addEventListener('input', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    saveToStorage();
+                }
+            });
+
+            // Word counter for value proposition
+            const vp = document.getElementById('value-prop');
+            const wcvp = document.getElementById('wc-vp');
+            if (vp && wcvp) {
+                vp.addEventListener('input', () => {
+                    const count = vp.value.trim() ? vp.value.trim().split(/\s+/).length : 0;
+                    wcvp.textContent = count;
+                });
+            }
+        });
+
+        function renderSkills() {
+            const container = document.getElementById('skills-container');
+            let html = '';
+            skillsConfig.forEach(skill => {
+                html += `
+                    <div>
+                        <div class="flex justify-between items-end mb-2">
+                            <div>
+                                <p class="font-bold text-slate-800 text-sm">${skill.label}</p>
+                                <p class="text-[10px] text-slate-500">${skill.desc}</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between gap-2 bg-slate-50 p-2 rounded-lg border border-slate-100">
+                            ${[1,2,3,4,5].map(num => `
+                                <button onclick="setSkill('${skill.id}', ${num}, this)" 
+                                    class="scale-btn flex-1 py-2 rounded text-sm font-bold text-slate-500 bg-white border border-slate-200 hover:border-blue-300 hover:text-blue-700 skill-btn-${skill.id}">
+                                    ${num}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // Interaction Logic
+        function selectCard(category, value, element) {
+            state[category] = value;
+            // Clear siblings
+            const siblings = element.parentElement.children;
+            for(let i=0; i<siblings.length; i++) {
+                siblings[i].classList.remove('selected');
+            }
+            // Select current
+            element.classList.add('selected');
+            
+            const errId = category === 'cadence' ? 'error-1' : 'error-3';
+            document.getElementById(errId)?.classList.add('hidden');
+            
+            saveToStorage();
+        }
+
+        function setSkill(skillId, value, element) {
+            // FORCED RANKING LOGIC: If another skill already has this value, clear it.
+            for (let id in state.skills) {
+                if (id !== skillId && state.skills[id] === value) {
+                    state.skills[id] = 0;
+                    const oldBtns = document.querySelectorAll(`.skill-btn-${id}`);
+                    oldBtns.forEach(b => b.classList.remove('selected'));
+                }
+            }
+
+            state.skills[skillId] = value;
+            // Clear siblings for current skill
+            const btns = document.querySelectorAll(`.skill-btn-${skillId}`);
+            btns.forEach(b => b.classList.remove('selected'));
+            // Select current
+            element.classList.add('selected');
+
+            // Hide error if all 5 are filled
+            const allFilled = Object.values(state.skills).every(v => v > 0);
+            if (allFilled) {
+                document.getElementById('error-2').classList.add('hidden');
+            }
+            saveToStorage();
+        }
+
+        // Navigation Logic
+        function nextStep(target, validationCategory = null) {
+            // Validation
+            if (target === 1) {
+                const nameInput = document.getElementById('user-name').value.trim();
+                if (!nameInput) {
+                    document.getElementById('error-0').classList.remove('hidden');
+                    return;
+                }
+                state.name = nameInput;
+                saveToStorage();
+            }
+            if (validationCategory === 'cadence' && !state.cadence) {
+                document.getElementById('error-1').classList.remove('hidden');
+                return;
+            }
+            if (validationCategory === 'skills') {
+                const allFilled = Object.values(state.skills).every(v => v > 0);
+                if (!allFilled) {
+                    document.getElementById('error-2').classList.remove('hidden');
+                    return;
+                }
+            }
+
+            // Move
+            hideAllSteps();
+            document.getElementById(`step-${target}`).classList.remove('hidden');
+            updateProgress(target);
+        }
+
+        function prevStep(target) {
+            hideAllSteps();
+            document.getElementById(`step-${target}`).classList.remove('hidden');
+            updateProgress(target);
+        }
+
+        function hideAllSteps() {
+            for(let i=0; i<=4; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if(el) el.classList.add('hidden');
+            }
+        }
+
+        function updateProgress(step) {
+            const pct = (step / 4) * 100;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
+            
+            const titles = ["Welcome", "Working Cadence", "Core Skills", "Danger Zone", "Your Profile"];
+            document.getElementById('progress-indicator').textContent = titles[step];
+        }
+
+        // Persistence Logic
+        function saveToStorage() {
+            const payload = {
+                ...state,
+                valueProp: document.getElementById('value-prop')?.value || '',
+                commit1: document.getElementById('commit-1')?.value || '',
+                commit2: document.getElementById('commit-2')?.value || ''
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+            
+            const ind = document.getElementById('save-status');
+            if (ind) { 
+                ind.style.opacity = '1'; 
+                setTimeout(() => { ind.style.opacity = '0'; }, 2000); 
+            }
+        }
+
+        function loadFromStorage() {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            try {
+                const saved = JSON.parse(raw);
+                Object.assign(state, saved);
+
+                // Sync UI
+                if (state.name) document.getElementById('user-name').value = state.name;
+                if (state.cadence) {
+                    const btn = document.querySelector(`#cadence-options [onclick*="'${state.cadence}'"]`);
+                    if (btn) selectCard('cadence', state.cadence, btn);
+                }
+                if (state.skills) {
+                    Object.entries(state.skills).forEach(([id, val]) => {
+                        if (val > 0) {
+                            const btn = document.querySelector(`.skill-btn-${id}[onclick*="${val}"]`);
+                            if (btn) setSkill(id, val, btn);
+                        }
+                    });
+                }
+                if (state.danger) {
+                    const btn = document.querySelector(`#danger-options [onclick*="'${state.danger}'"]`);
+                    if (btn) selectCard('danger', state.danger, btn);
+                }
+                if (saved.valueProp) {
+                    const vp = document.getElementById('value-prop');
+                    vp.value = saved.valueProp;
+                    vp.dispatchEvent(new Event('input'));
+                }
+                if (saved.commit1) document.getElementById('commit-1').value = saved.commit1;
+                if (saved.commit2) document.getElementById('commit-2').value = saved.commit2;
+                
+            } catch(e) {
+                console.error("Storage load failed", e);
+            }
+        }
+
+        // Export Logic
+        function downloadWord() {
+            const name = state.name || 'Student';
+            const dangers = { 
+                ghost: "The Ghost — may go quiet under pressure", 
+                dictator: "The Dictator — may micromanage under pressure", 
+                perfectionist: "The Perfectionist — may get stuck on details", 
+                yesperson: "The Yes-Person — may overcommit and burn out" 
+            };
+            const cadences = { planner: "The Planner", pacer: "The Pacer", sprinter: "The Sprinter" };
+            const archetypes = {
+                research: "The Fact-Finder", drafting: "The Architect",
+                editing: "The Synthesizer", pm: "The Operational Hub", format: "The Closer"
+            };
+            
+            const sortedSkills = Object.entries(state.skills).sort((a, b) => b[1] - a[1]);
+            const topSkill = sortedSkills[0][0];
+            const skillLabels = {
+                research: "Factual & Legal Research", drafting: "Substantive Drafting",
+                editing: "Synthesis & Editing", pm: "Project Management", format: "Formatting & QC"
+            };
+            
+            const skillRows = sortedSkills.map(([k, v]) =>
+                `<tr><td style="padding:6px;border:1px solid #e2e8f0">${skillLabels[k]}</td><td style="padding:6px;border:1px solid #e2e8f0;text-align:center">${v}</td></tr>`
+            ).join('');
+
+            const html = `<html><body style="font-family:Arial,sans-serif;max-width:680px;margin:auto;padding:40px;color:#1e293b">
+                <h1 style="font-size:22px;border-bottom:3px solid #0f172a;padding-bottom:8px;margin-bottom:4px">FIRM PERSONA PROFILE</h1>
+                <p style="font-size:11px;color:#64748b;margin-top:0">Pre-Charter Individual Assessment | TSPP Engagement</p>
+                <p><strong>Student:</strong> ${name}</p>
+                <p><strong>Archetype:</strong> ${archetypes[topSkill] || '—'}</p>
+                <p><strong>Working Cadence:</strong> ${cadences[state.cadence] || '—'}</p>
+                <p><strong>Danger Zone:</strong> ${dangers[state.danger] || '—'}</p>
+                
+                <h2 style="font-size:14px;margin-top:24px">Core Proficiency Rankings</h2>
+                <table style="border-collapse:collapse;width:100%;font-size:13px">
+                    <tr style="background:#f8fafc"><th style="padding:6px;border:1px solid #e2e8f0;text-align:left">Skill</th><th style="padding:6px;border:1px solid #e2e8f0">Rank (1=lowest)</th></tr>
+                    ${skillRows}
+                </table>
+                
+                <h2 style="font-size:14px;margin-top:24px">Value Proposition</h2>
+                <p style="font-size:13px">${document.getElementById('value-prop')?.value || '(not completed)'}</p>
+                
+                <h2 style="font-size:14px;margin-top:24px">Behavioral Commitment</h2>
+                <p style="font-size:13px">${document.getElementById('commit-1')?.value || '(not completed)'}</p>
+                
+                <h2 style="font-size:14px;margin-top:24px">Risk Acknowledgment</h2>
+                <p style="font-size:13px">${document.getElementById('commit-2')?.value || '(not completed)'}</p>
+                
+                <p style="font-size:10px;color:#94a3b8;margin-top:40px;border-top:1px solid #e2e8f0;padding-top:8px">&copy; 2026 Seth C. Oranburg | UNH Franklin Pierce School of Law</p>
+            </body></html>`;
+
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `FirmPersona_${name.replace(/\s+/g, '_')}.doc`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // Results Generation
+        function generateResults() {
+            if (!state.danger) {
+                document.getElementById('error-3').classList.remove('hidden');
+                return;
+            }
+
+            // 1. Set Name & Cadence
+            document.getElementById('res-name').textContent = state.name;
+            document.getElementById('res-cadence-badge').textContent = state.cadence.charAt(0).toUpperCase() + state.cadence.slice(1);
+
+            // 2. Format Danger Zone text
+            const dangers = {
+                ghost: "👻 The Ghost (I may disappear under pressure)",
+                dictator: "👑 The Dictator (I may micromanage under pressure)",
+                perfectionist: "🔍 The Perfectionist (I may get stuck on details)",
+                yesperson: "🤝 The Yes-Person (I may overcommit and burn out)"
+            };
+            document.getElementById('res-danger').textContent = dangers[state.danger];
+
+            // 3. Calculate Highest Skills
+            const sortedSkills = Object.entries(state.skills).sort((a, b) => b[1] - a[1]);
+            const topSkill1 = sortedSkills[0][0];
+            const topSkill2 = sortedSkills[1][0];
+
+            // Set Archetype title
+            const archetypes = {
+                research: "The Fact-Finder",
+                drafting: "The Architect",
+                editing: "The Synthesizer",
+                pm: "The Operational Hub",
+                format: "The Closer"
+            };
+            document.getElementById('res-archetype').textContent = archetypes[topSkill1];
+
+            // 4. Generate Recommended Roles
+            let recs = [];
+            recs.push(roleMapping[topSkill1][0]);
+            recs.push(roleMapping[topSkill1][1]);
+            if (roleMapping[topSkill2][0].title !== roleMapping[topSkill1][0].title) {
+                recs.push(roleMapping[topSkill2][0]);
+            } else {
+                recs.push(roleMapping[topSkill2][1]);
+            }
+
+            let primaryRec = recs[0];
+            let warning = null;
+
+            // Danger Zone × Role conflict warnings
+            if (state.danger === 'ghost' && primaryRec.title === 'Project Manager') {
+                warning = "⚠️ Note: The Ghost profile and Project Manager role are a high-risk combination. Consider Deputy PM or Timeline Tracker instead.";
+                primaryRec = roleMapping[topSkill1][1]; 
+                recs[0] = primaryRec; 
+            } else if (state.danger === 'dictator' && primaryRec.title === 'Project Manager') {
+                warning = "⚠️ Note: The Dictator profile in a PM role can damage team trust. Consider Lead Editor or Research Coordinator where authority is structural, not interpersonal.";
+            } else if (state.danger === 'yesperson' && primaryRec.title === 'Project Manager') {
+                warning = "⚠️ Note: The Yes-Person profile in a PM role often leads to scope creep and burnout. A Research Coordinator role may be a better fit.";
+            }
+
+            const cadenceNote = {
+                planner: "Your Planner cadence makes you a strong candidate for any role requiring sustained output — especially Research Coordinator and Lead Editor.",
+                pacer: "Your Pacer cadence is the most versatile. You can succeed in any role, but PM and Knowledge Integrator particularly reward consistent daily momentum.",
+                sprinter: "Your Sprinter cadence is well-suited to roles with discrete high-intensity deliverables — editing, synthesis, and Devil's Advocate all peak near deadlines."
+            };
+
+            const rolesHtml = recs.map(role => `
+                <div class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg shadow-sm">
+                    <div>
+                        <p class="font-bold text-blue-900 text-sm">${role.title}</p>
+                        <p class="text-[10px] text-slate-500">${role.desc}</p>
+                    </div>
+                    <div class="text-blue-300">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                </div>
+            `).join('');
+            
+            let finalHtml = rolesHtml;
+            if (warning) {
+                finalHtml += `<p class="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-3 py-2 mt-3">${warning}</p>`;
+            }
+            finalHtml += `<p class="text-xs text-slate-500 italic mt-3 leading-relaxed">${cadenceNote[state.cadence]}</p>`;
+
+            document.getElementById('res-roles').innerHTML = finalHtml;
+            
+            // Trigger UI transition
+            nextStep(4);
+        }
+    </script>
+</body>
+</html>
