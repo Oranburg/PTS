@@ -37,10 +37,12 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Include static Team Charter page
+      - name: Include static chapter pages and shared stylesheet
         run: |
           mkdir -p dist/chapters
-          cp chapters/team-charter.html dist/chapters/team-charter.html
+          cp chapters/*.html dist/chapters/
+          mkdir -p dist/assets
+          cp assets/site.css dist/assets/site.css
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

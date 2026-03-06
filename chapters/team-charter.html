@@ -103,7 +103,7 @@
             </div>
         </div>
         <div class="flex items-center gap-3">
-            <button onclick="window.print()" class="export-btn flex items-center gap-2 bg-blue-700 text-white px-5 py-2 rounded-md font-bold shadow hover:bg-blue-800 transition text-sm">
+            <button onclick="printCharter()" class="export-btn flex items-center gap-2 bg-blue-700 text-white px-5 py-2 rounded-md font-bold shadow hover:bg-blue-800 transition text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                   <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
                   <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
@@ -318,6 +318,12 @@
                     Not sure which role fits you best? Try the
                     <a href="./firm-strengths.html" target="_blank" rel="noopener noreferrer" class="font-bold underline decoration-purple-400 underline-offset-2 hover:text-purple-700">Firm Persona Assessment</a>
                     for a quick recommendation before assigning roles.
+                </p>
+            </div>
+            <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
+                <p class="text-[10px] font-black text-emerald-700 uppercase tracking-widest mb-1">Required Role Assignment</p>
+                <p class="text-sm text-emerald-900 leading-relaxed">
+                    Assign exactly one <strong>Project Manager</strong> in the Roles &amp; Ownership section. That assigned Project Manager is the person who submits the final charter deliverable to Canvas.
                 </p>
             </div>
 
@@ -665,7 +671,7 @@
                 <p><strong class="text-blue-400 uppercase">02. Sign:</strong> All members must sign. Use the "Download PDF" or "Download Word" button to create your formal record.</p>
             </div>
             <div class="space-y-4 text-slate-400">
-                <p><strong class="text-blue-400 uppercase">03. Upload:</strong> Designate your Project Manager to upload the completed charter to the Canvas Assignment link.</p>
+                <p><strong class="text-blue-400 uppercase">03. Upload:</strong> The one assigned Project Manager in Section 02 is responsible for submitting the completed charter to the Canvas Assignment link.</p>
                 <p><strong class="text-blue-400 uppercase">04. Validation:</strong> Use filename: <span class="bg-slate-700 px-2 py-1 rounded text-white italic">TeamName_Charter.pdf</span> (or .doc)</p>
             </div>
         </div>
@@ -1048,7 +1054,27 @@
             });
         }
 
+        function validateSingleProjectManager() {
+            const size = parseInt(document.getElementById('team-size-select').value) || 4;
+            let pmCount = 0;
+            for (let i = 1; i <= size; i++) {
+                const roleEl = document.getElementById(`member${i}-role`);
+                if (roleEl && roleEl.value === 'pm') pmCount++;
+            }
+            if (pmCount !== 1) {
+                alert('Please assign exactly one Project Manager in the Roles & Ownership section before exporting or printing.');
+                return false;
+            }
+            return true;
+        }
+
+        function printCharter() {
+            if (!validateSingleProjectManager()) return;
+            window.print();
+        }
+
         function downloadWord() {
+            if (!validateSingleProjectManager()) return;
             const firmName = document.getElementById('firm-name').value || 'Unnamed Firm';
             const date = document.getElementById('engagement-date').textContent;
 
