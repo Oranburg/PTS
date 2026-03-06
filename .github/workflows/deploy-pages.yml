@@ -37,6 +37,11 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Include static Team Charter page
+        run: |
+          mkdir -p dist/chapters
+          cp chapters/team-charter.html dist/chapters/team-charter.html
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
