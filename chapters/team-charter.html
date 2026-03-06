@@ -815,6 +815,7 @@
             // Handle Team Size Dropdown
             document.getElementById('team-size-select').addEventListener('change', (e) => {
                 updateTeamSize(parseInt(e.target.value));
+                loadFromStorage(true); // Restore input contents after wiping table
                 saveToStorage();
             });
 
@@ -829,6 +830,7 @@
             }
             document.getElementById('team-size-select').value = initialSize;
             updateTeamSize(initialSize);
+            loadFromStorage();
             initWordCounters();
         });
 
