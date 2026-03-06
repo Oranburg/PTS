@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TSPP Team Charter | Pico Salsa Engagement</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Libre Baskerville', serif; }
+
+        ::placeholder { font-size: 0.75rem; color: #d1d5db; }
+
+        @media print {
+            .no-print, .theory-toggle, .upload-btn, .export-btn { display: none !important; }
+            body { background: white; padding: 0; }
+            .shadow-xl, .shadow-2xl { box-shadow: none !important; }
+            .container-box { border: none !important; margin: 0 !important; width: 100% !important; max-width: 100% !important; }
+            .page-break { page-break-before: always; }
+            textarea { height: auto !important; min-height: 0 !important; border: none !important; padding: 0 !important; resize: none; overflow: visible !important; }
+            input { border: none !important; }
+            select { border: none !important; appearance: none; -webkit-appearance: none; background: transparent; }
+        }
+
+        .input-field {
+            border-bottom: 1px solid #e5e7eb;
+            width: 100%;
+            padding: 0.5rem 0;
+            background: transparent;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-field:focus { border-color: #1e40af; }
+
+        .role-table th, .role-table td {
+            border: 1px solid #f3f4f6;
+            padding: 1rem;
+        }
+
+        .theory-card {
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .save-indicator {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .save-indicator.active { opacity: 1; }
+    </style>
+</head>
+<body class="bg-slate-100 py-12 px-4 print:py-0 print:px-0">
+
+    <!-- No-Save Warning Banner (No Print) -->
+    <div id="nosave-banner" class="no-print w-full bg-amber-50 border-b-2 border-amber-400 py-3 px-4 mb-0 sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-amber-500 text-lg">⚠️</span>
+                <div>
+                    <p class="text-xs font-black text-amber-800 uppercase tracking-widest">Your work is not saved to any server</p>
+                    <p class="text-[11px] text-amber-700 leading-snug">
+                        Data is stored in this browser tab only. <strong>Do not close, refresh, or navigate away</strong> until you have downloaded your charter.
+                        <span class="font-black">Closing this tab will permanently erase all unsaved work.</span>
+                    </p>
+                </div>
+            </div>
+            <button onclick="downloadWord()" class="shrink-0 text-[10px] font-black bg-amber-500 text-white px-3 py-1.5 rounded hover:bg-amber-600 transition uppercase tracking-widest whitespace-nowrap">
+                Save Now →
+            </button>
+        </div>
+    </div>
+
+    <!-- Integration Navigation (No Print) -->
+    <div class="max-w-4xl mx-auto mt-6 mb-4 no-print">
+        <a href="index.html" class="text-xs text-slate-500 hover:text-slate-800 transition">← Back to Course Dashboard</a>
+    </div>
+
+    <!-- Tooltip / Controls (No Print) -->
+    <div class="max-w-4xl mx-auto mb-6 flex justify-between items-center no-print">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleAllTheory()" class="text-xs bg-slate-800 text-white px-3 py-2 rounded-md hover:bg-slate-700 transition">
+                Toggle All Insights
+            </button>
+            <div class="flex items-center gap-2 text-xs text-slate-600">
+                <label for="team-size-select" class="font-bold">Team Size:</label>
+                <select id="team-size-select" class="bg-white border border-slate-200 rounded px-2 py-1 outline-none">
+                    <option value="3">3 Members</option>
+                    <option value="4" selected>4 Members</option>
+                    <option value="5">5 Members</option>
+                    <option value="6">6 Members</option>
+                    <option value="7">7 Members</option>
+                </select>
+            </div>
+            <div id="save-status" class="save-indicator text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                Browser cache updated
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <button onclick="window.print()" class="export-btn flex items-center gap-2 bg-blue-700 text-white px-5 py-2 rounded-md font-bold shadow hover:bg-blue-800 transition text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                  <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
+                  <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                Download PDF
+            </button>
+            <button onclick="downloadWord()" class="no-print flex items-center gap-2 bg-slate-700 text-white px-5 py-2 rounded-md font-bold shadow hover:bg-slate-800 transition text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M5.485 6.879a.5.5 0 1 0-.97.242l1.5 6a.5.5 0 0 0 .967.01L8 9.402l1.018 3.73a.5.5 0 0 0 .967-.01l1.5-6a.5.5 0 0 0-.97-.242l-1.036 4.144-.997-3.655a.5.5 0 0 0-.964 0l-.997 3.655L5.485 6.879z"/>
+                    <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z"/>
+                </svg>
+                Download Word
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto bg-white p-12 shadow-2xl border border-gray-200 container-box relative">
+        
+        <!-- Header -->
+        <div class="border-b-8 border-slate-900 pb-8 mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+            <div class="flex-1">
+                <h1 class="serif text-4xl font-extrabold text-slate-900 tracking-tighter">TSPP TEAM CHARTER</h1>
+                <p class="text-sm font-bold uppercase tracking-[0.2em] text-blue-900 mt-3 italic">Internal Governance & Mutual Accountability Contract</p>
+                <div class="mt-6 space-y-2">
+                    <div class="flex items-center gap-4 text-slate-800">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Counsel Name</label>
+                        <input type="text" id="firm-name" autofocus placeholder="Enter Firm/Team Name" class="input-field text-xl font-bold italic">
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest w-24">Engagement Date</label>
+                        <span id="engagement-date" class="text-sm font-semibold text-slate-600"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="w-48 text-center flex flex-col items-center">
+                <div id="logo-preview" class="w-32 h-32 border-2 border-dashed border-slate-200 rounded-xl mb-3 flex items-center justify-center text-slate-300 relative overflow-hidden bg-slate-50">
+                    <span id="logo-placeholder" class="text-[10px] font-bold uppercase px-4">Upload Firm Logo</span>
+                    <img id="firm-logo" src="" class="hidden w-full h-full object-contain p-2">
+                </div>
+                <input type="file" id="logo-input" accept="image/*" class="hidden" onchange="handleLogoUpload(this)">
+                <button onclick="document.getElementById('logo-input').click()" class="no-print text-[10px] font-bold bg-slate-100 text-slate-600 px-3 py-1 rounded-full hover:bg-slate-200 uppercase tracking-tighter">
+                    Select Logo File
+                </button>
+            </div>
+        </div>
+
+        <!-- Professional Engagement Intro -->
+        <div class="bg-blue-50/50 p-8 border-l-4 border-blue-800 mb-12">
+            <h3 class="font-bold text-blue-900 uppercase text-xs tracking-widest mb-2">Outside Counsel Engagement Overview</h3>
+            <p class="text-sm text-slate-700 leading-relaxed italic serif mb-4">
+                "Welcome to your first formal engagement as outside counsel for <strong>Pico Salsa</strong>! Throughout this intensive term, your team will collaborate to produce a high-stakes Trade Secret Protection Plan (TSPP)."
+            </p>
+            <div class="text-[11px] text-slate-500 leading-relaxed space-y-2">
+                <p>Legal and business research confirms that high-performing teams do not "gel" by accident; they are engineered through deliberate governance <strong>(Hunsaker et al., 2011)</strong>. By drafting a formal Team Charter, you are establishing a "psychological contract" for your team <strong>(Aaron et al., 2014)</strong>.</p>
+            </div>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-blue-100 pt-4">
+                <div class="text-[10px] text-blue-800"><span class="font-bold block uppercase mb-1 text-blue-900">Accountability</span> Prevents "social loafing" and free-riding (Simms & Nichols, 2014).</div>
+                <div class="text-[10px] text-blue-800"><span class="font-bold block uppercase mb-1 text-blue-900">Synthesis</span> Infrastructure for non-separable collaborative drafting (Smith, 1994).</div>
+                <div class="text-[10px] text-blue-800"><span class="font-bold block uppercase mb-1 text-blue-900">Discipline</span> Mirrors "Reasonable Efforts" standards for protecting client assets.</div>
+            </div>
+        </div>
+
+        <!-- Section I: Identity -->
+        <section class="mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-900 text-white text-xs font-black px-3 py-1">SEC. 01</div>
+                    <h2 class="serif text-2xl font-bold text-slate-900 uppercase tracking-tight">Psychological Contract & Vision</h2>
+                </div>
+                <div class="flex items-center gap-2 no-print">
+                    <button onclick="toggleTheory('why-1')" class="theory-toggle text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-300 hover:text-slate-900">The Why</button>
+                    <button onclick="toggleTheory('what-1')" class="theory-toggle text-[10px] font-bold text-blue-600 uppercase tracking-widest border-b border-blue-300 hover:text-blue-900">The What</button>
+                    <button onclick="toggleTheory('how-1')" class="theory-toggle text-[10px] font-bold text-emerald-600 uppercase tracking-widest border-b border-emerald-300 hover:text-emerald-900">The How</button>
+                </div>
+            </div>
+            
+            <div id="why-1" class="theory-card bg-slate-50 p-4 rounded-lg mb-6 border border-slate-200">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">⚖ Research Foundation</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-2">
+                  <strong>Aaron et al. (2014); Hillier &amp; Dunn-Jensen (2013):</strong>
+                  Most student groups never become teams because they skip the deliberate "forming" work.
+                  Research on team charters in business education shows that completing a charter is the
+                  "necessary first step" to evolve from a loosely connected group — where members pursue
+                  mostly individual goals — into a team with a shared identity and mutual accountability.
+                </p>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  The written mission statement creates a <em>psychological contract</em>: an implicit set of
+                  mutual expectations about effort, quality, and participation that all members carry. Unlike
+                  a legal contract, this contract lives in perception — but its violation causes real damage:
+                  disillusionment, reduced effort, and resentment that compounds across the project timeline.
+                  When that contract is made explicit and co-signed, it is far harder to violate without social consequence.
+                </p>
+            </div>
+
+            <div id="what-1" class="theory-card bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">📘 Concept + Example</p>
+                <p class="text-xs text-blue-900 leading-relaxed mb-3">
+                  <strong>What is a Psychological Contract?</strong> It is the set of unspoken beliefs team
+                  members hold about what they owe each other and what they can expect in return. A
+                  <em>Firm Mission Statement</em> externalizes this contract into a single sentence that
+                  answers: <em>"Why does our work together matter, and what standard will we hold ourselves to?"</em>
+                </p>
+                <div class="space-y-2">
+                  <p class="text-xs text-blue-800 bg-blue-100/60 rounded px-3 py-2 leading-relaxed">
+                    <strong class="block text-[10px] uppercase tracking-wider text-red-500 mb-1">❌ Weak Mission</strong>
+                    "We will work hard and do our best on the TSPP." — Aspirational but unverifiable.
+                    No member can be held to this because "doing your best" means different things to different people.
+                  </p>
+                  <p class="text-xs text-blue-800 bg-emerald-50 rounded px-3 py-2 leading-relaxed">
+                    <strong class="block text-[10px] uppercase tracking-wider text-emerald-600 mb-1">✅ Strong Mission</strong>
+                    "Our firm will deliver a court-ready TSPP for Pico Salsa that satisfies the reasonable efforts
+                    standard, synthesized under one professional voice, with every citation verified by a named
+                    team member before submission." — Specific, outcome-oriented, anchored to the client and the legal standard.
+                  </p>
+                </div>
+            </div>
+
+            <div id="how-1" class="theory-card bg-emerald-50 p-4 rounded-lg mb-6 border border-emerald-200">
+                <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">✅ Best Practice Guidance</p>
+                <p class="text-xs text-emerald-900 font-bold mb-2">How to write a mission statement that actually governs:</p>
+                <ol class="text-xs text-slate-700 leading-relaxed space-y-2 list-none">
+                  <li><strong>1. Name the client and the deliverable.</strong> Reference Pico Salsa and the TSPP explicitly. Vague missions are abandoned; specific ones are remembered when pressure is highest.</li>
+                  <li><strong>2. State a quality standard, not just an effort standard.</strong> "Reasonable efforts" is the trade secret legal standard you are applying to your client — use the same bar for yourselves. Ask: would a supervising partner be satisfied with this output?</li>
+                  <li><strong>3. Include one behavioral commitment.</strong> The best mission statements contain a "how we operate" clause — e.g., <em>"...with every contribution reviewed by at least one peer before submission."</em> This converts aspiration into protocol.</li>
+                  <li><strong>4. Write it together, out loud — do not let one person draft and circulate.</strong> The friction of negotiating the language IS the pedagogy. Disagreement in this moment is a preview of the real teamwork challenges ahead, and resolving it now builds the trust you will need in Week 5.</li>
+                </ol>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Firm Mission Statement</label>
+                <textarea id="sec1-mission" placeholder="Define our collective standard for the TSPP output (e.g., 'To provide Pico Salsa with a court-ready inventory and risk mitigation strategy that satisfies the reasonable efforts standard...')" 
+                          class="w-full border border-slate-200 rounded-lg p-4 text-sm h-28 focus:ring-2 focus:ring-blue-800 outline-none transition"></textarea>
+                <p class="text-right text-[9px] text-slate-400 mt-1 no-print"><span id="wc-mission" class="wc-display font-bold">0</span> / ~75 words</p>
+            </div>
+        </section>
+
+        <!-- Section II: Roles -->
+        <section class="mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-900 text-white text-xs font-black px-3 py-1">SEC. 02</div>
+                    <h2 class="serif text-2xl font-bold text-slate-900 uppercase tracking-tight">Mutual Accountability Architecture</h2>
+                </div>
+                <div class="flex items-center gap-3 no-print">
+                    <button onclick="openRoleExplorer()" class="text-[10px] font-black text-purple-700 uppercase tracking-widest border border-purple-200 px-2 py-1 rounded hover:bg-purple-50 transition">
+                        Browse All Roles →
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="toggleTheory('why-2')" class="theory-toggle text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-300 hover:text-slate-900">The Why</button>
+                        <button onclick="toggleTheory('what-2')" class="theory-toggle text-[10px] font-bold text-blue-600 uppercase tracking-widest border-b border-blue-300 hover:text-blue-900">The What</button>
+                        <button onclick="toggleTheory('how-2')" class="theory-toggle text-[10px] font-bold text-emerald-600 uppercase tracking-widest border-b border-emerald-300 hover:text-emerald-900">The How</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="why-2" class="theory-card bg-slate-50 p-4 rounded-lg mb-6 border border-slate-200">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">⚖ Research Foundation</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-2">
+                  <strong>Simms &amp; Nichols (2014); Katzenbach &amp; Smith (1993):</strong>
+                  "Social loafing" — people reducing effort when working in groups — is not a character flaw.
+                  It is a structural problem. When individual contributions are invisible and effort is
+                  unattributable, people rationally reduce their input. This effect, first documented by
+                  Ringelmann in rope-pulling experiments, scales with group size.
+                </p>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  The structural fix is <em>named, visible, strengths-based roles</em>: assigning each person
+                  a domain of ownership they cannot disclaim raises identifiability, sets differentiated
+                  expectations, and transforms a group (where outputs are the sum of separate parts) into a
+                  team (where the whole depends on how well roles interlock). Katzenbach &amp; Smith's landmark
+                  definition of a team requires <em>complementary skills</em> and <em>mutual accountability</em>
+                  — not just shared effort.
+                </p>
+            </div>
+
+            <div id="what-2" class="theory-card bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">📘 Concept + Example</p>
+                <p class="text-xs text-blue-900 leading-relaxed mb-3">
+                  <strong>Group vs. Team — the critical distinction:</strong>
+                  In a <em>group</em>, "you do your part and I'll do mine" is sufficient. Four people write four
+                  sections and staple them together. In a <em>team</em>, the tasks are non-separable: my section
+                  cannot succeed unless your section is complete and aligned, because the client is reading one document, not four memos.
+                </p>
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                  <div class="bg-red-50 rounded px-3 py-2">
+                    <p class="text-[10px] font-black text-red-500 uppercase mb-1">Group Model ❌</p>
+                    <p class="text-xs text-slate-600 leading-relaxed">Researcher finds sources → sends to others → each person writes their section → PM staples the night before deadline. Reads like four different authors; logical gaps are invisible until graded.</p>
+                  </div>
+                  <div class="bg-emerald-50 rounded px-3 py-2">
+                    <p class="text-[10px] font-black text-emerald-600 uppercase mb-1">Team Model ✅</p>
+                    <p class="text-xs text-slate-600 leading-relaxed">Research Coordinator curates sources <em>against a brief set by the PM</em>. Lead Editor synthesizes against a shared framework. Technical Lead packages only after the Editor has signed off. Each role only works if the others deliver.</p>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-500 italic leading-relaxed">
+                  Use the Role Explorer (Browse All Roles →) to understand the full scope, accountability, and risk profile of each available role before making your selections.
+                </p>
+            </div>
+
+            <div id="how-2" class="theory-card bg-emerald-50 p-4 rounded-lg mb-6 border border-emerald-200">
+                <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">✅ Best Practice Guidance</p>
+                <p class="text-xs text-emerald-900 font-bold mb-2">How to assign strengths-based roles that will hold:</p>
+                <ol class="text-xs text-slate-700 leading-relaxed space-y-2 list-none">
+                  <li><strong>1. Use your Strengths Inventory data — do not volunteer based on seniority or social comfort.</strong> The person with the strongest executing-strength profile should manage the timeline, not whoever talks the most. Mismatched roles are the single biggest source of preventable team friction.</li>
+                  <li><strong>2. Define what each role actually <em>owns</em>.</strong> For each role, complete the sentence: "This person is the last one who touches [X] before it goes to the partner." If you cannot complete that sentence, the role is not defined — it is just a label.</li>
+                  <li><strong>3. Distinguish authority from task.</strong> The Lead Editor has <em>authority</em> to require revisions from anyone. The Research Coordinator has <em>authority</em> to reject unverified sources. That authority must be agreed to explicitly in this section, or the role is hollow when the pressure is on.</li>
+                  <li><strong>4. Name the handoff points.</strong> Specify when and in what format each person delivers their work to the next. Vague handoffs — "when it's ready" — are where teams revert to groups. Concrete handoffs: "Section 2 draft to Lead Editor by Thursday 5PM in the [FINAL] Google Drive folder."</li>
+                </ol>
+            </div>
+
+            <table class="w-full role-table text-sm shadow-sm rounded-lg overflow-hidden border-collapse">
+                <thead class="bg-slate-50">
+                    <tr class="text-slate-400">
+                        <th class="text-left font-black uppercase text-[10px] tracking-widest">Counsel Member (Name/Contact)</th>
+                        <th class="text-left font-black uppercase text-[10px] tracking-widest">Primary Strength</th>
+                        <th class="text-left font-black uppercase text-[10px] tracking-widest w-1/3">Functional Firm Role</th>
+                    </tr>
+                </thead>
+                <tbody id="member-table-body">
+                    <!-- Injected by JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section III: Operations -->
+        <section class="mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-900 text-white text-xs font-black px-3 py-1">SEC. 03</div>
+                    <h2 class="serif text-2xl font-bold text-slate-900 uppercase tracking-tight">Operational "Reasonable Efforts"</h2>
+                </div>
+                <div class="flex items-center gap-2 no-print">
+                    <button onclick="toggleTheory('why-3')" class="theory-toggle text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-300 hover:text-slate-900">The Why</button>
+                    <button onclick="toggleTheory('what-3')" class="theory-toggle text-[10px] font-bold text-blue-600 uppercase tracking-widest border-b border-blue-300 hover:text-blue-900">The What</button>
+                    <button onclick="toggleTheory('how-3')" class="theory-toggle text-[10px] font-bold text-emerald-600 uppercase tracking-widest border-b border-emerald-300 hover:text-emerald-900">The How</button>
+                </div>
+            </div>
+            
+            <div id="why-3" class="theory-card bg-slate-50 p-4 rounded-lg mb-6 border border-slate-200">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">⚖ Research Foundation</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-2">
+                  <strong>Hunsaker et al. (2011); Andrade et al. (2023):</strong>
+                  Systematic reviews of team failures in higher education find that teams most often collapse
+                  not because members dislike each other, but because they never built the coordination
+                  infrastructure that makes collaboration mechanically possible. Response latency ambiguity
+                  (no one agreed how fast to reply), document chaos (multiple "final" versions floating
+                  simultaneously), and meeting drift (no agenda, no decision log) are engineering problems,
+                  not personality problems — and they have engineering solutions.
+                </p>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  This section mirrors the legal standard you are designing for your client. Pico Salsa must
+                  demonstrate "reasonable efforts" to protect its trade secrets. If you cannot design
+                  governance infrastructure for your own four-person firm, you are not yet ready to design it
+                  for a client company with dozens of employees and multiple external relationships.
+                </p>
+            </div>
+
+            <div id="what-3" class="theory-card bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">📘 Concept + Example</p>
+                <p class="text-xs text-blue-900 leading-relaxed mb-3">
+                  <strong>The four operational decisions every team must make explicitly:</strong>
+                  Leaving any of these implicit guarantees a coordination failure before Week 3.
+                </p>
+                <div class="space-y-2">
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-100 rounded px-1.5 py-0.5 shrink-0 mt-0.5">CHANNEL</span>
+                    <p class="text-xs text-slate-600 leading-relaxed">Where do binding task assignments live? Not everywhere. <em>Example: "All task assignments in the team Slack #tspp-work channel. Personal texts carry no obligation."</em></p>
+                  </div>
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-100 rounded px-1.5 py-0.5 shrink-0 mt-0.5">LATENCY</span>
+                    <p class="text-xs text-slate-600 leading-relaxed">How fast must you acknowledge a direct question? <em>Example: "Direct @mentions acknowledged within 6 hours weekdays; 12 hours weekends."</em></p>
+                  </div>
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-100 rounded px-1.5 py-0.5 shrink-0 mt-0.5">CADENCE</span>
+                    <p class="text-xs text-slate-600 leading-relaxed">When does the firm meet synchronously? <em>Example: "Every Thursday 7–8 PM via Zoom. Excused absence requires 24h advance notice to the PM."</em></p>
+                  </div>
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-blue-600 bg-blue-100 rounded px-1.5 py-0.5 shrink-0 mt-0.5">CONTROL</span>
+                    <p class="text-xs text-slate-600 leading-relaxed">Where is the one authoritative TSPP draft? <em>Example: "Google Drive [link]. Only the Lead Editor may push to the FINAL folder. All other edits stay in Working Drafts."</em></p>
+                  </div>
+                </div>
+            </div>
+
+            <div id="how-3" class="theory-card bg-emerald-50 p-4 rounded-lg mb-6 border border-emerald-200">
+                <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">✅ Best Practice Guidance</p>
+                <p class="text-xs text-emerald-900 font-bold mb-2">How to set operating norms you will actually keep:</p>
+                <ol class="text-xs text-slate-700 leading-relaxed space-y-2 list-none">
+                  <li><strong>1. Calibrate to the hardest constraint, not the ideal.</strong> If one member works nights, your "respond within 6 hours" rule must still work for them. Set the norm based on the person with the most constrained schedule — that is the norm everyone can honor without resentment.</li>
+                  <li><strong>2. Make norms testable.</strong> "We will communicate regularly" is unenforceable. "Direct @mentions acknowledged within 6 hours" is testable. Only testable norms can feed the escalation ladder in Section 05 — if you can't point to a specific missed norm, you have no grounds for escalation.</li>
+                  <li><strong>3. Separate the tool from the norm.</strong> Slack is a tool; "acknowledged within 6 hours" is the norm. If the team switches tools mid-project, the norm survives the change. Don't write norms that only work inside one app.</li>
+                  <li><strong>4. Designate a Document Custodian by name, not by role.</strong> Name the specific person who holds the "ground truth" draft. Document control failures — where members simultaneously edit different versions — cause more synthesis disasters than any content disagreement. This is preventable with one clear rule.</li>
+                </ol>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Primary Comm Channel</label>
+                        <input type="text" id="op-channel" placeholder="e.g., Firm Slack / MS Teams / Signal" class="input-field font-semibold text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Response Latency Protocol</label>
+                        <input type="text" id="op-latency" placeholder="e.g., Direct mentions acknowledged within 6-12 hours" class="input-field font-semibold text-slate-700">
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Synchronous Meeting Cadence</label>
+                        <input type="text" id="op-cadence" placeholder="e.g., Every Thursday @ 5PM via Zoom" class="input-field font-semibold text-slate-700">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Document Control Policy</label>
+                        <input type="text" id="op-storage" placeholder="Where is 'Firm Ground Truth' for TSPP files?" class="input-field font-semibold text-slate-700">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section IV: Synthesis -->
+        <section class="mb-16">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-900 text-white text-xs font-black px-3 py-1">SEC. 04</div>
+                    <h2 class="serif text-2xl font-bold text-slate-900 uppercase tracking-tight">Synthesis Strategy & AI Policy</h2>
+                </div>
+                <div class="flex items-center gap-2 no-print">
+                    <button onclick="toggleTheory('why-4')" class="theory-toggle text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-300 hover:text-slate-900">The Why</button>
+                    <button onclick="toggleTheory('what-4')" class="theory-toggle text-[10px] font-bold text-blue-600 uppercase tracking-widest border-b border-blue-300 hover:text-blue-900">The What</button>
+                    <button onclick="toggleTheory('how-4')" class="theory-toggle text-[10px] font-bold text-emerald-600 uppercase tracking-widest border-b border-emerald-300 hover:text-emerald-900">The How</button>
+                </div>
+            </div>
+            
+            <div id="why-4" class="theory-card bg-slate-50 p-4 rounded-lg mb-6 border border-slate-200">
+                <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">⚖ Research Foundation</p>
+                <p class="text-xs text-slate-600 leading-relaxed mb-2">
+                  <strong>Smith (1994); Hillier &amp; Dunn-Jensen (2013):</strong>
+                  Smith's landmark research on team task structure distinguishes <em>additive</em> tasks —
+                  where individual contributions can be cleanly summed — from <em>non-separable</em> tasks,
+                  where the quality of the whole depends entirely on how well the pieces interconnect.
+                  A TSPP is non-separable by design.
+                </p>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                  If your Stage 2 Inventory identifies the Ferment-X culture as a Tier-1 trade secret but
+                  your Stage 4 Mitigation section contains no specific protocol for it, the plan has failed
+                  — even if both sections are individually well-written. Synthesis is not copy-editing;
+                  it is <em>structural alignment</em> across the entire document. Teams that skip this
+                  planning step produce work that reads like four attorneys who have never spoken to each other.
+                </p>
+            </div>
+
+            <div id="what-4" class="theory-card bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">📘 Concept + Example</p>
+                <p class="text-xs text-blue-900 leading-relaxed mb-3">
+                  <strong>Coordinated vs. Synthesized work — what each looks like:</strong>
+                </p>
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                  <div class="bg-red-50 rounded px-3 py-2">
+                    <p class="text-[10px] font-black text-red-500 uppercase mb-1">Coordinated ❌</p>
+                    <p class="text-xs text-slate-600 leading-relaxed">Each member writes their section independently, PM combines the night before the deadline. Result: four different voices, inconsistent fact references, and logical gaps between sections that the professor finds before the client does.</p>
+                  </div>
+                  <div class="bg-emerald-50 rounded px-3 py-2">
+                    <p class="text-[10px] font-black text-emerald-600 uppercase mb-1">Synthesized ✅</p>
+                    <p class="text-xs text-slate-600 leading-relaxed">Team agrees on a shared analytical framework and vocabulary before anyone writes. Lead Editor audits logical chains across sections. Devil's Advocate stress-tests every major claim. Final document reads as if one senior attorney wrote it.</p>
+                  </div>
+                </div>
+                <p class="text-xs text-blue-900 font-bold mb-1">AI Policy — example language to adapt:</p>
+                <p class="text-xs text-slate-600 italic leading-relaxed bg-blue-50 border border-blue-100 rounded px-3 py-2">
+                  "Generative AI may be used for initial brainstorming and outlining (disclosed in a footnote).
+                  AI may not draft final text submitted to the client. All AI-generated research must be traced
+                  to a primary source by the Research Coordinator before inclusion. Any undisclosed AI use is
+                  a violation of this charter and subject to the escalation ladder."
+                </p>
+            </div>
+
+            <div id="how-4" class="theory-card bg-emerald-50 p-4 rounded-lg mb-6 border border-emerald-200">
+                <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">✅ Best Practice Guidance</p>
+                <p class="text-xs text-emerald-900 font-bold mb-2">How to build a synthesis workflow that survives the final week:</p>
+                <ol class="text-xs text-slate-700 leading-relaxed space-y-2 list-none">
+                  <li><strong>1. Establish a shared analytical template before anyone starts writing.</strong> The Inventory table structure, the Risk Matrix rating scale, the Mitigation measure format — agree on these in Week 2, or you will spend Week 6 reconciling incompatible structures instead of improving content.</li>
+                  <li><strong>2. Assign cross-section accountability explicitly.</strong> The Lead Editor is specifically responsible for verifying that every High-Risk item in Section 2 appears in Section 4 mitigation. This is a structural audit, not copyediting. Build it into the timeline as a separate deliverable.</li>
+                  <li><strong>3. Run a "logical chain" check before every stage submission.</strong> For each top-3 trade secret, trace it: Inventory → Risk rating → Mitigation measure → Enforcement trigger. If the chain breaks anywhere, the TSPP is incomplete — regardless of how polished the individual sections are.</li>
+                  <li><strong>4. Write your AI policy for the worst-case scenario.</strong> Do not write it for how you intend to behave — write it for the moment when a member is under pressure at 2 AM and tempted to shortcut. The policy must be specific enough that a violation is objectively identifiable, not a matter of interpretation. Vague AI policies are not policies; they are alibis.</li>
+                </ol>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Synthesis Workflow (Non-Separable Drafting)</label>
+                    <textarea id="sec4-workflow" placeholder="How will we ensure the Stage 2 Inventory perfectly informs the Stage 4 Mitigation measures? Who has the final authority to edit for the 'Partner Review' standard?" 
+                              class="w-full border border-slate-200 rounded-lg p-4 text-sm h-24 focus:ring-2 focus:ring-blue-800 outline-none transition"></textarea>
+                    <p class="text-right text-[9px] text-slate-400 mt-1 no-print"><span id="wc-workflow" class="wc-display font-bold">0</span> / ~60 words</p>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-2">Generative AI Policy (Disclosure & Verification)</label>
+                    <textarea id="sec4-aipolicy" placeholder="Explicitly state rules for GenAI in research vs. drafting. How will citations be verified? (Must align with Syllabus Rules)." 
+                              class="w-full border border-slate-200 rounded-lg p-4 text-sm h-24 focus:ring-2 focus:ring-blue-800 outline-none transition"></textarea>
+                    <p class="text-right text-[9px] text-slate-400 mt-1 no-print"><span id="wc-aipolicy" class="wc-display font-bold">0</span> / ~60 words</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section V: Escalation Ladder -->
+        <section class="mb-16 page-break">
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="bg-slate-900 text-white text-xs font-black px-3 py-1">SEC. 05</div>
+                    <h2 class="serif text-2xl font-bold text-red-900 uppercase tracking-tight">Firm Escalation Ladder</h2>
+                </div>
+                <div class="flex items-center gap-2 no-print">
+                    <button onclick="toggleTheory('why-5')" class="theory-toggle text-[10px] font-bold text-slate-600 uppercase tracking-widest border-b border-slate-300 hover:text-slate-900">The Why</button>
+                    <button onclick="toggleTheory('what-5')" class="theory-toggle text-[10px] font-bold text-blue-600 uppercase tracking-widest border-b border-blue-300 hover:text-blue-900">The What</button>
+                    <button onclick="toggleTheory('how-5')" class="theory-toggle text-[10px] font-bold text-emerald-600 uppercase tracking-widest border-b border-emerald-300 hover:text-emerald-900">The How</button>
+                </div>
+            </div>
+            
+            <div id="why-5" class="theory-card bg-red-50 p-4 rounded-lg mb-6 border border-red-200">
+                <p class="text-[9px] font-black text-red-400 uppercase tracking-widest mb-2">⚖ Research Foundation</p>
+                <p class="text-xs text-red-800 leading-relaxed mb-2">
+                  <strong>Andrade et al. (2023); Hillier &amp; Dunn-Jensen (2013):</strong>
+                  Studies of student team dynamics in business education find that <em>process conflict</em>
+                  — disagreements about scheduling, workload distribution, and role boundaries — is the
+                  strongest negative predictor of perceived team effectiveness (β &lt; −0.386, p &lt; .001).
+                  The typical student response is binary: either immediately escalate to the instructor
+                  (damaging relationships and professional reputation) or suffer in silence until
+                  resentment compounds into a crisis.
+                </p>
+                <p class="text-xs text-red-800 leading-relaxed">
+                  A graduated escalation ladder solves this by creating legitimate, face-saving intermediate
+                  options that depersonalize conflict. It also mirrors how real law firms operate: internal
+                  performance management before client exposure or bar complaint. The goal is not to punish —
+                  it is to give the team the tools to self-govern before external intervention becomes necessary.
+                </p>
+            </div>
+
+            <div id="what-5" class="theory-card bg-blue-50 p-4 rounded-lg mb-6 border border-blue-200">
+                <p class="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">📘 Concept + Example</p>
+                <p class="text-xs text-blue-900 leading-relaxed mb-3">
+                  <strong>What does a real escalation look like at each level?</strong> Use these as a model when completing the ladder below.
+                </p>
+                <div class="space-y-2">
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-slate-500 bg-slate-100 rounded-full w-7 h-7 flex items-center justify-center shrink-0 mt-0.5">01</span>
+                    <div>
+                      <p class="text-[10px] font-black text-slate-500 uppercase">Peer-to-Peer</p>
+                      <p class="text-xs text-slate-600 leading-relaxed">Member misses an internal draft deadline with no notice. Affected peer sends a direct private message within 24h: <em>"The Section 2 draft was due to me at 5 PM. I need it by tomorrow noon to stay on schedule — is there a problem I can help unblock?"</em> Most issues resolve here.</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-slate-500 bg-slate-100 rounded-full w-7 h-7 flex items-center justify-center shrink-0 mt-0.5">02</span>
+                    <div>
+                      <p class="text-[10px] font-black text-slate-500 uppercase">PM Intervention</p>
+                      <p class="text-xs text-slate-600 leading-relaxed">Pattern continues after a Level 01 conversation. PM convenes a 15-min check-in, names the specific missed charter commitment, asks the member to recommit to a revised deadline. PM writes a two-sentence note in the shared Drive: date, what was agreed.</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-blue-500 bg-blue-50 rounded-full w-7 h-7 flex items-center justify-center shrink-0 mt-0.5">03</span>
+                    <div>
+                      <p class="text-[10px] font-black text-blue-500 uppercase">TA Mediation</p>
+                      <p class="text-xs text-slate-600 leading-relaxed">PM emails the TA with a brief factual summary (dates, missed commitments, Level 01–02 conversations). This is a request for structured mediation — not a complaint. The TA's role is to help the team find a workable path, not to adjudicate blame.</p>
+                    </div>
+                  </div>
+                  <div class="flex gap-2 items-start">
+                    <span class="text-[10px] font-black text-red-500 bg-red-50 rounded-full w-7 h-7 flex items-center justify-center shrink-0 mt-0.5">04</span>
+                    <div>
+                      <p class="text-[10px] font-black text-red-500 uppercase">Professor / Partner Review</p>
+                      <p class="text-xs text-slate-600 leading-relaxed">Internal governance has collapsed. <em>Trigger example: a member has missed three or more internal deadlines, has not responded to a Level 02 PM intervention, and the TSPP stage deadline is within 72 hours.</em> Level 04 should be defined objectively — not as a feeling.</p>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div id="how-5" class="theory-card bg-emerald-50 p-4 rounded-lg mb-6 border border-emerald-200">
+                <p class="text-[9px] font-black text-emerald-500 uppercase tracking-widest mb-2">✅ Best Practice Guidance</p>
+                <p class="text-xs text-emerald-900 font-bold mb-2">How to write an escalation ladder that will actually work under pressure:</p>
+                <ol class="text-xs text-slate-700 leading-relaxed space-y-2 list-none">
+                  <li><strong>1. Define triggers as observable facts, not characterizations.</strong> <em>"When a member misses two consecutive internal deadlines"</em> is observable and undisputable. <em>"When a member is not pulling their weight"</em> is a characterization that every party will interpret differently. Objective triggers prevent the ladder from becoming a weapon in interpersonal conflict.</li>
+                  <li><strong>2. Specify the exact "ask" at each level — not just the label.</strong> Level 01 is not "talk to them." It is a specific communication, within a specific timeframe, with a specific request for a commitment. Write the ask in your response field below so there is no ambiguity about what Level 01 actually requires.</li>
+                  <li><strong>3. Make Level 04 narrow and high-threshold.</strong> The more specific and hard-to-trigger Level 04 is, the more legitimate the whole ladder feels. If Level 04 is vague or easy to reach, members will escalate prematurely and the deterrent effect collapses. Reserve it for genuine governance failure, not disagreement.</li>
+                  <li><strong>4. Agree on the documentation protocol right now.</strong> After any Level 02+ conversation, one person — the PM — writes a two-sentence note in the shared Drive: date, what was discussed, what was agreed. This log protects all members and provides objective evidence if peer evaluations are later disputed by any party.</li>
+                </ol>
+            </div>
+
+            <div class="space-y-8">
+                <div class="flex gap-8 group">
+                    <div class="w-16 h-16 bg-slate-100 rounded-full flex flex-col items-center justify-center border-2 border-slate-200 transition group-hover:border-slate-400">
+                        <span class="text-[8px] font-black text-slate-400 uppercase">LVL</span>
+                        <span class="font-black text-slate-700 text-2xl leading-none">01</span>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Junior Associate to Junior Associate (Peer-to-Peer Feedback)</label>
+                        <textarea id="esc-lvl1" placeholder="Protocol for direct, informal feedback when a peer first misses an internal draft deadline..." class="w-full border-b border-slate-200 outline-none text-sm p-1 bg-transparent h-20 italic"></textarea>
+                    </div>
+                </div>
+                <div class="flex gap-8 group">
+                    <div class="w-16 h-16 bg-slate-100 rounded-full flex flex-col items-center justify-center border-2 border-slate-200 transition group-hover:border-slate-400">
+                        <span class="text-[8px] font-black text-slate-400 uppercase">LVL</span>
+                        <span class="font-black text-slate-700 text-2xl leading-none">02</span>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Mid-Level Associate Intervention (Team Leader/PM)</label>
+                        <textarea id="esc-lvl2" placeholder="Process for the PM to trigger a formal internal mediation meeting for sub-standard contributions..." class="w-full border-b border-slate-200 outline-none text-sm p-1 bg-transparent h-20 italic"></textarea>
+                    </div>
+                </div>
+                <div class="flex gap-8 group">
+                    <div class="w-16 h-16 bg-blue-50 rounded-full flex flex-col items-center justify-center border-2 border-blue-200 transition group-hover:border-blue-400">
+                        <span class="text-[8px] font-black text-blue-400 uppercase">LVL</span>
+                        <span class="font-black text-blue-700 text-2xl leading-none">03</span>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Senior Associate Review (Teaching Assistant)</label>
+                        <textarea id="esc-lvl3" placeholder="Conditions under which external mediation with the TA is requested by the firm..." class="w-full border-b border-blue-100 outline-none text-sm p-1 bg-transparent h-24 italic"></textarea>
+                    </div>
+                </div>
+                <div class="flex gap-8 group">
+                    <div class="w-16 h-16 bg-red-50 rounded-full flex flex-col items-center justify-center border-2 border-red-200 transition group-hover:border-red-400">
+                        <span class="text-[8px] font-black text-red-400 uppercase">LVL</span>
+                        <span class="font-black text-red-700 text-2xl leading-none">04</span>
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Partner Review (Lead Professor)</label>
+                        <textarea id="esc-lvl4" placeholder="The point of failure: defining when the firm's internal governance has collapsed beyond repair..." class="w-full border-b border-red-100 outline-none text-sm p-1 bg-transparent h-24 italic"></textarea>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Signatures -->
+        <section class="mt-20 border-t-2 border-slate-900 pt-10">
+            <h3 class="serif text-xl font-bold text-center uppercase tracking-widest mb-12">VI. Execution & Professional Covenant</h3>
+            <p class="text-[10px] text-slate-400 text-center uppercase font-bold mb-16 tracking-tighter px-10">
+                By signing below, we formally adopt this Charter as our binding internal governance protocol. We acknowledge that our individual standing in the firm and final peer evaluation metrics are tied to these standards.
+            </p>
+            <div class="grid grid-cols-2 gap-x-16 gap-y-16" id="signature-grid" style="min-height: 200px" data-default-size="4">
+                <!-- Injected by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Document Footer -->
+        <div class="mt-32 pt-6 border-t border-slate-100 flex justify-between items-center text-[9px] text-slate-400 uppercase tracking-widest font-black">
+            <span>Privileged Working Draft</span>
+            <span>Generated: <span id="print-date"></span></span>
+            <span>&copy; 2026 Seth C. Oranburg</span>
+        </div>
+    </div>
+
+    <!-- Instructions Context (No Print) -->
+    <div class="max-w-4xl mx-auto mt-12 p-8 bg-slate-800 text-slate-300 rounded-xl no-print shadow-xl">
+        <h4 class="font-black text-white uppercase tracking-widest text-sm mb-4">Submission Instructions</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs leading-relaxed">
+            <div class="space-y-4 text-slate-400">
+                <p><strong class="text-blue-400 uppercase">01. Synthesize:</strong> Complete all sections during the class activity. Ensure your scribe captures all hierarchy details.</p>
+                <p><strong class="text-blue-400 uppercase">02. Sign:</strong> All members must sign. Use the "Download PDF" or "Download Word" button to create your formal record.</p>
+            </div>
+            <div class="space-y-4 text-slate-400">
+                <p><strong class="text-blue-400 uppercase">03. Upload:</strong> Designate your Project Manager to upload the completed charter to the Canvas Assignment link.</p>
+                <p><strong class="text-blue-400 uppercase">04. Validation:</strong> Use filename: <span class="bg-slate-700 px-2 py-1 rounded text-white italic">TSPP_Stage1_TeamName.pdf</span> (or .doc)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Explorer Modal -->
+    <div id="role-explorer-modal" class="fixed inset-0 bg-slate-900/80 z-50 hidden overflow-y-auto" onclick="closeRoleExplorerOnBackdrop(event)">
+        <div class="max-w-4xl mx-auto my-12 bg-white rounded-2xl shadow-2xl p-8" id="role-explorer-inner">
+            <div class="flex justify-between items-center mb-8 border-b border-slate-100 pb-6">
+                <div>
+                    <h2 class="serif text-2xl font-black text-slate-900 uppercase tracking-tight">Firm Role Explorer</h2>
+                    <p class="text-xs text-slate-400 mt-1">Select roles based on your Strengths Inventory. Each role has a defined scope, accountability, and risk profile.</p>
+                </div>
+                <button onclick="closeRoleExplorer()" class="text-slate-400 hover:text-slate-800 transition text-2xl font-black leading-none">&times;</button>
+            </div>
+
+            <!-- Role Category Headers + Cards Grid -->
+            <div id="role-explorer-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+
+            <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                    Role assignments appear in the charter table. Use the dropdowns in Section 02 to assign roles after exploring.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "unh-pts-2026-tspp-charter";
+
+        const AVAILABLE_ROLES = [
+            // Core Operational
+            { value: "pm", title: "Project Manager", subtitle: "Coordination, Timeline & Internal Accountability",
+              description: "The firm's operational hub. Owns the master timeline, runs all internal meetings, sends the weekly status digest, and is the last person who knows if something is off-track before it becomes a crisis. The PM does not necessarily write the most — they make sure everyone else can write effectively.",
+              strengths: "Achiever, Responsibility, Discipline, Focus",
+              risk: "Micromanagement paralysis if the PM tries to do everyone's work; abdication if the PM is too hands-off.",
+              goodLooksLike: "Every deadline is known, every handoff is explicit, and no team member is surprised by what is due when." },
+
+            { value: "dpm", title: "Deputy Project Manager", subtitle: "Backup Coordination & Risk Monitoring",
+              description: "Shadows the PM, steps in when the PM is unavailable, and specifically owns the 'early warning' function: identifying risks to the timeline before they become crises. In firms of 5+, this role is essential because the PM cannot monitor all workstreams simultaneously.",
+              strengths: "Responsibility, Analytical, Relator, Consistency",
+              risk: "Becoming redundant if the PM doesn't formally delegate early-warning responsibilities.",
+              goodLooksLike: "The DPM can run any meeting, knows the status of every deliverable, and has flagged at least one risk before it became a problem." },
+
+            { value: "editor", title: "Lead Editor", subtitle: "Synthesis, Narrative Flow & One-Firm Voice",
+              description: "The Lead Editor's job is not just grammar — it is structural alignment. They ensure the Stage 2 Inventory logically connects to the Stage 4 Mitigation measures, that the writing sounds like one attorney drafted it, and that the 'Partner Review' standard is met before submission. Final authority on prose.",
+              strengths: "Input, Intellection, Communication, Analytical",
+              risk: "Bottleneck: if the Editor is the only person who can touch the final draft, they become the constraint. Build review windows into the timeline.",
+              goodLooksLike: "A reviewer reading the TSPP cannot identify which sections were written by which team member." },
+
+            { value: "research", title: "Research Coordinator", subtitle: "Primary Docket Work, Case Law & Fact-Finding",
+              description: "Owns the first-pass research for every section: identifying the relevant cases, statutes, regulatory standards, and client fact-file evidence that backs up each analytical claim. Curates a shared research log so no one is duplicating work or missing a key precedent.",
+              strengths: "Input, Learner, Analytical, Intellection",
+              risk: "Research rabbit holes — spending too long on any one issue. The Research Coordinator must time-box and report findings to the group regularly.",
+              goodLooksLike: "Every factual and legal claim in the TSPP has a source in the shared research log with the name of the person who verified it." },
+
+            { value: "jr-research", title: "Junior Research Coordinator", subtitle: "Secondary Research, Citation Support & Fact-Checking",
+              description: "Works in parallel with the Research Coordinator on secondary sources, verifies citations before they go into the final draft, and flags any claim that lacks a traceable source. In larger teams, this role allows the Lead Research Coordinator to focus on complex legal analysis.",
+              strengths: "Learner, Deliberative, Consistency, Input",
+              risk: "Deferring too quickly to the Research Coordinator — the Junior's independent verification is the point of having two people in this stream.",
+              goodLooksLike: "No citation in the final TSPP has been accepted on faith alone." },
+
+            { value: "tech", title: "Technical Lead", subtitle: "Formatting, LMS Packaging & Document Control",
+              description: "Owns the 'ground truth' document: the single authoritative version of the TSPP draft that all edits flow through. Responsible for file naming conventions, LMS submission formatting, version control, and ensuring the final PDF meets the assignment spec. Also manages the charter export and submission.",
+              strengths: "Discipline, Consistency, Deliberative, Responsibility",
+              risk: "Being underutilized early in the project and then overwhelmed at the end during packaging. The Tech Lead should be involved in document architecture from Week 1.",
+              goodLooksLike: "There is never more than one 'final' version of any file. The submission is on time, correctly named, and formatted to spec." },
+
+            { value: "compliance", title: "Compliance & QC Lead", subtitle: "Citation Verification, AI Policy Audit & Standards",
+              description: "Runs the internal compliance function: verifies that the team's AI use adheres to the agreed policy, that all citations have been traced to primary sources, and that the TSPP meets the 'reasonable efforts' standard the team defined in their charter. A pre-submission QC checklist is this role's primary deliverable.",
+              strengths: "Deliberative, Analytical, Responsibility, Belief",
+              risk: "Being seen as the 'compliance police' in a way that damages team morale. Effective compliance is collaborative, not adversarial.",
+              goodLooksLike: "The team passes a self-administered QC checklist before every submission." },
+
+            // Strategic / Process
+            { value: "devil", title: "Devil's Advocate", subtitle: "Critical Assumption Challenger & Intellectual Stress-Tester",
+              description: "The most underused and most important role in high-stakes legal analysis. The Devil's Advocate's job is to argue against the team's conclusions before the professor does. For every claim in the TSPP, they ask: 'What is the strongest counter-argument? What evidence would defeat this?' This role prevents groupthink and prepares the team for Socratic challenge. Research on decision-making teams shows that a formally assigned Devil's Advocate produces significantly better outcomes than informal dissent, because it removes the social cost of disagreement (Nemeth et al., 2001).",
+              strengths: "Analytical, Strategic, Ideation, Command, Activator",
+              risk: "Being contrarian for its own sake rather than constructively stress-testing. The Advocate argues against conclusions — they don't block decisions.",
+              goodLooksLike: "Before every major submission, the Devil's Advocate has presented the top 3 counter-arguments to the team's analysis in writing, and the team has addressed each one in the final draft." },
+
+            { value: "integrator", title: "Knowledge Integrator", subtitle: "Cross-Section Consistency & Logical Chain Auditor",
+              description: "Specifically owns the non-separable synthesis problem. After each stage is drafted, the Integrator reads across sections and checks: does every High-Risk item in Stage B appear in Stage C mitigation? Does the enforcement strategy in Stage E match the specific vulnerabilities identified in Stage B? This is a structural audit role, not a prose editing role.",
+              strengths: "Analytical, Connectedness, Strategic, Intellection",
+              risk: "Scope creep — the Integrator should flag gaps and assign them back to the relevant author, not fill them unilaterally.",
+              goodLooksLike: "A 'logical chain' map exists for the top 3 trade secrets showing Inventory → Risk → Mitigation → Enforcement with no broken links." },
+
+            { value: "scribe", title: "Scribe / Meeting Recorder", subtitle: "Decision Documentation & Institutional Memory",
+              description: "Takes binding notes during every team meeting: what was decided, who owns each action item, and what the deadline is. Distributes the written record within 24 hours. This role is the team's institutional memory and the evidence base if any commitment is later disputed. In legal practice, this is the associate who writes up meeting minutes and distributes them to all parties.",
+              strengths: "Consistency, Responsibility, Discipline, Harmony",
+              risk: "Passive documentation without flagging ambiguous decisions. The Scribe should note when a decision was not clearly made and ask for clarification before the meeting ends.",
+              goodLooksLike: "Every team meeting produces a 1-page summary with decisions, owners, and deadlines, distributed within 24 hours." },
+
+            { value: "timeline", title: "Timeline Tracker", subtitle: "Deadline Monitoring & Early Warning System",
+              description: "Maintains the master project timeline as a living document, tracks all internal deadlines (not just official assignment deadlines), and sends a weekly status update to the team. Specifically responsible for flagging when a deadline is at risk — not after it is missed, but 48–72 hours before it becomes critical.",
+              strengths: "Focus, Discipline, Responsibility, Achiever",
+              risk: "Sending reminders that everyone ignores. The Tracker must escalate to the PM if a reminder produces no response.",
+              goodLooksLike: "The team never misses an internal deadline without having had 48 hours of warning and a plan for recovery." },
+
+            { value: "client-lead", title: "Client Relationship Lead", subtitle: "Client Narrative Voice & Client-Facing Framing",
+              description: "Ensures the TSPP is written for the client rather than for the professor. Reviews all sections for client-appropriate framing: Is the advice actionable? Does it acknowledge resource constraints? Is the language accessible to non-lawyers? This role is the team's quality check against academic abstraction.",
+              strengths: "Empathy, Communication, WOO, Positivity, Relator",
+              risk: "Oversimplifying legal analysis in the name of accessibility. The Client Lead advocates for clarity — not for omitting complexity.",
+              goodLooksLike: "The client could read the TSPP and know exactly what to do on Monday morning." },
+
+            { value: "generalist", title: "Generalist Associate", subtitle: "Flexible Support Across Multiple Workstreams",
+              description: "Used in larger teams (6–7) where one member supports multiple roles depending on the current stage's demands. The Generalist may assist with research in Stages 2–3, shift to editing support in Stages 4–5, and handle formatting in Stage 7. This role requires adaptability and strong communication with the PM about where effort is most needed.",
+              strengths: "Adaptability, Arranger, Learner, Positivity",
+              risk: "Diffuse accountability — when someone supports everyone, they may feel ownership of nothing. The PM must assign the Generalist to specific tasks each week.",
+              goodLooksLike: "The Generalist has made a documented, meaningful contribution to at least 3 of the 5 TSPP stages." }
+        ];
+
+        const ROLE_DEFAULTS = {
+            3: ['pm', 'editor', 'tech'],
+            4: ['pm', 'editor', 'research', 'tech'],
+            5: ['pm', 'editor', 'research', 'jr-research', 'tech'],
+            6: ['pm', 'dpm', 'editor', 'research', 'tech', 'compliance'],
+            7: ['pm', 'dpm', 'editor', 'research', 'jr-research', 'tech', 'compliance']
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set Dynamic Date
+            const today = new Date().toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+            document.getElementById('engagement-date').textContent = today;
+            document.getElementById('print-date').textContent = today;
+
+            // Handle Unsaved Changes
+            window.addEventListener('beforeunload', (e) => {
+                const hasContent = Array.from(document.querySelectorAll('input, textarea'))
+                    .some(el => el.value && el.value.trim().length > 2 && el.type !== 'file');
+                if (hasContent) {
+                    e.preventDefault();
+                    e.returnValue = 'Your Team Charter has unsaved data. Download it before leaving — closing this tab will erase your work.';
+                    return e.returnValue;
+                }
+            });
+
+            // Handle Modal Escape
+            document.addEventListener('keydown', e => { 
+                if (e.key === 'Escape') closeRoleExplorer(); 
+            });
+
+            // Handle Auto-save Triggers
+            document.addEventListener('input', (e) => {
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') {
+                    saveToStorage();
+                }
+            });
+            document.addEventListener('change', (e) => {
+                if (e.target.tagName === 'SELECT') {
+                    saveToStorage();
+                }
+            });
+
+            // Handle Team Size Dropdown
+            document.getElementById('team-size-select').addEventListener('change', (e) => {
+                updateTeamSize(parseInt(e.target.value));
+                loadFromStorage(true); // Restore input contents after wiping table
+                saveToStorage();
+            });
+
+            // Initialize Page State
+            let initialSize = 4;
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                try {
+                    const data = JSON.parse(raw);
+                    if (data['team-size']) initialSize = parseInt(data['team-size']);
+                } catch(e) {}
+            }
+            document.getElementById('team-size-select').value = initialSize;
+            updateTeamSize(initialSize);
+            loadFromStorage();
+            initWordCounters();
+        });
+
+        function updateTeamSize(size) {
+            const tbody = document.getElementById('member-table-body');
+            const sigGrid = document.getElementById('signature-grid');
+            
+            let rows = '';
+            let sigs = '';
+            const defaults = ROLE_DEFAULTS[size] || ROLE_DEFAULTS[4];
+
+            for(let i=1; i<=size; i++) {
+                let defRole = defaults[i-1] || '';
+                let options = AVAILABLE_ROLES.map(r => `<option value="${r.value}" ${r.value===defRole ? 'selected' : ''}>${r.title}</option>`).join('');
+                
+                rows += `
+                    <tr id="member-row-${i}">
+                        <td><input type="text" id="member${i}-name" placeholder="Print Name" class="w-full outline-none bg-transparent font-medium placeholder-slate-300"></td>
+                        <td><input type="text" id="member${i}-strength" placeholder="Primary Strength" class="w-full outline-none bg-transparent placeholder-slate-300"></td>
+                        <td>
+                            <select id="member${i}-role" onchange="updateRoleSubtitle(${i}); saveToStorage();" class="w-full outline-none bg-transparent font-bold text-blue-900 italic text-[13px] cursor-pointer appearance-none">
+                                <option value="">— Select Role —</option>
+                                ${options}
+                            </select>
+                            <p id="member${i}-subtitle" class="text-[9px] font-normal text-slate-400 uppercase mt-1 leading-tight"></p>
+                        </td>
+                    </tr>
+                `;
+
+                let isLastOdd = (size % 2 !== 0 && i === size);
+                let classes = isLastOdd ? "col-span-2 max-w-[280px] mx-auto text-center w-full" : "text-center w-full";
+                
+                sigs += `
+                    <div class="${classes}" id="sig-block-${i}">
+                        <div class="border-t border-slate-300 pt-2">
+                            <input type="text" id="sig${i}-name" placeholder="Print Name" class="input-field text-xs font-bold text-center uppercase text-slate-800">
+                            <label class="block text-[8px] text-slate-400 uppercase mt-1">Execution Name</label>
+                        </div>
+                        <div class="mt-2">
+                            <input type="text" id="sig${i}-date" placeholder="Date Signed" class="input-field text-[10px] text-center text-slate-500">
+                        </div>
+                    </div>
+                `;
+            }
+
+            tbody.innerHTML = rows;
+            sigGrid.innerHTML = sigs;
+
+            for(let i=1; i<=size; i++) {
+                updateRoleSubtitle(i);
+            }
+        }
+
+        function updateRoleSubtitle(n) {
+            const selectEl = document.getElementById(`member${n}-role`);
+            const subEl = document.getElementById(`member${n}-subtitle`);
+            if(!selectEl || !subEl) return;
+            const val = selectEl.value;
+            const role = AVAILABLE_ROLES.find(r => r.value === val);
+            subEl.textContent = role ? role.subtitle : '';
+        }
+
+        function toggleTheory(id) {
+            const card = document.getElementById(id);
+            card.style.display = card.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function toggleAllTheory() {
+            const cards = document.querySelectorAll('.theory-card');
+            const isAnyOpen = Array.from(cards).some(c => c.style.display === 'block');
+            cards.forEach(c => c.style.display = isAnyOpen ? 'none' : 'block');
+        }
+
+        function handleLogoUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const base64 = e.target.result;
+                    const logoImg = document.getElementById('firm-logo');
+                    logoImg.src = base64;
+                    logoImg.classList.remove('hidden');
+                    document.getElementById('logo-placeholder').classList.add('hidden');
+                    document.getElementById('logo-preview').classList.remove('border-dashed');
+                    saveToStorage();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        let saveTimeout;
+        function saveToStorage() {
+            const data = {};
+            document.querySelectorAll('input[id], textarea[id], select[id]').forEach(el => {
+                if (el.id && el.id !== 'logo-input') data[el.id] = el.value;
+            });
+            
+            const logo = document.getElementById('firm-logo');
+            if (!logo.classList.contains('hidden')) {
+                data['logo-data'] = logo.src;
+            }
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            
+            const indicator = document.getElementById('save-status');
+            indicator.classList.add('active');
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                indicator.classList.remove('active');
+            }, 1500);
+        }
+
+        function loadFromStorage(skipSize = false) {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            try {
+                const data = JSON.parse(raw);
+
+                Object.keys(data).forEach(id => {
+                    if (id === 'team-size' || id === 'logo-data') return;
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.value = data[id];
+                        if (el.tagName === 'TEXTAREA') {
+                            const event = new Event('input', { bubbles: true });
+                            el.dispatchEvent(event);
+                        }
+                    }
+                });
+
+                if (!skipSize && data['team-size']) {
+                    document.getElementById('team-size-select').value = data['team-size'];
+                }
+
+                const size = parseInt(document.getElementById('team-size-select').value) || 4;
+                for(let i=1; i<=size; i++) {
+                    updateRoleSubtitle(i);
+                }
+
+                if (data['logo-data']) {
+                    const logoImg = document.getElementById('firm-logo');
+                    logoImg.src = data['logo-data'];
+                    logoImg.classList.remove('hidden');
+                    document.getElementById('logo-placeholder').classList.add('hidden');
+                    document.getElementById('logo-preview').classList.remove('border-dashed');
+                }
+            } catch(e) {
+                console.error("Storage read failed", e);
+            }
+        }
+
+        function openRoleExplorer() {
+            const grid = document.getElementById('role-explorer-grid');
+            grid.innerHTML = AVAILABLE_ROLES.map(r => `
+                <div class="border border-slate-100 rounded-xl p-5 hover:border-blue-200 hover:shadow-sm transition">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h3 class="font-black text-slate-900 text-sm">${r.title}</h3>
+                            <p class="text-[10px] text-blue-700 font-bold uppercase tracking-widest">${r.subtitle}</p>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-3">${r.description}</p>
+                    <div class="space-y-1 border-t border-slate-50 pt-3">
+                        <p class="text-[10px]"><span class="font-black text-slate-400 uppercase">Ideal Strengths:</span> <span class="text-slate-600">${r.strengths}</span></p>
+                        <p class="text-[10px]"><span class="font-black text-red-400 uppercase">Risk If Done Poorly:</span> <span class="text-slate-600">${r.risk}</span></p>
+                        <p class="text-[10px]"><span class="font-black text-emerald-600 uppercase">Success Looks Like:</span> <span class="text-slate-600">${r.goodLooksLike}</span></p>
+                    </div>
+                </div>
+            `).join('');
+            document.getElementById('role-explorer-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRoleExplorer() {
+            document.getElementById('role-explorer-modal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function closeRoleExplorerOnBackdrop(event) {
+            if (event.target.id === 'role-explorer-modal') closeRoleExplorer();
+        }
+
+        function initWordCounters() {
+            const configs = [
+                { id: 'sec1-mission', target: 75, wc: 'wc-mission' },
+                { id: 'sec4-workflow', target: 60, wc: 'wc-workflow' },
+                { id: 'sec4-aipolicy', target: 60, wc: 'wc-aipolicy' }
+            ];
+
+            configs.forEach(conf => {
+                const ta = document.getElementById(conf.id);
+                const disp = document.getElementById(conf.wc);
+                if (!ta || !disp) return;
+
+                ta.addEventListener('input', () => {
+                    const count = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+                    disp.textContent = count;
+                    if (count >= 30) {
+                        disp.classList.add('text-green-500');
+                        disp.classList.remove('text-slate-400');
+                    } else {
+                        disp.classList.remove('text-green-500');
+                        disp.classList.add('text-slate-400');
+                    }
+                });
+            });
+        }
+
+        function downloadWord() {
+            const firmName = document.getElementById('firm-name').value || 'Unnamed Firm';
+            const date = document.getElementById('engagement-date').textContent;
+
+            const size = parseInt(document.getElementById('team-size-select').value) || 4;
+            let memberRows = '';
+            for (let i = 1; i <= size; i++) {
+                const name     = document.getElementById(`member${i}-name`)?.value || '';
+                const strength = document.getElementById(`member${i}-strength`)?.value || '';
+                const roleEl   = document.getElementById(`member${i}-role`);
+                const roleTitle = roleEl && roleEl.selectedIndex > 0 ? roleEl.options[roleEl.selectedIndex]?.text : '';
+                memberRows += `<tr>
+                    <td style="border:1px solid #ccc;padding:8px">${name}</td>
+                    <td style="border:1px solid #ccc;padding:8px">${strength}</td>
+                    <td style="border:1px solid #ccc;padding:8px"><strong>${roleTitle}</strong></td>
+                </tr>`;
+            }
+
+            const escRows = [1,2,3,4].map(n => {
+                const labels = ['Peer-to-Peer (Level 01)', 'Mid-Level Intervention (Level 02)', 'Senior Associate Review (Level 03)', 'Partner Review (Level 04)'];
+                const val = document.getElementById(`esc-lvl${n}`)?.value || '';
+                return `<h3>${labels[n-1]}</h3><p>${val || '[Not completed]'}</p>`;
+            }).join('');
+
+            let sigRows = '';
+            for (let i = 1; i <= size; i++) {
+                const sName = document.getElementById(`sig${i}-name`)?.value || '';
+                const sDate = document.getElementById(`sig${i}-date`)?.value || '';
+                sigRows += `<tr>
+                    <td style="border:1px solid #ccc;padding:12px;width:50%">
+                        <strong>${sName || '[Name]'}</strong><br/>
+                        <span style="font-size:10px;color:#888">DATE SIGNED: ${sDate || '___________'}</span>
+                    </td>
+                </tr>`;
+            }
+
+            const html = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                      xmlns:w="urn:schemas-microsoft-com:office:word"
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                <head><meta charset="UTF-8">
+                <style>
+                    body { font-family: Calibri, sans-serif; font-size: 11pt; margin: 1in; color: #1a1a1a; }
+                    h1 { font-size: 22pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+                    h2 { font-size: 13pt; font-weight: bold; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 4px; margin-top: 24pt; margin-bottom: 8pt; }
+                    h3 { font-size: 10pt; font-weight: bold; text-transform: uppercase; color: #555; margin-bottom: 4pt; }
+                    p, td { font-size: 10.5pt; line-height: 1.5; }
+                    table { border-collapse: collapse; width: 100%; margin-bottom: 12pt; }
+                    th { background: #f1f5f9; border: 1px solid #ccc; padding: 8px; font-size: 9pt; text-transform: uppercase; text-align: left; }
+                    .label { font-size: 8pt; font-weight: bold; text-transform: uppercase; color: #888; letter-spacing: 0.08em; }
+                    .meta { font-size: 9pt; color: #555; font-style: italic; }
+                    hr { border: none; border-top: 1px solid #e2e8f0; margin: 16pt 0; }
+                    .footer { font-size: 8pt; color: #aaa; text-align: center; margin-top: 40pt; }
+                </style></head><body>
+                <h1>TSPP Team Charter</h1>
+                <p class="meta">Internal Governance &amp; Mutual Accountability Contract</p>
+                <p class="label" style="margin-top:8pt">Counsel Name:</p>
+                <p><strong>${firmName}</strong></p>
+                <p class="label">Engagement Date:</p>
+                <p>${date}</p>
+                <hr/>
+
+                <h2>I. Psychological Contract &amp; Vision</h2>
+                <p class="label">Firm Mission Statement</p>
+                <p>${document.getElementById('sec1-mission')?.value || '[Not completed]'}</p>
+
+                <h2>II. Mutual Accountability Architecture</h2>
+                <table>
+                    <thead><tr>
+                        <th>Counsel Member (Name)</th>
+                        <th>Primary Strength</th>
+                        <th>Functional Firm Role</th>
+                    </tr></thead>
+                    <tbody>${memberRows}</tbody>
+                </table>
+
+                <h2>III. Operational "Reasonable Efforts"</h2>
+                <p class="label">Primary Communication Channel</p>
+                <p>${document.getElementById('op-channel')?.value || '[Not completed]'}</p>
+                <p class="label">Response Latency Protocol</p>
+                <p>${document.getElementById('op-latency')?.value || '[Not completed]'}</p>
+                <p class="label">Synchronous Meeting Cadence</p>
+                <p>${document.getElementById('op-cadence')?.value || '[Not completed]'}</p>
+                <p class="label">Document Control Policy</p>
+                <p>${document.getElementById('op-storage')?.value || '[Not completed]'}</p>
+
+                <h2>IV. Synthesis Strategy &amp; AI Policy</h2>
+                <p class="label">Synthesis Workflow</p>
+                <p>${document.getElementById('sec4-workflow')?.value || '[Not completed]'}</p>
+                <p class="label">Generative AI Policy</p>
+                <p>${document.getElementById('sec4-aipolicy')?.value || '[Not completed]'}</p>
+
+                <h2>V. Firm Escalation Ladder</h2>
+                ${escRows}
+
+                <h2>VI. Execution &amp; Professional Covenant</h2>
+                <p style="font-size:9pt;color:#888">By signing below, all members formally adopt this Charter as binding internal governance. Individual standing and peer evaluation metrics are tied to these standards.</p>
+                <table style="margin-top:24pt">
+                    <tbody>${sigRows}</tbody>
+                </table>
+
+                <div class="footer">
+                    Privileged Working Draft &nbsp;|&nbsp; Generated: ${date} &nbsp;|&nbsp; &copy; 2026 Seth C. Oranburg
+                </div>
+                </body></html>`;
+
+            const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+            const url  = URL.createObjectURL(blob);
+            const a    = document.createElement('a');
+            const safeName = firmName.replace(/[^a-zA-Z0-9]/g, '_') || 'TeamCharter';
+            a.href     = url;
+            a.download = `TSPP_Stage1_${safeName}.doc`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Print Polish
+        window.addEventListener('beforeprint', () => {
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.style.height = 'auto';
+                ta.style.height = ta.scrollHeight + 'px';
+            });
+        });
+        window.addEventListener('afterprint', () => {
+            document.querySelectorAll('textarea').forEach(ta => {
+                ta.style.height = '';
+            });
+        });
+    </script>
+</body>
+</html>
