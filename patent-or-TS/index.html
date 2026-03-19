@@ -1792,7 +1792,8 @@
 // ============================================================
 // CONSTANTS
 // ============================================================
-const CORRECT_PASSWORD = "Oranburg2026";
+// Password is verified via SHA-256 hash (not stored in plaintext)
+const PASSWORD_HASH = "525c1b3a96d2de24842f67898d64255fe46c6b69e2f43518a18078dcce02e33e";
 
 const correctAnswers = {
     "1a": "patent",
@@ -1858,9 +1859,14 @@ function closePasswordModal() {
     }
 }
 
-function checkPassword() {
+async function checkPassword() {
     const pwd = document.getElementById("passwordInput").value;
-    if (pwd === CORRECT_PASSWORD) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(pwd);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    if (hashHex === PASSWORD_HASH) {
         document.getElementById("passwordModal").classList.add("hidden");
         enableInstructorMode();
     } else {
