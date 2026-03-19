@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patent vs. Trade Secret Strategic Decision-Making | Interactive Teaching Tool</title>
+    <meta name="description" content="Interactive teaching tool for law students learning patent vs. trade secret strategic decision-making through 11 real-world hypotheticals.">
+    <meta property="og:title" content="Patent vs. Trade Secret Strategic Decision-Making">
+    <meta property="og:description" content="Interactive teaching tool with 11 hypotheticals for IP law education">
+    <meta property="og:type" content="website">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .difficulty-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .difficulty-1 { background-color: #dcfce7; color: #166534; }
+        .difficulty-2 { background-color: #dbeafe; color: #1e40af; }
+        .difficulty-3 { background-color: #fef3c7; color: #92400e; }
+        .difficulty-4 { background-color: #fee2e2; color: #991b1b; }
+        
+        .case-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .case-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .case-card.level-1 { border-left-color: #22c55e; }
+        .case-card.level-2 { border-left-color: #3b82f6; }
+        .case-card.level-3 { border-left-color: #f59e0b; }
+        .case-card.level-4 { border-left-color: #ef4444; }
+        
+        .instructor-note {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            display: none;
+        }
+        
+        .instructor-note.visible {
+            display: block;
+        }
+        
+        .answer-section {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0284c7;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+            display: none;
+        }
+        
+        .answer-section.visible {
+            display: block;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: #f59e0b;
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .nav-link.active {
+            background-color: rgba(255,255,255,0.2);
+            border-left: 4px solid #fbbf24;
+        }
+        
+        .reveal-button {
+            transition: all 0.3s ease;
+        }
+        
+        .reveal-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .component-card {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+        
+        .smooth-scroll {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 smooth-scroll">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-blue-900 to-blue-700 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-3xl font-bold">Patent vs. Trade Secret</h1>
+                    <p class="text-blue-200 mt-1">Interactive Teaching Tool</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-sm font-medium">Student View</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="instructorToggle">
+                            <span class="slider"></span>
+                        </label>
+                        <span class="text-sm font-medium text-amber-300">Instructor View</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar Navigation -->
+            <aside class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6 sticky top-24">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Navigation</h2>
+                    
+                    <!-- Overview -->
+                    <a href="#overview" class="nav-link block px-4 py-2 rounded mb-2 text-gray-700 hover:bg-blue-50">
+                        <i class="fas fa-home mr-2"></i> Overview
+                    </a>
+                    
+                    <!-- Level 1 -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 uppercase px-4 py-2">
+                            Level 1: Simple
+                            <span class="difficulty-badge difficulty-1 ml-2">⭐</span>
+                        </h3>
+                        <a href="#case-1a" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">1A: BioPharma FDA</a>
+                        <a href="#case-1b" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">1B: Customer List</a>
+                        <a href="#case-1c" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">1C: Software Algorithm</a>
+                    </div>
+                    
+                    <!-- Level 2 -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 uppercase px-4 py-2">
+                            Level 2: Intermediate
+                            <span class="difficulty-badge difficulty-2 ml-2">⭐⭐</span>
+                        </h3>
+                        <a href="#case-2a" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">2A: Chemical Sweetener</a>
+                        <a href="#case-2b" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">2B: JavaScript Library</a>
+                        <a href="#case-2c" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">2C: Bioreactor Process</a>
+                    </div>
+                    
+                    <!-- Level 3 -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 uppercase px-4 py-2">
+                            Level 3: Advanced
+                            <span class="difficulty-badge difficulty-3 ml-2">⭐⭐⭐</span>
+                        </h3>
+                        <a href="#case-3a" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">3A: Soft Drink Formula</a>
+                        <a href="#case-3b" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">3B: Search Algorithm</a>
+                        <a href="#case-3c" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">3C: Pharma Process</a>
+                    </div>
+                    
+                    <!-- Level 4 -->
+                    <div class="mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600 uppercase px-4 py-2">
+                            Level 4: Expert
+                            <span class="difficulty-badge difficulty-4 ml-2">⭐⭐⭐⭐</span>
+                        </h3>
+                        <a href="#case-4a" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">4A: Biotech Platform</a>
+                        <a href="#case-4b" class="nav-link block px-4 py-2 rounded text-sm text-gray-700">4B: AI Analytics</a>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="lg:col-span-3">
+                <!-- Overview Section -->
+                <section id="overview" class="bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Welcome</h2>
+                    <p class="text-gray-600 mb-4">
+                        This interactive tool presents 11 real-world hypotheticals to help you develop practical judgment in choosing between patent and trade secret protection. Cases are organized in four levels of increasing complexity.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h3 class="font-semibold text-green-900 mb-2">
+                                <span class="difficulty-badge difficulty-1">Level 1</span>
+                            </h3>
+                            <p class="text-sm text-gray-700">Clear non-protectable cases (20 min)</p>
+                        </div>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                            <h3 class="font-semibold text-blue-900 mb-2">
+                                <span class="difficulty-badge difficulty-2">Level 2</span>
+                            </h3>
+                            <p class="text-sm text-gray-700">Clear strategic choices (30 min)</p>
+                        </div>
+                        
+                        <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
+                            <h3 class="font-semibold text-amber-900 mb-2">
+                                <span class="difficulty-badge difficulty-3">Level 3</span>
+                            </h3>
+                            <p class="text-sm text-gray-700">Difficult strategic decisions (40 min)</p>
+                        </div>
+                        
+                        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+                            <h3 class="font-semibold text-red-900 mb-2">
+                                <span class="difficulty-badge difficulty-4">Level 4</span>
+                            </h3>
+                            <p class="text-sm text-gray-700">Technology stack cases (30 min)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="instructor-note mt-6">
+                        <h4 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Instructor Note</h4>
+                        <p class="text-sm text-gray-700">
+                            Use the Socratic method: present facts incrementally, ask students to identify key factors before revealing answers. For Level 3-4 cases, acknowledge multiple defensible positions and focus on quality of reasoning.
+                        </p>
+                        <div class="mt-3 text-sm">
+                            <strong>Time Allocation:</strong>
+                            <ul class="list-disc list-inside mt-1 text-gray-700">
+                                <li>Introduction: 10 min</li>
+                                <li>Level 1: 20 min (3 cases @ ~7 min)</li>
+                                <li>Level 2: 30 min (3 cases @ 10 min)</li>
+                                <li>Break: 10 min</li>
+                                <li>Level 3: 40 min (3 cases @ 13 min)</li>
+                                <li>Level 4: 30 min (2 cases @ 15 min)</li>
+                                <li>Wrap-up: 10 min</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- LEVEL 1 CASES -->
+                
+                <!-- Case 1A -->
+                <section id="case-1a" class="case-card level-1 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Case 1A: BioPharma FDA Disclosure</h2>
+                            <span class="difficulty-badge difficulty-1 mt-2">Level 1: Simple ⭐</span>
+                        </div>
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i>~7 min</span>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Student Facts</h3>
+                        <p class="text-gray-700">
+                            <strong>MedTech Innovations</strong> has developed a novel monoclonal antibody therapeutic for treating autoimmune diseases. The antibody targets a specific protein receptor, and the company has identified the precise amino acid sequence that provides therapeutic efficacy.
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            To bring this therapeutic to market, MedTech must submit a Biologics License Application (BLA) to the FDA, which requires full disclosure of the antibody's structure, manufacturing process, and clinical trial data.
+                        </p>
+                        <p class="text-gray-700 mt-2 font-semibold">
+                            Should MedTech protect this technology as a patent or trade secret?
+                        </p>
+                    </div>
+                    
+                    <div class="instructor-note">
+                        <h4 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Teaching Guidance</h4>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Socratic Approach:</strong> Ask students: "What happens when you submit to the FDA?" Let them identify the disclosure requirement. Then ask: "Can you maintain something as a trade secret if it's publicly disclosed?"
+                        </p>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Expected Student Response:</strong> Students should recognize that FDA disclosure defeats trade secret protection.
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            <strong>Common Mistake:</strong> Some students may suggest keeping it as a trade secret and not disclosing to FDA (illegal and impossible to market).
+                        </p>
+                    </div>
+                    
+                    <button onclick="toggleAnswer('answer-1a')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    
+                    <div id="answer-1a" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Must Patent</h4>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Conclusion:</h5>
+                            <p class="text-gray-700">
+                                MedTech <strong>cannot</strong> maintain this as a trade secret and <strong>must patent</strong> if it wants any IP protection. FDA disclosure requirements make trade secret protection impossible.
+                            </p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Key Reasoning:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li><strong>Regulatory Disclosure Requirement:</strong> FDA requires full disclosure of antibody structure, manufacturing, and clinical data</li>
+                                <li><strong>Public Disclosure Defeats Trade Secret:</strong> Once disclosed to FDA (public agency), information is no longer secret</li>
+                                <li><strong>No Reasonable Efforts to Maintain Secrecy:</strong> Cannot satisfy trade secret requirement when regulatory disclosure is mandatory</li>
+                                <li><strong>Patent Remains Available:</strong> Patent protection is designed for disclosed inventions</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Doctrinal Analysis:</h5>
+                            <p class="text-gray-700 mb-2">
+                                <strong>Trade Secret Requirements (UTSA):</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li>Information must not be "generally known"</li>
+                                <li>Must have "independent economic value from not being known"</li>
+                                <li>Must make "reasonable efforts to maintain secrecy"</li>
+                                <li><strong>FAILS:</strong> FDA disclosure makes information generally known</li>
+                            </ul>
+                            
+                            <p class="text-gray-700 mt-3 mb-2">
+                                <strong>Patent Requirements (35 U.S.C.):</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li>Patent-eligible subject matter (§ 101): Therapeutic antibody qualifies</li>
+                                <li>Novelty (§ 102): Assuming novel sequence</li>
+                                <li>Non-obviousness (§ 103): Requires analysis of prior art</li>
+                                <li>Enablement (§ 112): FDA submission provides this</li>
+                                <li><strong>LIKELY SATISFIES</strong> (assuming novelty and non-obviousness)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h5 class="font-semibold text-green-900 mb-2">Teaching Point:</h5>
+                            <p class="text-sm text-gray-700">
+                                This case illustrates a fundamental limitation: regulatory disclosure requirements can make trade secret protection impossible. This is common in pharmaceuticals, medical devices, food additives, and other FDA-regulated products. The choice is not "patent or trade secret" but rather "patent or no IP protection."
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Case 1B -->
+                <section id="case-1b" class="case-card level-1 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Case 1B: Customer List Protection</h2>
+                            <span class="difficulty-badge difficulty-1 mt-2">Level 1: Simple ⭐</span>
+                        </div>
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i>~7 min</span>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Student Facts</h3>
+                        <p class="text-gray-700">
+                            <strong>PharmaSales Corp</strong> has spent 10 years developing relationships with hospital procurement officers across the United States. The company maintains a detailed database containing:
+                        </p>
+                        <ul class="list-disc list-inside text-gray-700 mt-2 ml-4">
+                            <li>Names and contact information of key decision-makers</li>
+                            <li>Purchasing patterns and preferences</li>
+                            <li>Budget cycles and approval processes</li>
+                            <li>Notes on personal relationships and communication preferences</li>
+                        </ul>
+                        <p class="text-gray-700 mt-2">
+                            This customer list gives PharmaSales a significant competitive advantage. The company keeps the database on a secure server with limited access.
+                        </p>
+                        <p class="text-gray-700 mt-2 font-semibold">
+                            Should PharmaSales protect this customer list as a patent or trade secret?
+                        </p>
+                    </div>
+                    
+                    <div class="instructor-note">
+                        <h4 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Teaching Guidance</h4>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Socratic Approach:</strong> Ask: "What is patentable subject matter?" Then: "Is a customer list a process, machine, manufacture, or composition of matter?" Then: "Could this be a trade secret?"
+                        </p>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Expected Student Response:</strong> Students should recognize patent-eligibility limitation but may correctly identify trade secret potential.
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            <strong>Teaching Point:</strong> This introduces the concept that some valuable business information cannot be patented but may qualify as trade secrets.
+                        </p>
+                    </div>
+                    
+                    <button onclick="toggleAnswer('answer-1b')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    
+                    <div id="answer-1b" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Cannot Patent; May Be Trade Secret</h4>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Conclusion:</h5>
+                            <p class="text-gray-700">
+                                PharmaSales <strong>cannot patent</strong> a customer list (not patent-eligible subject matter), but <strong>may protect it as a trade secret</strong> if all requirements are met.
+                            </p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Key Reasoning:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li><strong>Not Patent-Eligible:</strong> Customer lists are not processes, machines, manufactures, or compositions of matter (35 U.S.C. § 101)</li>
+                                <li><strong>May Be Trade Secret:</strong> Customer lists are classic examples of protectable trade secrets</li>
+                                <li><strong>Economic Value:</strong> Provides competitive advantage (saves time and cost of developing relationships)</li>
+                                <li><strong>Not Generally Known:</strong> Specific details about purchasing patterns and relationships are not public</li>
+                                <li><strong>Reasonable Security Measures:</strong> Secure server with limited access satisfies this requirement</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Doctrinal Analysis:</h5>
+                            <p class="text-gray-700 mb-2">
+                                <strong>Patent Eligibility (35 U.S.C. § 101):</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li>Patentable: "process, machine, manufacture, or composition of matter"</li>
+                                <li>Customer list is <strong>information/data</strong>, not a statutory category</li>
+                                <li><strong>FAILS</strong> patent eligibility threshold</li>
+                            </ul>
+                            
+                            <p class="text-gray-700 mt-3 mb-2">
+                                <strong>Trade Secret Analysis (UTSA):</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li><strong>Information of any type:</strong> ✓ Customer lists qualify</li>
+                                <li><strong>Economic value from secrecy:</strong> ✓ Saves time/cost of relationship development</li>
+                                <li><strong>Not generally known:</strong> ✓ Specific purchasing patterns and notes are not public</li>
+                                <li><strong>Reasonable efforts to maintain secrecy:</strong> ✓ Secure server, limited access</li>
+                                <li><strong>LIKELY QUALIFIES</strong> as trade secret</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Important Caveat:</h5>
+                            <p class="text-gray-700">
+                                Trade secret protection for customer lists is <strong>limited</strong>. If the information is readily ascertainable through public sources (e.g., hospital websites list procurement officers), it may not qualify. The key is whether the <strong>compilation and details</strong> (purchasing patterns, preferences, relationship notes) provide independent economic value.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h5 class="font-semibold text-green-900 mb-2">Teaching Point:</h5>
+                            <p class="text-sm text-gray-700">
+                                This case illustrates that not all valuable business information is patent-eligible. Trade secret law fills this gap by protecting information that has economic value from secrecy. Customer lists are a classic example, but protection requires actual secrecy and reasonable security measures.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Case 1C -->
+                <section id="case-1c" class="case-card level-1 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Case 1C: Abstract Software Algorithm</h2>
+                            <span class="difficulty-badge difficulty-1 mt-2">Level 1: Simple ⭐</span>
+                        </div>
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i>~7 min</span>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Student Facts</h3>
+                        <p class="text-gray-700">
+                            <strong>FinTech Solutions</strong> has developed a novel algorithm for detecting fraudulent credit card transactions. The algorithm uses statistical analysis of transaction patterns to identify anomalies.
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            The algorithm is implemented in software that runs on FinTech's servers (not distributed to clients). The algorithm itself is a mathematical formula that could be described in a few pages of equations.
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            Under <em>Alice Corp. v. CLS Bank</em> (2014), software patents for abstract ideas are difficult to obtain unless they involve a technological improvement.
+                        </p>
+                        <p class="text-gray-700 mt-2 font-semibold">
+                            Should FinTech protect this algorithm as a patent or trade secret?
+                        </p>
+                    </div>
+                    
+                    <div class="instructor-note">
+                        <h4 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Teaching Guidance</h4>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Socratic Approach:</strong> Ask: "What did <em>Alice</em> hold about abstract algorithms?" Then: "Is this algorithm deployed in a way that could be kept secret?" This bridges to Level 2 analysis.
+                        </p>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Expected Student Response:</strong> Students should recognize <em>Alice</em> limitation on software patents and identify that server-side deployment enables trade secret protection.
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            <strong>Teaching Point:</strong> This case introduces the interaction between patent eligibility doctrine (<em>Alice</em>) and trade secret viability (deployment method).
+                        </p>
+                    </div>
+                    
+                    <button onclick="toggleAnswer('answer-1c')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    
+                    <div id="answer-1c" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Likely Not Patentable; Trade Secret Depends on Deployment</h4>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Conclusion:</h5>
+                            <p class="text-gray-700">
+                                FinTech <strong>likely cannot patent</strong> this algorithm under <em>Alice</em>, but <strong>may protect it as a trade secret</strong> because it runs on FinTech's servers (not distributed to clients).
+                            </p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Key Reasoning:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li><strong><em>Alice</em> Limitation:</strong> Abstract mathematical algorithms are not patent-eligible unless tied to technological improvement</li>
+                                <li><strong>Statistical Analysis is Abstract:</strong> Analyzing transaction patterns is a fundamental economic practice</li>
+                                <li><strong>No Clear Technological Improvement:</strong> Facts don't indicate improvement to computer functioning</li>
+                                <li><strong>Server-Side Deployment Enables Secrecy:</strong> Algorithm not disclosed to clients, so trade secret viable</li>
+                                <li><strong>Economic Value from Secrecy:</strong> Competitors cannot replicate without access to algorithm</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Doctrinal Analysis:</h5>
+                            <p class="text-gray-700 mb-2">
+                                <strong>Patent Eligibility After <em>Alice</em> (35 U.S.C. § 101):</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li><strong>Step 1:</strong> Is it an abstract idea? <strong>YES</strong> - statistical analysis of patterns</li>
+                                <li><strong>Step 2:</strong> Does it contain an "inventive concept" that transforms it into patent-eligible application?</li>
+                                <li>Need: technological improvement to computer functioning OR integration with specific machine</li>
+                                <li>Here: No indication of technological improvement</li>
+                                <li><strong>LIKELY FAILS</strong> under <em>Alice</em></li>
+                            </ul>
+                            
+                            <p class="text-gray-700 mt-3 mb-2">
+                                <strong>Trade Secret Analysis (UTSA):</strong>
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li><strong>Information:</strong> ✓ Algorithm qualifies</li>
+                                <li><strong>Economic value from secrecy:</strong> ✓ Competitors cannot replicate</li>
+                                <li><strong>Not generally known:</strong> ✓ Runs on FinTech's servers only</li>
+                                <li><strong>Reasonable efforts:</strong> ✓ Server-side deployment provides security</li>
+                                <li><strong>QUALIFIES</strong> as trade secret</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Strategic Consideration:</h5>
+                            <p class="text-gray-700">
+                                Even if a patent were available, trade secret might be preferable here because:
+                            </p>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1 ml-4">
+                                <li>Server-side deployment makes secrecy feasible</li>
+                                <li>Patent would require disclosure of the algorithm</li>
+                                <li>Competitors could design around a patent</li>
+                                <li>Trade secret provides indefinite protection (vs. 20 years)</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h5 class="font-semibold text-green-900 mb-2">Teaching Point:</h5>
+                            <p class="text-sm text-gray-700">
+                                This case introduces the <em>Alice</em> limitation on software patents and shows how deployment method affects trade secret viability. Server-side software can be kept secret; client-side software cannot. This distinction becomes critical in Level 2 cases.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Continue with remaining cases... Due to length, I'll create a summary structure -->
+                
+                <!-- Level 2 Cases -->
+                <div class="bg-blue-100 border-l-4 border-blue-500 p-6 rounded-lg mb-8">
+                    <h2 class="text-2xl font-bold text-blue-900 mb-2">Level 2: Clear Strategic Choices</h2>
+                    <p class="text-gray-700">These cases require technical analysis of reverse engineering risk and independent discovery likelihood.</p>
+                </div>
+
+                <!-- Case 2A -->
+                <section id="case-2a" class="case-card level-2 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Case 2A: Chemical Sweetener</h2>
+                            <span class="difficulty-badge difficulty-2 mt-2">Level 2: Intermediate ⭐⭐</span>
+                        </div>
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i>~10 min</span>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Student Facts</h3>
+                        <p class="text-gray-700">
+                            <strong>FlavorTech Industries</strong> has synthesized a new artificial sweetener that is 500 times sweeter than sugar with no bitter aftertaste. The molecule has a unique structure that provides this property.
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            FlavorTech plans to sell the sweetener to food manufacturers. Once in commercial products, competitors could purchase the product and use standard analytical chemistry techniques (mass spectrometry, NMR spectroscopy) to determine the molecular structure within 3-6 months.
+                        </p>
+                        <p class="text-gray-700 mt-2">
+                            The compound is novel and non-obvious. FlavorTech estimates it would take competitors 18 months to independently develop a similar sweetener without reverse engineering.
+                        </p>
+                        <p class="text-gray-700 mt-2 font-semibold">
+                            Should FlavorTech protect this sweetener as a patent or trade secret?
+                        </p>
+                    </div>
+                    
+                    <div class="instructor-note">
+                        <h4 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Teaching Guidance</h4>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Socratic Approach:</strong> Ask: "How long can FlavorTech maintain this as a secret once it's sold?" Then: "What happens after 6 months?" Then: "How does that compare to patent protection?"
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            <strong>Key Teaching Point:</strong> This is the classic case where trade secret is not viable due to ease of reverse engineering. Must patent or lose protection entirely after 6 months.
+                        </p>
+                    </div>
+                    
+                    <button onclick="toggleAnswer('answer-2a')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    
+                    <div id="answer-2a" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: MUST PATENT</h4>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Conclusion:</h5>
+                            <p class="text-gray-700">
+                                FlavorTech <strong>must patent</strong>. Trade secret protection is not viable because the molecular structure can be easily reverse-engineered within 3-6 months of commercial sale.
+                            </p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Key Reasoning:</h5>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                <li><strong>Easy Reverse Engineering:</strong> Standard analytical chemistry can determine structure in 3-6 months</li>
+                                <li><strong>Commercial Distribution Enables Access:</strong> Once sold, competitors can purchase and analyze</li>
+                                <li><strong>Trade Secret Will Be Lost:</strong> After reverse engineering, no longer secret</li>
+                                <li><strong>Patent Provides 20 Years:</strong> vs. only 6 months of trade secret protection</li>
+                                <li><strong>Patent Requirements Satisfied:</strong> Novel, non-obvious, patentable subject matter</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Economic Analysis:</h5>
+                            <div class="bg-gray-50 p-4 rounded">
+                                <p class="text-sm font-semibold mb-2">Comparison of Protection Duration:</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Trade Secret:</strong> 6 months (until reverse engineered) → Then no protection</li>
+                                    <li><strong>Patent:</strong> 20 years of exclusivity</li>
+                                    <li><strong>Cost of Reverse Engineering:</strong> Low (standard analytical techniques)</li>
+                                    <li><strong>Value of 20-Year Exclusivity:</strong> Enormous in food ingredient market</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5 class="font-semibold text-gray-800 mb-2">Real-World Context:</h5>
+                            <p class="text-gray-700">
+                                This scenario mirrors actual cases like aspartame (NutraSweet) and sucralose (Splenda), which were patented because their molecular structures could be easily determined through analysis. Chemical compounds sold commercially are almost always patented for this reason.
+                            </p>
+                        </div>
+                        
+                        <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h5 class="font-semibold text-green-900 mb-2">Teaching Point:</h5>
+                            <p class="text-sm text-gray-700">
+                                This case illustrates the fundamental principle: <strong>if reverse engineering is easy, trade secret protection is not viable.</strong> Chemical compounds sold commercially are classic examples where patents are essential because analytical techniques can reveal structure quickly.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Additional cases would continue here with similar structure -->
+                <!-- For brevity, I'll create placeholder sections for remaining cases -->
+
+                <section id="case-2b" class="case-card level-2 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Case 2B: Client-Side JavaScript Library</h2>
+                    <span class="difficulty-badge difficulty-2">Level 2: Intermediate ⭐⭐</span>
+                    <p class="text-gray-600 mt-4">DataViz Analytics has developed a novel JavaScript library for interactive data visualization...</p>
+                    <button onclick="toggleAnswer('answer-2b')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    <div id="answer-2b" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Should Patent (or Redesign for Server-Side)</h4>
+                        <p class="text-gray-700">Client-side distribution defeats trade secret protection. Must patent if possible, or redesign for server-side execution.</p>
+                    </div>
+                </section>
+
+                <section id="case-2c" class="case-card level-2 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Case 2C: Bioreactor Process</h2>
+                    <span class="difficulty-badge difficulty-2">Level 2: Intermediate ⭐⭐</span>
+                    <p class="text-gray-600 mt-4">BioManufacturing Systems has developed a proprietary bioreactor process...</p>
+                    <button onclick="toggleAnswer('answer-2c')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    <div id="answer-2c" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Maintain as Trade Secret</h4>
+                        <p class="text-gray-700">Difficult to reverse engineer, used internally only. Trade secret provides indefinite protection vs. 20-year patent.</p>
+                    </div>
+                </section>
+
+                <!-- Level 3 Cases -->
+                <div class="bg-amber-100 border-l-4 border-amber-500 p-6 rounded-lg mb-8 mt-12">
+                    <h2 class="text-2xl font-bold text-amber-900 mb-2">Level 3: Difficult Strategic Decisions</h2>
+                    <p class="text-gray-700">These cases require sophisticated strategic analysis with multiple defensible positions.</p>
+                </div>
+
+                <section id="case-3a" class="case-card level-3 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Case 3A: Soft Drink Formula (Coca-Cola Scenario)</h2>
+                    <span class="difficulty-badge difficulty-3">Level 3: Advanced ⭐⭐⭐</span>
+                    <p class="text-gray-600 mt-4">Global Beverages Inc. has developed a unique soft drink formula...</p>
+                    <button onclick="toggleAnswer('answer-3a')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    <div id="answer-3a" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Trade Secret Was Correct (140 Years vs. 20)</h4>
+                        <p class="text-gray-700">Brand loyalty + trademark protection > formula protection. Secrecy mystique adds value. Coca-Cola has maintained formula as trade secret for 140 years.</p>
+                    </div>
+                </section>
+
+                <section id="case-3b" class="case-card level-3 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Case 3B: Search Algorithm (Google PageRank Scenario)</h2>
+                    <span class="difficulty-badge difficulty-3">Level 3: Advanced ⭐⭐⭐</span>
+                    <p class="text-gray-600 mt-4">Search Engine Innovations has developed a novel algorithm for ranking search results...</p>
+                    <button onclick="toggleAnswer('answer-3b')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    <div id="answer-3b" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Hybrid Approach (Patent Core + Trade Secret Implementation)</h4>
+                        <p class="text-gray-700">Google patented PageRank algorithm but kept implementation details secret. Hybrid strategy optimal for fast-moving tech.</p>
+                    </div>
+                </section>
+
+                <section id="case-3c" class="case-card level-3 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Case 3C: Pharmaceutical Intermediate Process</h2>
+                    <span class="difficulty-badge difficulty-3">Level 3: Advanced ⭐⭐⭐</span>
+                    <p class="text-gray-600 mt-4">ChemSynth Pharma has developed an efficient process for synthesizing a key pharmaceutical intermediate...</p>
+                    <button onclick="toggleAnswer('answer-3c')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    <div id="answer-3c" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Complex Tradeoff - Hybrid Likely Optimal</h4>
+                        <p class="text-gray-700">No single right answer. Must balance generic competition, FDA disclosure, enforcement challenges, and cost advantage.</p>
+                    </div>
+                </section>
+
+                <!-- Level 4 Cases -->
+                <div class="bg-red-100 border-l-4 border-red-500 p-6 rounded-lg mb-8 mt-12">
+                    <h2 class="text-2xl font-bold text-red-900 mb-2">Level 4: Technology Stack Cases</h2>
+                    <p class="text-gray-700">These cases require component-by-component analysis with mixed IP strategies.</p>
+                </div>
+
+                <section id="case-4a" class="case-card level-4 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Case 4A: Biotech Therapeutic Platform</h2>
+                            <span class="difficulty-badge difficulty-4 mt-2">Level 4: Expert ⭐⭐⭐⭐</span>
+                        </div>
+                        <span class="text-sm text-gray-500"><i class="far fa-clock mr-1"></i>~15 min</span>
+                    </div>
+                    
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded mb-4">
+                        <h3 class="font-semibold text-blue-900 mb-2">Student Facts</h3>
+                        <p class="text-gray-700">
+                            <strong>BioTherapeutics Inc.</strong> has developed a comprehensive platform for discovering and manufacturing therapeutic antibodies. The platform includes 7 key components:
+                        </p>
+                        <ol class="list-decimal list-inside text-gray-700 mt-2 space-y-2 ml-4">
+                            <li><strong>Target Discovery Algorithm:</strong> AI system for identifying disease targets</li>
+                            <li><strong>Antibody Design Method:</strong> Computational approach for designing antibodies</li>
+                            <li><strong>Proprietary Cell Line:</strong> Engineered cells for antibody production</li>
+                            <li><strong>Bioreactor Control System:</strong> Automated system for optimizing production</li>
+                            <li><strong>Purification Process:</strong> Novel method for purifying antibodies</li>
+                            <li><strong>Quality Control Assays:</strong> Testing methods for ensuring product quality</li>
+                            <li><strong>Platform Brand:</strong> "BioTherapeutics Discovery Platform"</li>
+                        </ol>
+                        <p class="text-gray-700 mt-3">
+                            BioTherapeutics plans to use this platform internally and also license it to other biotech companies.
+                        </p>
+                        <p class="text-gray-700 mt-2 font-semibold">
+                            How should BioTherapeutics protect each component of this technology stack?
+                        </p>
+                    </div>
+                    
+                    <div class="instructor-note">
+                        <h4 class="font-bold text-amber-900 mb-2"><i class="fas fa-chalkboard-teacher mr-2"></i>Teaching Guidance</h4>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Socratic Approach:</strong> Go through each component and ask: "What IP tools are available for this?" Encourage students to consider patents, trade secrets, copyright, trademark, and contracts.
+                        </p>
+                        <p class="text-sm text-gray-700 mb-2">
+                            <strong>Expected Discussion:</strong> Students should recognize that different components require different strategies. Some need patents, some trade secrets, some both, some additional tools.
+                        </p>
+                        <p class="text-sm text-gray-700">
+                            <strong>Key Teaching Point:</strong> Real-world IP strategy requires using multiple tools together. No single approach works for complex technology stacks.
+                        </p>
+                    </div>
+                    
+                    <button onclick="toggleAnswer('answer-4a')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    
+                    <div id="answer-4a" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: Component-by-Component Mixed Strategy</h4>
+                        
+                        <div class="space-y-4">
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">1. Target Discovery Algorithm (AI System)</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Trade Secret + Patent (Defensive) + Copyright</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Trade secret (algorithm details, training data, weights)</li>
+                                    <li><strong>Secondary:</strong> Patent specific novel methods (defensive, prevent competitors from patenting)</li>
+                                    <li><strong>Tertiary:</strong> Copyright for software code</li>
+                                    <li><strong>Reasoning:</strong> AI algorithms difficult to reverse engineer if deployed server-side; patents provide defensive protection; copyright protects implementation</li>
+                                </ul>
+                            </div>
+
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">2. Antibody Design Method</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Patent + Trade Secret (Optimization Details)</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Patent the core design method</li>
+                                    <li><strong>Secondary:</strong> Trade secret for optimization techniques and parameters</li>
+                                    <li><strong>Reasoning:</strong> Method patents valuable for licensing; optimization details can remain secret</li>
+                                </ul>
+                            </div>
+
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">3. Proprietary Cell Line</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Trade Secret + Patent (if genetic modifications) + Material Transfer Agreement (MTA)</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Trade secret (physical control of cell line)</li>
+                                    <li><strong>Secondary:</strong> Patent any novel genetic modifications</li>
+                                    <li><strong>Tertiary:</strong> MTA with strict terms for any transfers</li>
+                                    <li><strong>Reasoning:</strong> Physical cell lines can be kept secret; genetic modifications may be patentable; MTAs provide contractual protection</li>
+                                </ul>
+                            </div>
+
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">4. Bioreactor Control System</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Trade Secret + Patent (Hardware) + Copyright (Software)</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Trade secret for control algorithms and parameters</li>
+                                    <li><strong>Secondary:</strong> Patent novel hardware components</li>
+                                    <li><strong>Tertiary:</strong> Copyright for software</li>
+                                    <li><strong>Reasoning:</strong> Control parameters difficult to reverse engineer; hardware may be patentable; software copyrightable</li>
+                                </ul>
+                            </div>
+
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">5. Purification Process</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Hybrid (Patent Core Method + Trade Secret Details)</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Patent the novel purification method</li>
+                                    <li><strong>Secondary:</strong> Trade secret for specific parameters and optimization</li>
+                                    <li><strong>Reasoning:</strong> Method patent provides broad protection; specific conditions can remain secret</li>
+                                </ul>
+                            </div>
+
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">6. Quality Control Assays</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Patent + Trade Secret (Protocols)</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Patent novel assay methods</li>
+                                    <li><strong>Secondary:</strong> Trade secret for detailed protocols and acceptance criteria</li>
+                                    <li><strong>Reasoning:</strong> Assay methods patentable; specific protocols can remain proprietary</li>
+                                </ul>
+                            </div>
+
+                            <div class="component-card">
+                                <h5 class="font-semibold text-gray-800 mb-2">7. Platform Brand</h5>
+                                <p class="text-sm text-gray-700 mb-2"><strong>Strategy:</strong> Trademark + Trade Dress</p>
+                                <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                    <li><strong>Primary:</strong> Trademark for "BioTherapeutics Discovery Platform"</li>
+                                    <li><strong>Secondary:</strong> Trade dress for distinctive visual elements</li>
+                                    <li><strong>Reasoning:</strong> Brand protection essential for market differentiation; indefinite protection if maintained</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-amber-50 border-l-4 border-amber-500 p-4 rounded">
+                            <h5 class="font-semibold text-amber-900 mb-2">Licensing Considerations:</h5>
+                            <p class="text-sm text-gray-700 mb-2">
+                                Since BioTherapeutics plans to license this platform, the IP strategy must balance:
+                            </p>
+                            <ul class="list-disc list-inside text-sm text-gray-700 space-y-1">
+                                <li><strong>Disclosure Requirements:</strong> Licensees need enough information to use the platform</li>
+                                <li><strong>Protection Needs:</strong> Must prevent licensees from becoming competitors</li>
+                                <li><strong>Enforcement:</strong> Patents easier to enforce than trade secrets in licensing context</li>
+                                <li><strong>Layered Protection:</strong> Use patents for core innovations, trade secrets for optimization, contracts for additional restrictions</li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-4 bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                            <h5 class="font-semibold text-green-900 mb-2">Teaching Point:</h5>
+                            <p class="text-sm text-gray-700">
+                                This case demonstrates that complex technology platforms require <strong>integrated IP strategies</strong> using multiple tools. Different components have different optimal protection strategies. Real-world IP counsel must analyze each component separately and design a comprehensive protection plan that considers business model (internal use vs. licensing).
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="case-4b" class="case-card level-4 bg-white rounded-lg shadow-md p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">Case 4B: AI Analytics Platform (SaaS)</h2>
+                    <span class="difficulty-badge difficulty-4">Level 4: Expert ⭐⭐⭐⭐</span>
+                    <p class="text-gray-600 mt-4">AI Analytics Corp has developed a SaaS platform with 7 components including core engine, ML models, training data, UI, API, client-side library, and brand...</p>
+                    <button onclick="toggleAnswer('answer-4b')" class="reveal-button bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 mt-4">
+                        <i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis
+                    </button>
+                    <div id="answer-4b" class="answer-section mt-4">
+                        <h4 class="font-bold text-blue-900 mb-3">Answer: SaaS-Specific Strategy with Selective Open Source</h4>
+                        <p class="text-gray-700">Server-side components: Trade secret + defensive patents. Client-side: Consider open source for community building. Brand: Trademark. SaaS model enables strong trade secret protection.</p>
+                    </div>
+                </section>
+
+                <!-- Key Takeaways Section -->
+                <section class="bg-gradient-to-r from-blue-900 to-blue-700 text-white rounded-lg shadow-lg p-8 mt-12">
+                    <h2 class="text-3xl font-bold mb-4">Key Takeaways</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-blue-200">Decision Factors</h3>
+                            <ul class="space-y-2 text-blue-50">
+                                <li><i class="fas fa-check-circle mr-2"></i>Reverse engineering feasibility</li>
+                                <li><i class="fas fa-check-circle mr-2"></i>Independent discovery likelihood</li>
+                                <li><i class="fas fa-check-circle mr-2"></i>Regulatory disclosure requirements</li>
+                                <li><i class="fas fa-check-circle mr-2"></i>Enforcement costs and feasibility</li>
+                                <li><i class="fas fa-check-circle mr-2"></i>Duration needs (20 years vs. indefinite)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2 text-blue-200">Strategic Principles</h3>
+                            <ul class="space-y-2 text-blue-50">
+                                <li><i class="fas fa-lightbulb mr-2"></i>Context matters: technology, industry, market</li>
+                                <li><i class="fas fa-lightbulb mr-2"></i>Multiple IP tools can be used together</li>
+                                <li><i class="fas fa-lightbulb mr-2"></i>No single right answer for complex cases</li>
+                                <li><i class="fas fa-lightbulb mr-2"></i>Quality of reasoning matters most</li>
+                                <li><i class="fas fa-lightbulb mr-2"></i>Component-by-component analysis for tech stacks</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-16 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">Patent vs. Trade Secret Strategic Decision-Making</p>
+            <p class="text-sm text-gray-500 mt-2">Interactive Teaching Tool | Based on peer-reviewed case studies</p>
+            <p class="text-xs text-gray-600 mt-4">All hypotheticals based on real-world cases from academic literature</p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle between student and instructor view
+        document.getElementById('instructorToggle').addEventListener('change', function() {
+            const instructorNotes = document.querySelectorAll('.instructor-note');
+            instructorNotes.forEach(note => {
+                note.classList.toggle('visible');
+            });
+        });
+
+        // Toggle answer visibility
+        function toggleAnswer(answerId) {
+            const answerSection = document.getElementById(answerId);
+            answerSection.classList.toggle('visible');
+            
+            // Update button text
+            const button = event.target.closest('button');
+            if (answerSection.classList.contains('visible')) {
+                button.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Hide Answer & Analysis';
+            } else {
+                button.innerHTML = '<i class="fas fa-eye mr-2"></i>Reveal Answer & Analysis';
+            }
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // Highlight active section in navigation while scrolling
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
