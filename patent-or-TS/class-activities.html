@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Activities — Patent vs. Trade Secret</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: "Inter", sans-serif; }
+        details summary { user-select: none; cursor: pointer; list-style: none; }
+        details summary::-webkit-details-marker { display: none; }
+        details[open] .chevron-icon { transform: rotate(180deg); }
+        .chevron-icon { transition: transform 0.2s ease; display: inline-block; }
+        .step-connector::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 100%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 1.5rem;
+            background: #cbd5e1;
+        }
+        .activity-card { transition: box-shadow 0.2s ease; }
+        .activity-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.09); }
+        .badge-blue   { background-color: #dbeafe; color: #1e40af; }
+        .badge-purple { background-color: #ede9fe; color: #5b21b6; }
+        .badge-green  { background-color: #d1fae5; color: #065f46; }
+        .badge-amber  { background-color: #fef3c7; color: #92400e; }
+        .badge-pink   { background-color: #fce7f3; color: #9d174d; }
+        .print-area { border: 2px dashed #cbd5e1; }
+        @media print {
+            .no-print { display: none !important; }
+            .print-area { border: 1px solid #94a3b8; }
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .rubric-row:nth-child(even) { background-color: #f8fafc; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- ===================== HEADER ===================== -->
+<header class="bg-gradient-to-r from-blue-700 to-indigo-800 text-white no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between py-5 gap-3">
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-chalkboard-teacher text-white text-lg" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold leading-tight">Patent vs. Trade Secret</h1>
+                        <p class="text-blue-200 text-sm font-medium">Class Activities &amp; Exercises</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="flex flex-wrap gap-2" aria-label="Site navigation">
+                <a href="./index.html"
+                   class="inline-flex items-center gap-2 bg-white bg-opacity-15 hover:bg-opacity-25 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-balance-scale text-xs" aria-hidden="true"></i>
+                    Interactive Tool
+                </a>
+                <a href="../index.html"
+                   class="inline-flex items-center gap-2 bg-white bg-opacity-15 hover:bg-opacity-25 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-book-open text-xs" aria-hidden="true"></i>
+                    Learning Companion
+                </a>
+            </nav>
+        </div>
+    </div>
+</header>
+
+<!-- ===================== HERO STRIP ===================== -->
+<div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="max-w-3xl">
+            <span class="inline-block bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide mb-3">
+                Structured Learning Activities
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-bold mb-3">Class Activities &amp; Exercises</h2>
+            <p class="text-blue-100 text-base sm:text-lg leading-relaxed">
+                These structured activities help students apply patent vs. trade secret law concepts through guided exercises, debates, and real-world analysis. Use them individually or as a full session sequence.
+            </p>
+            <div class="flex flex-wrap gap-4 mt-6 text-sm">
+                <div class="flex items-center gap-2 bg-white bg-opacity-15 rounded-lg px-3 py-2">
+                    <i class="fas fa-clock text-blue-200"></i>
+                    <span>4 Activities</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white bg-opacity-15 rounded-lg px-3 py-2">
+                    <i class="fas fa-hourglass-half text-blue-200"></i>
+                    <span>~110 min total</span>
+                </div>
+                <div class="flex items-center gap-2 bg-white bg-opacity-15 rounded-lg px-3 py-2">
+                    <i class="fas fa-users text-blue-200"></i>
+                    <span>Individual &amp; Group</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== MAIN CONTENT ===================== -->
+<main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+    <!-- ── TABLE OF CONTENTS ── -->
+    <section class="mb-10 no-print" aria-label="Table of contents">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+            <h2 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                <i class="fas fa-list-ul text-blue-600" aria-hidden="true"></i>
+                Activity Overview
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                <a href="#activity-1" class="group flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-colors">
+                    <div class="w-8 h-8 bg-blue-100 text-blue-700 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">1</div>
+                    <div>
+                        <p class="font-semibold text-gray-800 text-sm">Decision Framework</p>
+                        <p class="text-xs text-gray-500 mt-0.5">15 min · Individual</p>
+                    </div>
+                </a>
+                <a href="#activity-2" class="group flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-colors">
+                    <div class="w-8 h-8 bg-purple-100 text-purple-700 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors">2</div>
+                    <div>
+                        <p class="font-semibold text-gray-800 text-sm">The Great Debate</p>
+                        <p class="text-xs text-gray-500 mt-0.5">30 min · Teams 4–6</p>
+                    </div>
+                </a>
+                <a href="#activity-3" class="group flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-colors">
+                    <div class="w-8 h-8 bg-green-100 text-green-700 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0 group-hover:bg-green-600 group-hover:text-white transition-colors">3</div>
+                    <div>
+                        <p class="font-semibold text-gray-800 text-sm">Case Analysis</p>
+                        <p class="text-xs text-gray-500 mt-0.5">20 min · Small Groups</p>
+                    </div>
+                </a>
+                <a href="#activity-4" class="group flex items-start gap-3 p-4 rounded-xl border border-gray-200 hover:border-amber-300 hover:bg-amber-50 transition-colors">
+                    <div class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm flex-shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors">4</div>
+                    <div>
+                        <p class="font-semibold text-gray-800 text-sm">IP Strategy Memo</p>
+                        <p class="text-xs text-gray-500 mt-0.5">45 min · Individual/Pairs</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════
+         ACTIVITY 1 — DECISION FRAMEWORK
+    ═══════════════════════════════════════ -->
+    <section id="activity-1" class="mb-10" aria-labelledby="a1-title">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden activity-card">
+            <!-- Card header -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-700 px-6 py-5 text-white">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-sitemap text-white" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="text-blue-200 text-xs font-semibold uppercase tracking-wide">Activity 1</p>
+                            <h2 id="a1-title" class="text-xl font-bold">Building Your Decision Framework</h2>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-clock mr-1.5"></i>15 minutes
+                        </span>
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-user mr-1.5"></i>Individual
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <p class="text-gray-600 text-base mb-6 leading-relaxed">
+                    Students independently work through a structured 5-step framework for analyzing whether an innovation should be protected via patent or kept as a trade secret. This exercise builds analytical habits before engaging in group discussion.
+                </p>
+
+                <!-- 5-step framework -->
+                <h3 class="text-base font-bold text-gray-800 mb-5 flex items-center gap-2">
+                    <i class="fas fa-route text-blue-500" aria-hidden="true"></i>
+                    The 5-Step Analysis Framework
+                </h3>
+
+                <div class="space-y-0 mb-8">
+                    <!-- Step 1 -->
+                    <div class="relative flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 z-10">1</div>
+                            <div class="w-0.5 bg-blue-200 flex-1 my-1" style="min-height:2rem;"></div>
+                        </div>
+                        <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-3 flex-1">
+                            <h4 class="font-bold text-blue-900 mb-1">Identify the Innovation</h4>
+                            <p class="text-blue-800 text-sm">What exactly is being protected? Is it a formula, a process, an algorithm, a design, or a combination? Precision here determines which legal framework applies.</p>
+                            <p class="text-blue-600 text-xs mt-2 italic font-medium">Ask: Can I describe it in a single sentence with specificity?</p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="relative flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 z-10">2</div>
+                            <div class="w-0.5 bg-indigo-200 flex-1 my-1" style="min-height:2rem;"></div>
+                        </div>
+                        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-3 flex-1">
+                            <h4 class="font-bold text-indigo-900 mb-1">Assess Patentability</h4>
+                            <p class="text-indigo-800 text-sm">Is the innovation novel, non-obvious, and useful? Would it survive a prior art search? Is it in a patent-eligible category (not an abstract idea or natural phenomenon)?</p>
+                            <p class="text-indigo-600 text-xs mt-2 italic font-medium">Ask: Could we actually get a patent granted, and what would it cost?</p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="relative flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 bg-violet-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 z-10">3</div>
+                            <div class="w-0.5 bg-violet-200 flex-1 my-1" style="min-height:2rem;"></div>
+                        </div>
+                        <div class="bg-violet-50 border border-violet-200 rounded-xl p-4 mb-3 flex-1">
+                            <h4 class="font-bold text-violet-900 mb-1">Evaluate Reverse Engineering Risk</h4>
+                            <p class="text-violet-800 text-sm">Once the product is on the market, could a skilled competitor figure out the innovation by analyzing it? Trade secret protection evaporates if the secret becomes known through legitimate means.</p>
+                            <p class="text-violet-600 text-xs mt-2 italic font-medium">Ask: Is our secret actually keep-able once we ship?</p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="relative flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 z-10">4</div>
+                            <div class="w-0.5 bg-purple-200 flex-1 my-1" style="min-height:2rem;"></div>
+                        </div>
+                        <div class="bg-purple-50 border border-purple-200 rounded-xl p-4 mb-3 flex-1">
+                            <h4 class="font-bold text-purple-900 mb-1">Consider Duration Needs</h4>
+                            <p class="text-purple-800 text-sm">A utility patent lasts 20 years from filing — excellent for technologies with a defined product lifecycle. Trade secrets can last indefinitely but require ongoing maintenance of secrecy measures.</p>
+                            <p class="text-purple-600 text-xs mt-2 italic font-medium">Ask: Is 20 years enough — or do we need protection forever?</p>
+                        </div>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="relative flex gap-4">
+                        <div class="flex flex-col items-center">
+                            <div class="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 z-10">5</div>
+                        </div>
+                        <div class="bg-pink-50 border border-pink-200 rounded-xl p-4 flex-1">
+                            <h4 class="font-bold text-pink-900 mb-1">Weigh Disclosure vs. Secrecy</h4>
+                            <p class="text-pink-800 text-sm">Filing a patent requires full public disclosure. Does that disclosure give competitors a roadmap? Or does a patent's deterrence value outweigh the cost of disclosure?</p>
+                            <p class="text-pink-600 text-xs mt-2 italic font-medium">Ask: Does publishing this hurt us more than the monopoly right helps us?</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Printable Worksheet -->
+                <div class="print-area rounded-xl p-5 bg-gray-50">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-700 flex items-center gap-2">
+                            <i class="fas fa-pencil-alt text-gray-500" aria-hidden="true"></i>
+                            Worksheet — Apply the Framework
+                        </h3>
+                        <button onclick="window.print()" class="no-print inline-flex items-center gap-2 text-xs text-gray-500 hover:text-blue-600 border border-gray-300 hover:border-blue-400 px-3 py-1.5 rounded-lg transition-colors">
+                            <i class="fas fa-print" aria-hidden="true"></i> Print
+                        </button>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4 italic">Describe a real or hypothetical innovation and work through each step.</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">Innovation Being Analyzed</label>
+                            <div class="border border-gray-300 rounded-lg h-10 bg-white px-3 flex items-center">
+                                <span class="text-gray-300 text-sm italic">Write here...</span>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-blue-700 uppercase tracking-wide mb-1.5">Step 1 — Identification</label>
+                                <div class="border border-blue-200 rounded-lg h-16 bg-white"></div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-indigo-700 uppercase tracking-wide mb-1.5">Step 2 — Patentability</label>
+                                <div class="border border-indigo-200 rounded-lg h-16 bg-white"></div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-violet-700 uppercase tracking-wide mb-1.5">Step 3 — Reverse Eng. Risk</label>
+                                <div class="border border-violet-200 rounded-lg h-16 bg-white"></div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-purple-700 uppercase tracking-wide mb-1.5">Step 4 — Duration Needs</label>
+                                <div class="border border-purple-200 rounded-lg h-16 bg-white"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-pink-700 uppercase tracking-wide mb-1.5">Step 5 — Disclosure vs. Secrecy Analysis</label>
+                            <div class="border border-pink-200 rounded-lg h-16 bg-white"></div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 uppercase tracking-wide mb-1.5">My Recommendation &amp; Rationale</label>
+                            <div class="border-2 border-gray-400 rounded-lg h-20 bg-white"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         ACTIVITY 2 — THE GREAT DEBATE
+    ═══════════════════════════════════════ -->
+    <section id="activity-2" class="mb-10" aria-labelledby="a2-title">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden activity-card">
+            <!-- Card header -->
+            <div class="bg-gradient-to-r from-purple-500 to-violet-700 px-6 py-5 text-white">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-comments text-white" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="text-purple-200 text-xs font-semibold uppercase tracking-wide">Activity 2</p>
+                            <h2 id="a2-title" class="text-xl font-bold">Patent vs. Trade Secret Debate</h2>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-clock mr-1.5"></i>30 minutes
+                        </span>
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-users mr-1.5"></i>Teams of 4–6
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <p class="text-gray-600 text-base mb-6 leading-relaxed">
+                    The class is divided into two teams: <strong>Team Patent</strong> and <strong>Team Trade Secret</strong>. Each team argues their assigned position for a chosen scenario — regardless of personal opinion. This adversarial format develops stronger analytical skills.
+                </p>
+
+                <!-- Team Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div class="bg-blue-50 border-2 border-blue-300 rounded-xl p-4">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 bg-blue-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-certificate text-white text-sm"></i>
+                            </div>
+                            <h3 class="font-bold text-blue-900 text-base">Team Patent</h3>
+                        </div>
+                        <p class="text-blue-800 text-sm mb-3">Argue that the innovation should be protected through the patent system.</p>
+                        <ul class="text-blue-700 text-sm space-y-1">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Strong exclusivity right</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Defensive patent portfolio value</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Licensing revenue opportunity</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Protection if secret leaks</li>
+                        </ul>
+                    </div>
+                    <div class="bg-amber-50 border-2 border-amber-300 rounded-xl p-4">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-9 h-9 bg-amber-600 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user-secret text-white text-sm"></i>
+                            </div>
+                            <h3 class="font-bold text-amber-900 text-base">Team Trade Secret</h3>
+                        </div>
+                        <p class="text-amber-800 text-sm mb-3">Argue that the innovation should be protected as a confidential trade secret.</p>
+                        <ul class="text-amber-700 text-sm space-y-1">
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Potentially unlimited duration</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>No public disclosure required</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Immediate protection, no filing</li>
+                            <li class="flex items-start gap-2"><i class="fas fa-check text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>No prosecution costs</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Debate Structure -->
+                <div class="bg-gray-50 rounded-xl p-5 mb-8">
+                    <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <i class="fas fa-stopwatch text-purple-600" aria-hidden="true"></i>
+                        Debate Structure &amp; Timing
+                    </h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-gray-200">
+                            <span class="w-14 text-center text-xs font-bold text-purple-700 bg-purple-100 px-2 py-1 rounded-md flex-shrink-0">5 min</span>
+                            <span class="text-gray-700 text-sm">Teams prepare arguments and assign speakers</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-gray-200">
+                            <span class="w-14 text-center text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded-md flex-shrink-0">3 min</span>
+                            <span class="text-gray-700 text-sm"><strong>Team Patent</strong> presents their case — uninterrupted</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-gray-200">
+                            <span class="w-14 text-center text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-md flex-shrink-0">3 min</span>
+                            <span class="text-gray-700 text-sm"><strong>Team Trade Secret</strong> presents their case — uninterrupted</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-gray-200">
+                            <span class="w-14 text-center text-xs font-bold text-red-700 bg-red-100 px-2 py-1 rounded-md flex-shrink-0">2 min</span>
+                            <span class="text-gray-700 text-sm">Rebuttals — each team responds to the other's strongest point</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-white rounded-lg px-4 py-3 border border-gray-200">
+                            <span class="w-14 text-center text-xs font-bold text-green-700 bg-green-100 px-2 py-1 rounded-md flex-shrink-0">7 min</span>
+                            <span class="text-gray-700 text-sm">Open class discussion and instructor-led analysis</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Debate Scenarios -->
+                <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-theater-masks text-purple-600" aria-hidden="true"></i>
+                    Debate Scenarios
+                </h3>
+                <div class="space-y-4">
+
+                    <!-- Scenario A -->
+                    <details class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                        <summary class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">A</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm">Pharmaceutical Synthesis Process</p>
+                                    <p class="text-gray-500 text-xs mt-0.5">A company discovers a new synthesis process for a blockbuster drug</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 flex-shrink-0">
+                                <span class="badge-green text-xs font-semibold px-2.5 py-1 rounded-full hidden sm:inline-block">Intermediate</span>
+                                <i class="fas fa-chevron-down chevron-icon text-gray-400 text-sm"></i>
+                            </div>
+                        </summary>
+                        <div class="px-5 pb-5 border-t border-gray-100 pt-4">
+                            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Scenario Facts</h4>
+                                <p class="text-gray-700 text-sm leading-relaxed">PharmaCo has discovered a novel multi-step synthesis process for producing DrugX — a blockbuster medication projected to generate $2B/year. The process reduces production cost by 40%. The drug itself will be FDA-approved and the active compound is separately patentable. Should the <em>synthesis process</em> be patented or kept as a trade secret?</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-blue-50 rounded-lg p-4">
+                                    <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2">Key Patent Arguments</h4>
+                                    <ul class="text-blue-700 text-sm space-y-1.5">
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Prevents generic manufacturers from copying the process post-expiry</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>FDA manufacturing disclosures may inadvertently reveal the process anyway</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Licensing to other pharma = revenue stream</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide mb-2">Key Trade Secret Arguments</h4>
+                                    <ul class="text-amber-700 text-sm space-y-1.5">
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Chemical processes are extremely hard to reverse-engineer exactly</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Trade secret can outlast the 20-year patent period</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Patent disclosure is a competitor roadmap once the patent expires</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Scenario B -->
+                    <details class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                        <summary class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 bg-red-100 text-red-700 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">B</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm">AI Recommendation Engine</p>
+                                    <p class="text-gray-500 text-xs mt-0.5">A tech startup builds a personalized recommendation model</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 flex-shrink-0">
+                                <span class="badge-pink text-xs font-semibold px-2.5 py-1 rounded-full hidden sm:inline-block">Advanced</span>
+                                <i class="fas fa-chevron-down chevron-icon text-gray-400 text-sm"></i>
+                            </div>
+                        </summary>
+                        <div class="px-5 pb-5 border-t border-gray-100 pt-4">
+                            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Scenario Facts</h4>
+                                <p class="text-gray-700 text-sm leading-relaxed">StartupAI has built a recommendation engine that processes anonymized user behavioral data to predict purchasing intent with 94% accuracy — significantly outperforming competitors. The model runs server-side and is never distributed. It took 18 months and $4M to develop. Should they patent the method or keep it as a trade secret?</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-blue-50 rounded-lg p-4">
+                                    <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2">Key Patent Arguments</h4>
+                                    <ul class="text-blue-700 text-sm space-y-1.5">
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Creates investor/acquirer-friendly IP portfolio</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Provides defense if a competitor patents similar method first</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>AI/ML patents are increasingly valuable for licensing</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide mb-2">Key Trade Secret Arguments</h4>
+                                    <ul class="text-amber-700 text-sm space-y-1.5">
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Server-side model is impossible to reverse-engineer from API</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Training data + model weights = the real secret, not the method</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Patent abstract-idea rejections (Alice doctrine) make AI patents risky</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Scenario C -->
+                    <details class="bg-white border border-gray-200 rounded-xl overflow-hidden">
+                        <summary class="flex items-center justify-between px-5 py-4 hover:bg-gray-50 transition-colors">
+                            <div class="flex items-center gap-3">
+                                <span class="w-8 h-8 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">C</span>
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm">Unique Sauce Flavor Profile</p>
+                                    <p class="text-gray-500 text-xs mt-0.5">A food company creates a proprietary flavor combination</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 flex-shrink-0">
+                                <span class="badge-blue text-xs font-semibold px-2.5 py-1 rounded-full hidden sm:inline-block">Beginner</span>
+                                <i class="fas fa-chevron-down chevron-icon text-gray-400 text-sm"></i>
+                            </div>
+                        </summary>
+                        <div class="px-5 pb-5 border-t border-gray-100 pt-4">
+                            <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Scenario Facts</h4>
+                                <p class="text-gray-700 text-sm leading-relaxed">FoodCo has developed a proprietary spice blend and fermentation process that creates a unique flavor profile for their signature hot sauce. Food scientists could potentially reverse-engineer the flavor via gas chromatography analysis. The product will be sold at retail and the recipe is held by one employee. Patent or trade secret?</p>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-blue-50 rounded-lg p-4">
+                                    <h4 class="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2">Key Patent Arguments</h4>
+                                    <ul class="text-blue-700 text-sm space-y-1.5">
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>If reverse-engineered, patent prevents imitation for 20 years</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>One employee holding the recipe = catastrophic key-person risk</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-gavel text-blue-500 mt-0.5 flex-shrink-0 text-xs"></i>Brand story: "Patented Formula" can be a marketing asset</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-amber-50 rounded-lg p-4">
+                                    <h4 class="text-xs font-bold text-amber-800 uppercase tracking-wide mb-2">Key Trade Secret Arguments</h4>
+                                    <ul class="text-amber-700 text-sm space-y-1.5">
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Coca-Cola model: 133+ years vs. a 20-year patent</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>Flavor formulas are famously hard to pin down exactly</li>
+                                        <li class="flex items-start gap-2"><i class="fas fa-lock text-amber-500 mt-0.5 flex-shrink-0 text-xs"></i>No disclosure = no roadmap for competitors post-patent</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         ACTIVITY 3 — REAL-WORLD CASE ANALYSIS
+    ═══════════════════════════════════════ -->
+    <section id="activity-3" class="mb-10" aria-labelledby="a3-title">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden activity-card">
+            <!-- Card header -->
+            <div class="bg-gradient-to-r from-green-500 to-emerald-700 px-6 py-5 text-white">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-search text-white" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="text-green-200 text-xs font-semibold uppercase tracking-wide">Activity 3</p>
+                            <h2 id="a3-title" class="text-xl font-bold">Real-World Case Studies</h2>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-clock mr-1.5"></i>20 minutes
+                        </span>
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-users mr-1.5"></i>Small Groups
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <p class="text-gray-600 text-base mb-6 leading-relaxed">
+                    Analyze how famous companies actually handled the patent vs. trade secret decision. Small groups are assigned one case each, then share findings with the class.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
+
+                    <!-- Case 1: Coca-Cola -->
+                    <div class="border-2 border-red-200 rounded-xl overflow-hidden">
+                        <div class="bg-red-600 px-4 py-3 text-white">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-bottle-water text-red-200 text-sm" aria-hidden="true"></i>
+                                <span class="text-xs font-bold uppercase tracking-wide text-red-200">Case Study 1</span>
+                            </div>
+                            <h3 class="font-bold text-lg">Coca-Cola Formula</h3>
+                            <p class="text-red-200 text-xs mt-0.5">Trade Secret · Since 1891</p>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700 text-sm mb-4 leading-relaxed">
+                                The Coca-Cola formula — "Merchandise 7X" — has been a trade secret for over 133 years. The formula is reportedly stored in a vault at the World of Coca-Cola museum in Atlanta, with access restricted to a handful of executives.
+                            </p>
+                            <div class="bg-red-50 rounded-lg p-3 mb-4">
+                                <p class="text-xs font-bold text-red-800 uppercase tracking-wide mb-2">Key Insight</p>
+                                <p class="text-red-700 text-sm">Sometimes patience beats patents. A 20-year patent would have expired in 1911. Instead, 133+ years of protection — and the <em>mystique</em> of the secret is itself a brand asset.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Discussion Questions</p>
+                                <ol class="text-gray-700 text-xs space-y-1.5 list-decimal list-inside">
+                                    <li>Could a competitor reverse-engineer the formula today? Does it matter?</li>
+                                    <li>What "reasonable measures" does Coca-Cola likely take to protect the formula?</li>
+                                    <li>Is the formula itself, or the <em>brand</em>, the real competitive advantage?</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case 2: Google PageRank -->
+                    <div class="border-2 border-blue-200 rounded-xl overflow-hidden">
+                        <div class="bg-blue-600 px-4 py-3 text-white">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-search text-blue-200 text-sm" aria-hidden="true"></i>
+                                <span class="text-xs font-bold uppercase tracking-wide text-blue-200">Case Study 2</span>
+                            </div>
+                            <h3 class="font-bold text-lg">Google PageRank</h3>
+                            <p class="text-blue-200 text-xs mt-0.5">Hybrid Strategy · Patent + Trade Secret</p>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700 text-sm mb-4 leading-relaxed">
+                                Google's core PageRank algorithm was patented (US6285999B1, filed 1998, expired 2018). However, the actual search ranking system used today is vastly more complex — thousands of signals kept as trade secrets — making the patent disclosure largely a historical artifact.
+                            </p>
+                            <div class="bg-blue-50 rounded-lg p-3 mb-4">
+                                <p class="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2">Key Insight</p>
+                                <p class="text-blue-700 text-sm">Use patents for <em>defensive protection</em> + trade secrets for <em>competitive advantage</em>. The patent deterred copyists; the trade secret kept the algorithm's actual implementation secret forever.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Discussion Questions</p>
+                                <ol class="text-gray-700 text-xs space-y-1.5 list-decimal list-inside">
+                                    <li>Why patent the core algorithm if the real advantage is in the implementation?</li>
+                                    <li>What happened when the PageRank patent expired in 2018?</li>
+                                    <li>How does Google's approach inform a hybrid IP strategy for your client?</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case 3: KFC -->
+                    <div class="border-2 border-orange-200 rounded-xl overflow-hidden">
+                        <div class="bg-orange-600 px-4 py-3 text-white">
+                            <div class="flex items-center gap-2 mb-1">
+                                <i class="fas fa-drumstick-bite text-orange-200 text-sm" aria-hidden="true"></i>
+                                <span class="text-xs font-bold uppercase tracking-wide text-orange-200">Case Study 3</span>
+                            </div>
+                            <h3 class="font-bold text-lg">KFC's 11 Herbs &amp; Spices</h3>
+                            <p class="text-orange-200 text-xs mt-0.5">Trade Secret · Structural Secrecy</p>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-gray-700 text-sm mb-4 leading-relaxed">
+                                KFC's recipe is split between two separate suppliers — neither has the complete formula. The blended spices are combined at facilities that don't know each other's portions. Colonel Sanders reportedly memorized the recipe and never wrote it down in one place.
+                            </p>
+                            <div class="bg-orange-50 rounded-lg p-3 mb-4">
+                                <p class="text-xs font-bold text-orange-800 uppercase tracking-wide mb-2">Key Insight</p>
+                                <p class="text-orange-700 text-sm">Operational procedures can be <em>structured</em> to maintain secrecy — even when the ultimate product is available for analysis. Trade secret law protects the organizational method, not just the formula itself.</p>
+                            </div>
+                            <div class="bg-gray-50 rounded-lg p-3">
+                                <p class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Discussion Questions</p>
+                                <ol class="text-gray-700 text-xs space-y-1.5 list-decimal list-inside">
+                                    <li>Does splitting a recipe between suppliers qualify as "reasonable measures" under DTSA?</li>
+                                    <li>What would happen legally if one supplier accidentally combined the full recipe?</li>
+                                    <li>Could a competitor reverse-engineer the recipe and use it legally?</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Teaching Points -->
+                <div class="bg-green-50 border border-green-200 rounded-xl p-5">
+                    <h3 class="text-base font-bold text-green-900 mb-3 flex items-center gap-2">
+                        <i class="fas fa-lightbulb text-green-600" aria-hidden="true"></i>
+                        Key Teaching Points from the Cases
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                        <div class="bg-white rounded-lg p-3 border border-green-100">
+                            <p class="font-bold text-green-800 mb-1">Duration Asymmetry</p>
+                            <p class="text-green-700">Patents give 20-year monopolies. Trade secrets can last indefinitely — if the secret holds. The Coca-Cola formula demonstrates this asymmetry dramatically.</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 border border-green-100">
+                            <p class="font-bold text-green-800 mb-1">Hybrid Is Valid</p>
+                            <p class="text-green-700">Patent the framework; trade-secret the implementation. Google proved that these aren't mutually exclusive. Strategic layering is often the optimal answer.</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 border border-green-100">
+                            <p class="font-bold text-green-800 mb-1">Structure Enables Secrecy</p>
+                            <p class="text-green-700">KFC shows that operational design — how you organize who knows what — is a legitimate and powerful trade secret protection mechanism.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         ACTIVITY 4 — IP STRATEGY MEMO
+    ═══════════════════════════════════════ -->
+    <section id="activity-4" class="mb-10" aria-labelledby="a4-title">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden activity-card">
+            <!-- Card header -->
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 px-6 py-5 text-white">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-file-alt text-white" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <p class="text-amber-200 text-xs font-semibold uppercase tracking-wide">Activity 4</p>
+                            <h2 id="a4-title" class="text-xl font-bold">IP Strategy Memo</h2>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-clock mr-1.5"></i>45 minutes
+                        </span>
+                        <span class="bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1.5 rounded-full">
+                            <i class="fas fa-user-friends mr-1.5"></i>Individual / Pairs
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <p class="text-gray-600 text-base mb-6 leading-relaxed">
+                    Students write a brief IP strategy memorandum advising a fictional client. This exercise synthesizes all course concepts into a practical, professional deliverable — the kind of analysis a junior associate or in-house counsel would actually prepare.
+                </p>
+
+                <!-- Client Scenario -->
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-xl p-5 mb-8">
+                    <div class="flex items-start gap-3 mb-4">
+                        <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-tractor text-white" aria-hidden="true"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-amber-900 text-base">Client: TechnoFarm Inc.</h3>
+                            <p class="text-amber-700 text-sm">Agricultural Technology Company — Seeking IP Strategy Guidance</p>
+                        </div>
+                    </div>
+                    <p class="text-amber-800 text-sm mb-4 leading-relaxed">
+                        TechnoFarm Inc. is an agri-tech company that has developed three distinct innovations over the past two years. They have retained your firm for guidance on the optimal IP protection strategy for each. The company has a $500,000 IP budget for the next 18 months.
+                    </p>
+
+                    <div class="space-y-3">
+                        <div class="bg-white rounded-lg p-4 border border-amber-200">
+                            <div class="flex items-start gap-3">
+                                <div class="w-7 h-7 bg-green-100 text-green-700 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">1</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Pesticide-Resistant Gene Sequence</p>
+                                    <p class="text-gray-600 text-xs mt-1">A lab-engineered gene sequence that grants corn crops resistance to a specific class of herbicides. The sequence is novel and has passed initial efficacy trials. Competitors are working on similar approaches.</p>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-medium">Biotech</span>
+                                        <span class="bg-yellow-100 text-yellow-700 text-xs px-2 py-0.5 rounded-full font-medium">High R&amp;D Cost</span>
+                                        <span class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full font-medium">Competitor Threat</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 border border-amber-200">
+                            <div class="flex items-start gap-3">
+                                <div class="w-7 h-7 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">2</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Proprietary Soil Analysis Algorithm</p>
+                                    <p class="text-gray-600 text-xs mt-1">A machine-learning algorithm that analyzes soil sensor data to predict optimal fertilizer timing with 97% accuracy. Runs entirely server-side; farmers access it via API. Training dataset took 5 years to compile.</p>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium">AI/ML</span>
+                                        <span class="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium">Server-Side Only</span>
+                                        <span class="bg-indigo-100 text-indigo-700 text-xs px-2 py-0.5 rounded-full font-medium">Unique Dataset</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-lg p-4 border border-amber-200">
+                            <div class="flex items-start gap-3">
+                                <div class="w-7 h-7 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center font-bold text-xs flex-shrink-0 mt-0.5">3</div>
+                                <div>
+                                    <p class="font-bold text-gray-800 text-sm">Crop Rotation Scheduling Process</p>
+                                    <p class="text-gray-600 text-xs mt-1">A unique operational process for scheduling crop rotations that increases yield 22% over industry-standard approaches. Used entirely in-house at TechnoFarm's managed farms. Not distributed to customers.</p>
+                                    <div class="flex flex-wrap gap-2 mt-2">
+                                        <span class="bg-amber-100 text-amber-700 text-xs px-2 py-0.5 rounded-full font-medium">Operational Process</span>
+                                        <span class="bg-orange-100 text-orange-700 text-xs px-2 py-0.5 rounded-full font-medium">Internal Use Only</span>
+                                        <span class="bg-teal-100 text-teal-700 text-xs px-2 py-0.5 rounded-full font-medium">High Yield Impact</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Memo Template -->
+                <div class="print-area rounded-xl p-5 bg-gray-50 mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-700 flex items-center gap-2">
+                            <i class="fas fa-file-signature text-gray-500" aria-hidden="true"></i>
+                            Memo Template
+                        </h3>
+                        <button onclick="window.print()" class="no-print inline-flex items-center gap-2 text-xs text-gray-500 hover:text-amber-600 border border-gray-300 hover:border-amber-400 px-3 py-1.5 rounded-lg transition-colors">
+                            <i class="fas fa-print" aria-hidden="true"></i> Print
+                        </button>
+                    </div>
+
+                    <div class="bg-white rounded-lg border border-gray-300 overflow-hidden">
+                        <!-- Memo header -->
+                        <div class="bg-gray-800 text-white px-5 py-3">
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-xs">
+                                <div><span class="text-gray-400 uppercase tracking-wide">TO:</span> <span class="ml-2">TechnoFarm Inc., Board of Directors</span></div>
+                                <div><span class="text-gray-400 uppercase tracking-wide">FROM:</span> <span class="ml-2">___________________________</span></div>
+                                <div><span class="text-gray-400 uppercase tracking-wide">DATE:</span> <span class="ml-2">___________________________</span></div>
+                                <div><span class="text-gray-400 uppercase tracking-wide">RE:</span> <span class="ml-2">IP Protection Strategy Memo</span></div>
+                            </div>
+                        </div>
+                        <div class="divide-y divide-gray-100">
+                            <div class="px-5 py-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">I. Executive Summary</h4>
+                                <div class="border border-gray-200 rounded h-16 bg-gray-50"></div>
+                                <p class="text-xs text-gray-400 mt-1 italic">2–3 sentences summarizing your overall recommendation</p>
+                            </div>
+                            <div class="px-5 py-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3">II. Analysis by Innovation</h4>
+                                <div class="space-y-3">
+                                    <div>
+                                        <p class="text-xs font-semibold text-gray-700 mb-1">Innovation 1 — Gene Sequence</p>
+                                        <div class="border border-gray-200 rounded h-14 bg-gray-50"></div>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-gray-700 mb-1">Innovation 2 — Soil Algorithm</p>
+                                        <div class="border border-gray-200 rounded h-14 bg-gray-50"></div>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs font-semibold text-gray-700 mb-1">Innovation 3 — Crop Rotation Process</p>
+                                        <div class="border border-gray-200 rounded h-14 bg-gray-50"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="px-5 py-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">III. Recommendations &amp; Budget Allocation</h4>
+                                <div class="border border-gray-200 rounded h-16 bg-gray-50"></div>
+                            </div>
+                            <div class="px-5 py-4">
+                                <h4 class="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">IV. Key Risks &amp; Mitigations</h4>
+                                <div class="border border-gray-200 rounded h-16 bg-gray-50"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evaluation Rubric -->
+                <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-star text-amber-500" aria-hidden="true"></i>
+                    Evaluation Rubric
+                </h3>
+                <div class="overflow-x-auto rounded-xl border border-gray-200">
+                    <table class="w-full text-sm" aria-label="Evaluation rubric">
+                        <thead>
+                            <tr class="bg-gray-800 text-white">
+                                <th class="text-left px-4 py-3 font-semibold w-2/5">Criteria</th>
+                                <th class="text-center px-4 py-3 font-semibold">Excellent (4)</th>
+                                <th class="text-center px-4 py-3 font-semibold">Good (3)</th>
+                                <th class="text-center px-4 py-3 font-semibold">Satisfactory (2)</th>
+                                <th class="text-center px-4 py-3 font-semibold">Needs Work (1)</th>
+                                <th class="text-center px-4 py-3 font-semibold w-16">Points</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="rubric-row">
+                                <td class="px-4 py-3 font-medium text-gray-800">Legal Accuracy</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Applies DTSA, UTSA, and patent requirements correctly; no doctrinal errors</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Minor errors that don't undermine core analysis</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Some significant errors but framework is present</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Fundamental misunderstanding of law</td>
+                                <td class="px-4 py-3 text-center font-bold text-amber-600">/ 4</td>
+                            </tr>
+                            <tr class="rubric-row">
+                                <td class="px-4 py-3 font-medium text-gray-800">Analytical Depth</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Considers all key factors (duration, disclosure, RE risk) for each innovation</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Addresses most factors with good reasoning</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Superficial analysis; conclusions without support</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Little meaningful analysis</td>
+                                <td class="px-4 py-3 text-center font-bold text-amber-600">/ 4</td>
+                            </tr>
+                            <tr class="rubric-row">
+                                <td class="px-4 py-3 font-medium text-gray-800">Practical Judgment</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Recommendations are realistic, budget-conscious, and business-aware</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Good judgment with minor impracticalities</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Technically correct but impractical</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Disconnected from real-world constraints</td>
+                                <td class="px-4 py-3 text-center font-bold text-amber-600">/ 4</td>
+                            </tr>
+                            <tr class="rubric-row">
+                                <td class="px-4 py-3 font-medium text-gray-800">Risk Identification</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Identifies key risks for each recommendation and proposes mitigations</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Notes major risks, limited mitigation discussion</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Acknowledges risks but doesn't analyze them</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Risks not identified</td>
+                                <td class="px-4 py-3 text-center font-bold text-amber-600">/ 4</td>
+                            </tr>
+                            <tr class="rubric-row">
+                                <td class="px-4 py-3 font-medium text-gray-800">Clarity &amp; Professionalism</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Clear, well-organized, professional memo format; accessible to non-lawyer audience</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Generally clear with minor organizational issues</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Disorganized but readable</td>
+                                <td class="px-4 py-3 text-gray-600 text-xs text-center">Unclear or very poorly written</td>
+                                <td class="px-4 py-3 text-center font-bold text-amber-600">/ 4</td>
+                            </tr>
+                            <tr class="bg-amber-50 border-t-2 border-amber-300">
+                                <td class="px-4 py-3 font-bold text-gray-900" colspan="5">Total Score</td>
+                                <td class="px-4 py-3 text-center font-bold text-amber-700 text-base">/ 20</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         SECTION 6 — QUICK REFERENCE
+    ═══════════════════════════════════════ -->
+    <section class="mb-10" aria-labelledby="qr-title">
+        <h2 id="qr-title" class="text-xl font-bold text-gray-900 mb-5 flex items-center gap-2">
+            <i class="fas fa-book text-blue-600" aria-hidden="true"></i>
+            Quick Reference: Key Legal Standards
+        </h2>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- DTSA -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-landmark text-indigo-600" aria-hidden="true"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm mb-2">DTSA</h3>
+                <p class="text-xs font-medium text-indigo-600 mb-2">Defend Trade Secrets Act (2016)</p>
+                <p class="text-gray-600 text-xs mb-3 leading-relaxed">Federal statute enabling trade secret owners to bring civil claims in federal court. First federal civil trade secret law.</p>
+                <ul class="text-gray-600 text-xs space-y-1">
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-indigo-400 mt-0.5 flex-shrink-0"></i>Civil and criminal remedies available</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-indigo-400 mt-0.5 flex-shrink-0"></i>Ex parte seizure orders possible</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-indigo-400 mt-0.5 flex-shrink-0"></i>Protects whistleblowers via immunity provision</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-indigo-400 mt-0.5 flex-shrink-0"></i>Treble damages + attorney fees for willful misappropriation</li>
+                </ul>
+            </div>
+
+            <!-- UTSA -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-map text-purple-600" aria-hidden="true"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm mb-2">UTSA</h3>
+                <p class="text-xs font-medium text-purple-600 mb-2">Uniform Trade Secrets Act (State Level)</p>
+                <p class="text-gray-600 text-xs mb-3 leading-relaxed">Adopted (with variations) by 48 states + D.C. Three elements must be proven to establish trade secret status.</p>
+                <ul class="text-gray-600 text-xs space-y-1">
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-purple-400 mt-0.5 flex-shrink-0"></i><strong>Information</strong> — must have economic value</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-purple-400 mt-0.5 flex-shrink-0"></i><strong>Secrecy</strong> — not generally known or readily ascertainable</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-purple-400 mt-0.5 flex-shrink-0"></i><strong>Reasonable measures</strong> — owner actively maintains secrecy</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-purple-400 mt-0.5 flex-shrink-0"></i>NY and MA have not adopted UTSA</li>
+                </ul>
+            </div>
+
+            <!-- Patent Requirements -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-certificate text-blue-600" aria-hidden="true"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm mb-2">Patent Requirements</h3>
+                <p class="text-xs font-medium text-blue-600 mb-2">35 U.S.C. §§ 101, 102, 103, 112</p>
+                <p class="text-gray-600 text-xs mb-3 leading-relaxed">Four core requirements under U.S. patent law. Failure on any one bars patent protection entirely.</p>
+                <ul class="text-gray-600 text-xs space-y-1">
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-blue-400 mt-0.5 flex-shrink-0"></i><strong>Novel</strong> — not in prior art (§ 102)</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-blue-400 mt-0.5 flex-shrink-0"></i><strong>Non-obvious</strong> — to a PHOSITA (§ 103)</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-blue-400 mt-0.5 flex-shrink-0"></i><strong>Useful</strong> — has utility (§ 101)</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-angle-right text-blue-400 mt-0.5 flex-shrink-0"></i><strong>Enabled</strong> — disclosure teaches how to make/use (§ 112)</li>
+                </ul>
+            </div>
+
+            <!-- Misappropriation -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-600" aria-hidden="true"></i>
+                </div>
+                <h3 class="font-bold text-gray-900 text-sm mb-2">Misappropriation</h3>
+                <p class="text-xs font-medium text-red-600 mb-2">vs. Proper Reverse Engineering</p>
+                <p class="text-gray-600 text-xs mb-3 leading-relaxed">Not all competitive intelligence is misappropriation. Understanding the boundary is critical.</p>
+                <ul class="text-gray-600 text-xs space-y-1">
+                    <li class="flex items-start gap-1.5"><i class="fas fa-times text-red-400 mt-0.5 flex-shrink-0"></i><strong>Misappropriation:</strong> breach of duty, theft, espionage, inducing breach</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-check text-green-500 mt-0.5 flex-shrink-0"></i><strong>Permitted:</strong> independent development</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-check text-green-500 mt-0.5 flex-shrink-0"></i><strong>Permitted:</strong> reverse engineering a lawfully obtained product</li>
+                    <li class="flex items-start gap-1.5"><i class="fas fa-check text-green-500 mt-0.5 flex-shrink-0"></i><strong>Permitted:</strong> studying publicly disclosed information</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ═══════════════════════════════════════
+         SECTION 7 — INSTRUCTOR RESOURCES
+    ═══════════════════════════════════════ -->
+    <section class="mb-10 no-print" aria-labelledby="ir-title">
+        <details class="bg-white rounded-2xl border-2 border-amber-200 shadow-sm overflow-hidden">
+            <summary class="flex items-center justify-between px-6 py-5 cursor-pointer hover:bg-amber-50 transition-colors">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-lock text-amber-600" aria-hidden="true"></i>
+                    </div>
+                    <div>
+                        <h2 id="ir-title" class="text-xl font-bold text-gray-900">Instructor Resources</h2>
+                        <p class="text-gray-500 text-sm">Teaching guides, misconceptions, and facilitation tips — click to expand</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-down chevron-icon text-amber-500 text-lg flex-shrink-0"></i>
+            </summary>
+
+            <div class="border-t border-amber-200 px-6 py-6">
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-start gap-3">
+                    <i class="fas fa-info-circle text-amber-600 mt-0.5 flex-shrink-0" aria-hidden="true"></i>
+                    <p class="text-amber-800 text-sm">These resources are for instructor use. Consider sharing only relevant materials with students at appropriate points in the session.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <!-- Timing Guide -->
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fas fa-clock text-blue-600 text-sm" aria-hidden="true"></i>
+                            Session Timing Guide
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2.5">
+                                <span class="text-xs font-bold text-gray-500 w-16 flex-shrink-0">0:00</span>
+                                <span class="text-sm text-gray-700">Frame the problem; distribute Activity 1 worksheets</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2.5">
+                                <span class="text-xs font-bold text-gray-500 w-16 flex-shrink-0">0:15</span>
+                                <span class="text-sm text-gray-700">Debrief Activity 1; introduce debate teams</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2.5">
+                                <span class="text-xs font-bold text-gray-500 w-16 flex-shrink-0">0:20</span>
+                                <span class="text-sm text-gray-700">Activity 2: Debate begins (run 1–2 scenarios)</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2.5">
+                                <span class="text-xs font-bold text-gray-500 w-16 flex-shrink-0">0:50</span>
+                                <span class="text-sm text-gray-700">Activity 3: Case study small groups; 10 min share-out</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2.5">
+                                <span class="text-xs font-bold text-gray-500 w-16 flex-shrink-0">1:10</span>
+                                <span class="text-sm text-gray-700">Activity 4: IP Memo (can be completed as homework)</span>
+                            </div>
+                            <div class="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-2.5">
+                                <span class="text-xs font-bold text-gray-500 w-16 flex-shrink-0">1:55</span>
+                                <span class="text-sm text-gray-700">Wrap-up with Quick Reference legal standards</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Common Misconceptions -->
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fas fa-exclamation-circle text-red-500 text-sm" aria-hidden="true"></i>
+                            Common Misconceptions to Address
+                        </h3>
+                        <div class="space-y-3">
+                            <div class="bg-red-50 border-l-4 border-red-400 rounded-r-lg p-3">
+                                <p class="text-xs font-bold text-red-800 mb-1">"A trade secret only protects against theft"</p>
+                                <p class="text-red-700 text-xs">Correct this: trade secrets are lost if the secret becomes generally known through <em>any</em> means, including legitimate reverse engineering or accidental disclosure. Theft (misappropriation) is just one scenario.</p>
+                            </div>
+                            <div class="bg-red-50 border-l-4 border-red-400 rounded-r-lg p-3">
+                                <p class="text-xs font-bold text-red-800 mb-1">"Patents always give better protection"</p>
+                                <p class="text-red-700 text-xs">Patents expire; trade secrets don't. Patent prosecution is expensive and uncertain. And patents require disclosure — which competitors can use to design around your claims after expiry.</p>
+                            </div>
+                            <div class="bg-red-50 border-l-4 border-red-400 rounded-r-lg p-3">
+                                <p class="text-xs font-bold text-red-800 mb-1">"Server-side code can't be patented"</p>
+                                <p class="text-red-700 text-xs">Patentability depends on the <em>method</em>, not its deployment. A method of doing X can be patented even if X runs server-side. The Alice framework is the relevant obstacle, not server deployment.</p>
+                            </div>
+                            <div class="bg-red-50 border-l-4 border-red-400 rounded-r-lg p-3">
+                                <p class="text-xs font-bold text-red-800 mb-1">"Marking something 'Confidential' creates a trade secret"</p>
+                                <p class="text-red-700 text-xs">A label alone is insufficient. Courts require actual reasonable measures: NDAs, access controls, employee training, compartmentalization. The label is evidence, not the substance.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assessment Ideas -->
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fas fa-graduation-cap text-green-600 text-sm" aria-hidden="true"></i>
+                            Assessment Ideas
+                        </h3>
+                        <div class="space-y-2 text-sm text-gray-700">
+                            <div class="flex items-start gap-2 bg-green-50 rounded-lg p-3">
+                                <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0 text-xs"></i>
+                                <div><span class="font-medium">IP Memo (Activity 4)</span> — Grade using the rubric. Works well as an individual take-home assignment with a 1-week deadline.</div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-green-50 rounded-lg p-3">
+                                <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0 text-xs"></i>
+                                <div><span class="font-medium">Debate Participation</span> — Assess argument quality, responsiveness to opposing points, and correct use of legal doctrine.</div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-green-50 rounded-lg p-3">
+                                <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0 text-xs"></i>
+                                <div><span class="font-medium">Case Study Write-Up</span> — One-page analysis of a real-world case not covered in class (student-selected with instructor approval).</div>
+                            </div>
+                            <div class="flex items-start gap-2 bg-green-50 rounded-lg p-3">
+                                <i class="fas fa-check-circle text-green-500 mt-0.5 flex-shrink-0 text-xs"></i>
+                                <div><span class="font-medium">Multiple Choice Quiz</span> — 10-question quiz on DTSA elements, patent requirements, and misappropriation definitions. Use as a pre- or post-test.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Discussion Facilitation Tips -->
+                    <div>
+                        <h3 class="font-bold text-gray-900 mb-3 flex items-center gap-2">
+                            <i class="fas fa-comments text-purple-600 text-sm" aria-hidden="true"></i>
+                            Discussion Facilitation Tips
+                        </h3>
+                        <div class="space-y-3 text-sm">
+                            <div class="bg-purple-50 rounded-lg p-3">
+                                <p class="font-bold text-purple-900 text-xs mb-1">Socratic Questioning Starters</p>
+                                <ul class="text-purple-700 text-xs space-y-1">
+                                    <li>"What would happen to this argument if the competitor could reverse-engineer it in six months?"</li>
+                                    <li>"If you were the competitor's lawyer, how would you attack that position?"</li>
+                                    <li>"Does it matter whether the secret was discovered through good work or bad luck?"</li>
+                                </ul>
+                            </div>
+                            <div class="bg-purple-50 rounded-lg p-3">
+                                <p class="font-bold text-purple-900 text-xs mb-1">When the Debate Gets Stuck</p>
+                                <p class="text-purple-700 text-xs">If teams are too agreeable, introduce a curveball: "Now assume the company is planning to license the technology to three competitors. Does that change the analysis?" Licensing often breaks the impasse.</p>
+                            </div>
+                            <div class="bg-purple-50 rounded-lg p-3">
+                                <p class="font-bold text-purple-900 text-xs mb-1">Closing the Loop</p>
+                                <p class="text-purple-700 text-xs">Always close with: "What <em>more</em> information would you need before making a final recommendation?" This teaches students that real IP decisions are always made under uncertainty.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </section>
+
+</main><!-- /main -->
+
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="bg-gray-800 text-gray-300 no-print">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-8">
+            <div>
+                <h3 class="text-white font-bold mb-3 text-sm">Class Activities</h3>
+                <p class="text-xs text-gray-400 leading-relaxed">Structured exercises for applying patent vs. trade secret law concepts in an active-learning classroom setting.</p>
+            </div>
+            <div>
+                <h3 class="text-white font-bold mb-3 text-sm">Navigation</h3>
+                <ul class="space-y-2 text-sm">
+                    <li>
+                        <a href="./index.html" class="hover:text-white transition-colors flex items-center gap-2">
+                            <i class="fas fa-balance-scale text-blue-400 text-xs" aria-hidden="true"></i>
+                            Patent or Trade Secret? — Interactive Tool
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../index.html" class="hover:text-white transition-colors flex items-center gap-2">
+                            <i class="fas fa-book-open text-blue-400 text-xs" aria-hidden="true"></i>
+                            PTS Learning Companion
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-white font-bold mb-3 text-sm">Activities on This Page</h3>
+                <ul class="space-y-1 text-xs text-gray-400">
+                    <li><a href="#activity-1" class="hover:text-white transition-colors">1 — Decision Framework (15 min)</a></li>
+                    <li><a href="#activity-2" class="hover:text-white transition-colors">2 — The Great Debate (30 min)</a></li>
+                    <li><a href="#activity-3" class="hover:text-white transition-colors">3 — Case Studies (20 min)</a></li>
+                    <li><a href="#activity-4" class="hover:text-white transition-colors">4 — IP Strategy Memo (45 min)</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-gray-700 pt-6 text-xs text-gray-500 text-center">
+            <p>Patent vs. Trade Secret — Class Activities · For educational use only. Not legal advice.</p>
+            <p class="mt-1">These materials are designed to support law school and business school instruction in intellectual property strategy.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
