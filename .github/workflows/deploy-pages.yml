@@ -43,6 +43,9 @@ jobs:
           cp chapters/*.html dist/chapters/
           mkdir -p dist/assets
           cp assets/site.css dist/assets/site.css
+          mkdir -p dist/patent-or-TS
+          cp patent-or-TS/index.html dist/patent-or-TS/
+          cp patent-or-TS/class-activities.html dist/patent-or-TS/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
