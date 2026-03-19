@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #1A1F36;
+            color: #FFFFFF;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding-top: 60px;
+            padding-left: 80px;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            background-color: #E74C3C;
+            color: #FFFFFF;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .company {
+            font-size: 20px;
+            color: #4A90E2;
+            margin-bottom: 30px;
+        }
+        
+        .content {
+            padding-left: 80px;
+            padding-right: 80px;
+            padding-top: 20px;
+        }
+        
+        h3 {
+            font-size: 24px;
+            color: #4A90E2;
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            margin-bottom: 13px;
+            font-size: 17px;
+            color: #B0C4DE;
+            line-height: 1.4;
+        }
+        
+        li::before {
+            content: "•";
+            color: #4A90E2;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.2em;
+            margin-left: -1.2em;
+        }
+        
+        .question-box {
+            background-color: rgba(231, 76, 60, 0.15);
+            border-left: 4px solid #E74C3C;
+            padding: 18px;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        
+        .question-box p {
+            font-size: 19px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <span class="level-badge">LEVEL 3</span>
+            <h2>Case 3C: Pharma Intermediate Process</h2>
+            <p class="company">ChemSynth Pharma</p>
+        </div>
+        <div class="content">
+            <h3>The Situation</h3>
+            <ul>
+                <li>Novel 7-step synthesis process for key intermediate in blockbuster drug ($2B revenue annually)</li>
+                <li>Final drug molecule already patented (expires in 8 years)</li>
+                <li>Process reduces manufacturing costs by 40 percent vs. alternative routes</li>
+                <li>FDA requires manufacturing process disclosure but not all optimization details</li>
+                <li>Generic manufacturers will enter after drug patent expiration</li>
+                <li>Some process details observable from impurity profiles in final product</li>
+                <li>Process patent would expire 20 years from filing (possibly after drug patent)</li>
+            </ul>
+            <div class="question-box">
+                <p>Patent the process, keep it as a trade secret, or use a hybrid strategy? Analyze the tradeoffs.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

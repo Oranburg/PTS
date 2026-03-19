@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #1A1F36;
+            color: #FFFFFF;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding-top: 60px;
+            padding-left: 80px;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            background-color: #F39C12;
+            color: #1A1F36;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .company {
+            font-size: 20px;
+            color: #4A90E2;
+            margin-bottom: 30px;
+        }
+        
+        .content {
+            padding-left: 80px;
+            padding-right: 80px;
+            padding-top: 20px;
+        }
+        
+        h3 {
+            font-size: 24px;
+            color: #4A90E2;
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            margin-bottom: 14px;
+            font-size: 18px;
+            color: #B0C4DE;
+            line-height: 1.4;
+        }
+        
+        li::before {
+            content: "•";
+            color: #4A90E2;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.2em;
+            margin-left: -1.2em;
+        }
+        
+        .question-box {
+            background-color: rgba(231, 76, 60, 0.15);
+            border-left: 4px solid #E74C3C;
+            padding: 18px;
+            margin-top: 25px;
+            border-radius: 4px;
+        }
+        
+        .question-box p {
+            font-size: 20px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <span class="level-badge">LEVEL 2</span>
+            <h2>Case 2B: Client-Side JavaScript</h2>
+            <p class="company">DataViz Analytics</p>
+        </div>
+        <div class="content">
+            <h3>The Situation</h3>
+            <ul>
+                <li>Novel algorithm for rendering large datasets efficiently in web browsers</li>
+                <li>Algorithm must execute client-side for performance reasons</li>
+                <li>Code will be downloaded to users' browsers and can be decompiled</li>
+                <li>Algorithm reduces rendering time by 80 percent vs. competitors</li>
+                <li>Development: 2 years, $1M investment</li>
+                <li>Competitors include major tech companies with reverse engineering resources</li>
+            </ul>
+            <div class="question-box">
+                <p>Can this be protected as a trade secret? Should the company seek a patent?</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

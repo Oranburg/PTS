@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #1A1F36;
+            color: #FFFFFF;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding-top: 60px;
+            padding-left: 80px;
+        }
+        
+        .accent-line {
+            width: 60px;
+            height: 4px;
+            background-color: #4A90E2;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .content {
+            padding-left: 80px;
+            padding-right: 80px;
+            padding-top: 40px;
+        }
+        
+        h3 {
+            font-size: 28px;
+            color: #4A90E2;
+            margin-bottom: 20px;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            margin-bottom: 18px;
+            font-size: 20px;
+            color: #B0C4DE;
+            line-height: 1.5;
+        }
+        
+        li::before {
+            content: "•";
+            color: #4A90E2;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.2em;
+            margin-left: -1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <div class="accent-line"></div>
+            <h2>Key Takeaways</h2>
+        </div>
+        <div class="content">
+            <h3>Strategic IP Decision Framework</h3>
+            <ul>
+                <li>Assess reverse engineering risk and independent discovery likelihood</li>
+                <li>Consider regulatory disclosure requirements and enforcement costs</li>
+                <li>Evaluate market position, industry dynamics, and competitive landscape</li>
+                <li>Recognize that complex technologies often require mixed IP strategies</li>
+                <li>Balance duration of protection against disclosure costs</li>
+                <li>Remember: There is often no single right answer - context matters</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

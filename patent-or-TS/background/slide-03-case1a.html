@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .slide-container {
+            width: 1280px;
+            height: 720px;
+            background-color: #1A1F36;
+            color: #FFFFFF;
+            font-family: Arial, Helvetica, sans-serif;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header {
+            padding-top: 60px;
+            padding-left: 80px;
+        }
+        
+        .level-badge {
+            display: inline-block;
+            background-color: #2ECC71;
+            color: #1A1F36;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .company {
+            font-size: 20px;
+            color: #4A90E2;
+            margin-bottom: 30px;
+        }
+        
+        .content {
+            padding-left: 80px;
+            padding-right: 80px;
+            padding-top: 20px;
+        }
+        
+        h3 {
+            font-size: 24px;
+            color: #4A90E2;
+            margin-bottom: 15px;
+            margin-top: 20px;
+        }
+        
+        ul {
+            list-style: none;
+        }
+        
+        li {
+            margin-bottom: 14px;
+            font-size: 18px;
+            color: #B0C4DE;
+            line-height: 1.4;
+        }
+        
+        li::before {
+            content: "•";
+            color: #4A90E2;
+            font-weight: bold;
+            display: inline-block;
+            width: 1.2em;
+            margin-left: -1.2em;
+        }
+        
+        .question-box {
+            background-color: rgba(231, 76, 60, 0.15);
+            border-left: 4px solid #E74C3C;
+            padding: 18px;
+            margin-top: 25px;
+            border-radius: 4px;
+        }
+        
+        .question-box p {
+            font-size: 20px;
+            color: #FFFFFF;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="header">
+            <span class="level-badge">LEVEL 1</span>
+            <h2>Case 1A: BioPharma FDA Disclosure</h2>
+            <p class="company">MedTech Innovations</p>
+        </div>
+        <div class="content">
+            <h3>The Situation</h3>
+            <ul>
+                <li>Novel monoclonal antibody treatment for rheumatoid arthritis</li>
+                <li>Proprietary cell culture manufacturing process provides cost advantages</li>
+                <li>FDA requires detailed manufacturing disclosure in BLA application</li>
+                <li>Process details will be publicly available via FOIA requests</li>
+                <li>Patent prosecution would take 2-3 years</li>
+            </ul>
+            <div class="question-box">
+                <p>Should the company keep the manufacturing process as a trade secret or seek process patents?</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
