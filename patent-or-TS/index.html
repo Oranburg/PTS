@@ -40,15 +40,15 @@
 <body class="bg-gray-100 min-h-screen">
 
 <!-- Password Modal -->
-<div id="passwordModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+<div id="passwordModal" role="dialog" aria-modal="true" aria-labelledby="passwordModalTitle" aria-describedby="passwordModalDesc" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl">
         <div class="flex items-center mb-6">
             <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center mr-4">
-                <i class="fas fa-lock text-amber-600 text-xl"></i>
+                <i class="fas fa-lock text-amber-600 text-xl" aria-hidden="true"></i>
             </div>
             <div>
-                <h3 class="text-xl font-bold text-gray-900">Instructor Mode</h3>
-                <p class="text-gray-500 text-sm">Enter password to access teaching features</p>
+                <h3 id="passwordModalTitle" class="text-xl font-bold text-gray-900">Instructor Mode</h3>
+                <p id="passwordModalDesc" class="text-gray-500 text-sm">Enter password to access teaching features</p>
             </div>
         </div>
         <div class="relative mb-3">
@@ -74,15 +74,15 @@
 </div>
 
 <!-- Score Report Modal -->
-<div id="reportModal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+<div id="reportModal" role="dialog" aria-modal="true" aria-labelledby="reportModalTitle" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-4 max-h-screen overflow-hidden flex flex-col">
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 px-8 py-6 rounded-t-2xl flex items-center justify-between">
             <div>
-                <h3 class="text-2xl font-bold text-white"><i class="fas fa-chart-bar mr-3"></i>My Progress Report</h3>
+                <h3 id="reportModalTitle" class="text-2xl font-bold text-white"><i class="fas fa-chart-bar mr-3" aria-hidden="true"></i>My Progress Report</h3>
                 <p id="reportSubtitle" class="text-blue-200 text-sm mt-1">Your answers across all cases</p>
             </div>
-            <button onclick="closeReport()" class="text-white hover:text-blue-200 text-2xl transition-colors">
-                <i class="fas fa-times"></i>
+            <button onclick="closeReport()" aria-label="Close report" class="text-white hover:text-blue-200 text-2xl transition-colors">
+                <i class="fas fa-times" aria-hidden="true"></i>
             </button>
         </div>
         <div class="p-6 overflow-y-auto flex-1">
@@ -2068,6 +2068,10 @@ function showReport() {
     const modal = document.getElementById("reportModal");
     modal.classList.remove("hidden");
     renderReport();
+    setTimeout(() => {
+        const closeBtn = modal.querySelector("button[aria-label='Close report']");
+        if (closeBtn) closeBtn.focus();
+    }, 100);
 }
 
 function closeReport() {
