@@ -1,12 +1,13 @@
 :root {
-  --bg: #0f172a;
-  --panel: #111827;
-  --panel-soft: #1f2937;
+  --bg: #0A3255;
+  --panel: #0d3d68;
+  --panel-soft: #1a4d7c;
   --text: #e5e7eb;
   --muted: #9ca3af;
-  --accent: #60a5fa;
-  --accent-2: #a78bfa;
-  --border: #334155;
+  --accent: #6DACDE;
+  --accent-2: #B5E1E1;
+  --accent-red: #B21F2C;
+  --border: #1e5080;
   --gradient-stop: 42%;
 }
 * { box-sizing: border-box; }
@@ -14,7 +15,7 @@ body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   color: var(--text);
-  background: radial-gradient(circle at top, #1e293b, var(--bg) var(--gradient-stop));
+  background: radial-gradient(circle at top, #1a4d7c, var(--bg) var(--gradient-stop));
 }
 .wrap { max-width: 1100px; margin: 0 auto; padding: 1.25rem; }
 .hero, .card { border: 1px solid var(--border); border-radius: 16px; background: rgba(17, 24, 39, 0.9); }

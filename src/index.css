@@ -12,9 +12,20 @@
   --border: #e2e8f0;
   --text: #0f172a;
   --muted: #475569;
-  --primary: #1e3a5f;
-  --primary-light: #2563eb;
-  --accent: #f59e0b;
+
+  /* Catholic Brand Colors */
+  --catholic-red:   #B21F2C;
+  --catholic-blue:  #0A3255;
+  --bright-red:     #E82F35;
+  --bright-blue:    #2459A9;
+  --light-red:      #E96955;
+  --light-blue:     #6DACDE;
+  --yellow:         #FFD65C;
+  --light-blue-green: #B5E1E1;
+
+  --primary:       var(--catholic-blue);
+  --primary-light: var(--bright-blue);
+  --accent:        var(--yellow);
   --radius: 12px;
   --shadow: 0 1px 3px rgba(15,23,42,0.08);
 }
@@ -181,11 +192,71 @@ h1, h2, h3, h4 { line-height: 1.25; }
   color: var(--muted);
   font-size: 0.9rem;
 }
-.chapter-card .card-arrow {
+.chapter-card .card-arrow,
+.activity-card .card-arrow {
   margin-top: auto;
   font-size: 0.82rem;
-  color: var(--primary-light);
   font-weight: 600;
+}
+.chapter-card .card-arrow { color: var(--primary-light); }
+.activity-card .card-arrow { color: var(--catholic-red); }
+/* Class Activities Section */
+.activities-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid var(--border);
+}
+.activities-heading {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+  color: var(--catholic-red);
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  text-align: center;
+}
+.activities-subheading {
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.95rem;
+  margin: 0 auto 1.5rem;
+  max-width: 560px;
+}
+
+.activity-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  text-decoration: none;
+  color: var(--text);
+  transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--catholic-red);
+}
+.activity-card:hover {
+  box-shadow: 0 4px 16px rgba(178,31,44,0.15);
+  transform: translateY(-2px);
+  border-color: var(--bright-red);
+  text-decoration: none;
+}
+.activity-card .ch-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--catholic-red);
+}
+.activity-card h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.activity-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 /* Shared Chapter Styles */

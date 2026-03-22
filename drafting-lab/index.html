@@ -6,6 +6,16 @@
   <title>Internal Mitigation Drafting Lab — Pico Salsa Employment Clinic</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    :root {
+      --catholic-red:    #B21F2C;
+      --bright-red:      #E82F35;
+      --light-red:       #E96955;
+      --catholic-blue:   #0A3255;
+      --bright-blue:     #2459A9;
+      --light-blue:      #6DACDE;
+      --yellow:          #FFD65C;
+      --light-blue-green:#B5E1E1;
+    }
     body { font-family: 'Inter', system-ui, sans-serif; }
     .clause-text { font-family: Georgia, 'Times New Roman', serif; line-height: 1.9; font-size: 0.9375rem; }
     .problem-span {
@@ -19,17 +29,17 @@
     .problem-span:hover { background: #fde68a; }
     .problem-span.found {
       background: #fee2e2;
-      border-bottom-color: #ef4444;
+      border-bottom-color: var(--bright-red);
       text-decoration: line-through;
-      text-decoration-color: #ef4444;
+      text-decoration-color: var(--bright-red);
     }
     .problem-span.revealed {
       background: #fee2e2;
-      border-bottom-color: #ef4444;
+      border-bottom-color: var(--bright-red);
     }
     .model-highlight {
-      background: #bbf7d0;
-      border-bottom: 2px solid #16a34a;
+      background: var(--light-blue-green);
+      border-bottom: 2px solid var(--bright-blue);
       padding: 0 3px;
       border-radius: 2px;
       font-weight: 600;
@@ -48,6 +58,29 @@
       transition: all 0.3s;
     }
     .step-line { flex: 1; height: 2px; margin: 0 2px; }
+
+    /* Catholic brand overrides */
+    .lab-header { background: var(--catholic-blue); }
+    .lab-header-icon { background: var(--catholic-red); }
+    .lab-header-subtitle { color: var(--light-blue); }
+    .step-done { background: var(--catholic-red); color: #fff; }
+    .step-active { background: #fff; color: var(--catholic-blue); box-shadow: 0 0 0 3px var(--light-blue); }
+    .step-pending { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.45); }
+    .step-line-done { background: var(--catholic-red); }
+    .step-line-pending { background: rgba(255,255,255,0.2); }
+    .step-label-active { color: #fff; font-weight: 700; }
+    .step-label-done { color: var(--light-blue); }
+    .step-label-pending { color: rgba(255,255,255,0.4); }
+    .btn-primary { background: var(--catholic-blue); color: #fff; }
+    .btn-primary:hover { background: var(--bright-blue); }
+    .btn-success { background: var(--catholic-red); color: #fff; }
+    .btn-success:hover { background: var(--bright-red); }
+    .exercise-tag-done { background: var(--catholic-red); color: #fff; }
+    .model-block { border-color: var(--bright-blue); background: #eef6fd; }
+    .model-badge { background: #dbeafe; color: var(--catholic-blue); }
+    .model-inner { border-color: var(--light-blue); }
+    .model-tip { background: #d0eaf8; color: var(--catholic-blue); }
+
     @media print {
       .no-print { display: none !important; }
       header, .scenario-banner { display: none !important; }
@@ -60,18 +93,21 @@
 <body class="bg-slate-50 min-h-screen">
 
 <!-- HEADER -->
-<header class="bg-slate-900 text-white sticky top-0 z-50 shadow-xl no-print">
+<header class="lab-header text-white sticky top-0 z-50 shadow-xl no-print">
   <div class="max-w-5xl mx-auto px-4 md:px-6 py-4">
-    <div class="flex items-center gap-3 mb-3">
-      <div class="bg-emerald-600 p-2 rounded-xl flex-shrink-0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M12 22V2M2 12h20M4.5 7.5l3 3 4.5-3 4.5 3 3-3M4.5 16.5l3-3 4.5 3 4.5-3 3 3"/>
-        </svg>
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <div class="lab-header-icon p-2 rounded-xl flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M12 22V2M2 12h20M4.5 7.5l3 3 4.5-3 4.5 3 3-3M4.5 16.5l3-3 4.5 3 4.5-3 3 3"/>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold tracking-tight leading-tight">Internal Mitigation Drafting Lab</h1>
+          <p class="lab-header-subtitle text-xs font-semibold uppercase tracking-widest">Pico Salsa, LLC — Employment Agreement Clinic</p>
+        </div>
       </div>
-      <div>
-        <h1 class="text-lg md:text-xl font-bold tracking-tight leading-tight">Internal Mitigation Drafting Lab</h1>
-        <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest">Pico Salsa, LLC — Employment Agreement Clinic</p>
-      </div>
+      <a href="../index.html" class="no-print text-xs font-semibold px-3 py-1.5 rounded-lg border border-white border-opacity-30 text-white text-opacity-80 hover:bg-white hover:bg-opacity-10 transition-colors hidden sm:inline-flex items-center gap-1">← Course Home</a>
     </div>
     <!-- Progress Steps -->
     <div class="flex items-center no-print" id="progress-bar"></div>
@@ -145,7 +181,7 @@ const exercises = {
       },
       B: {
         label: 'Issue B — "No Greater Than" Sets a Ceiling, Not a Floor',
-        explanation: '"No greater than" the receiving party\'s own care caps protection at whatever level Evan personally applies to his own files. An employee who keeps passwords on a sticky note could argue that same laxness is the applicable standard for Pico Salsa\'s trade secrets. The correct formulation — drawn from the pro-disclosing party template — is <strong>"in no event less than a reasonable degree of care,"</strong> which sets a <em>floor</em> independent of the recipient\'s own habits.',
+        explanation: '"No greater than" the receiving party\'s own care caps protection at whatever level Jordan personally applies to his own files. An employee who keeps passwords on a sticky note could argue that same laxness is the applicable standard for Pico Salsa\'s trade secrets. The correct formulation — drawn from the pro-disclosing party template — is <strong>"in no event less than a reasonable degree of care,"</strong> which sets a <em>floor</em> independent of the recipient\'s own habits.',
         cite: 'UTSA § 1(4); Restatement (Third) of Unfair Competition § 39'
       },
       C: {
@@ -195,7 +231,7 @@ const exercises = {
       },
       B: {
         label: 'Issue B — "Current Business" Misses Anticipated Work',
-        explanation: 'Limiting the assignment to inventions relating to "current business or operations" creates a gap for emerging product lines and R&amp;D directions. A competitor\'s lawyer will argue that when Evan was experimenting with fermentation timing, Pico Salsa had not formally designated that as a current product — placing FermentCurves_v8 outside the assignment\'s scope. The pro-employer formulation extends to the Company\'s business, operations, research, <strong>or anticipated work</strong> — closing this loophole.',
+        explanation: 'Limiting the assignment to inventions relating to "current business or operations" creates a gap for emerging product lines and R&amp;D directions. A competitor\'s lawyer will argue that when Jordan was experimenting with fermentation timing, Pico Salsa had not formally designated that as a current product — placing his fermentation process work outside the assignment\'s scope. The pro-employer formulation extends to the Company\'s business, operations, research, <strong>or anticipated work</strong> — closing this loophole.',
         cite: 'See Cubic Corp. v. Marty, 229 Cal. App. 3d 1010 (1991); Textbook § 4.2.4'
       }
     },
@@ -234,7 +270,7 @@ const exercises = {
     issues: {
       A: {
         label: 'Issue A — Three-Year Duration Is Excessive',
-        explanation: 'Courts apply heightened scrutiny to duration. For a non-senior employee like Evan, a three-year restriction is rarely upheld and invites a court to either strike the clause entirely or "blue-pencil" it to a shorter period — but many courts refuse to blue-pencil at all, preferring to void the whole provision rather than rewrite the employer\'s contract. The textbook pro-employer formulation uses <strong>two (2) years</strong>, a duration courts consistently enforce for employees with access to trade secrets.',
+        explanation: 'Courts apply heightened scrutiny to duration. For a non-senior employee like Jordan, a three-year restriction is rarely upheld and invites a court to either strike the clause entirely or "blue-pencil" it to a shorter period — but many courts refuse to blue-pencil at all, preferring to void the whole provision rather than rewrite the employer\'s contract. The textbook pro-employer formulation uses <strong>two (2) years</strong>, a duration courts consistently enforce for employees with access to trade secrets.',
         cite: 'Reliable Fire Equip. Co. v. Arredondo, 965 N.E.2d 393 (Ill. 2011); Textbook § 4.3.2'
       },
       B: {
@@ -274,7 +310,7 @@ const exercises = {
       { id: 'C', text: 'A liquidated damages provision specifying a fixed penalty per breach' },
       { id: 'D', text: 'An acknowledgment clause confirming Employee received a copy of the agreement' }
     ],
-    consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Evan\'s misappropriation was willful and malicious, even if SalsaTech\'s entire product line was built on stolen FermentCurves data. Courts have denied enhanced remedies in cases where employers simply forgot to include one paragraph. The notice costs nothing to include. The remedy forfeiture is permanent.',
+    consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Jordan\'s misappropriation was willful and malicious, even if RivalCraft Foods\'s entire product line was built on stolen trade secrets. Courts have denied enhanced remedies in cases where employers simply forgot to include one paragraph. The notice costs nothing to include. The remedy forfeiture is permanent.',
     model: {
       label: 'REQUIRED LANGUAGE — DTSA § 1833(b) Immunity Notice',
       cite: 'Defend Trade Secrets Act, 18 U.S.C. § 1833(b)(1)–(2); LexisNexis, Confidentiality Agreement with Employee (Form)',
@@ -301,11 +337,11 @@ function renderProgressBar() {
     const isDone = step.id !== 'capstone'
       ? (typeof cur === 'number' ? cur > step.id : true)
       : cur === 'capstone';
-    const dotCls = isDone ? 'bg-emerald-500 text-white'
-      : isActive ? 'bg-white text-slate-900 ring-2 ring-emerald-400'
-      : 'bg-slate-700 text-slate-400';
-    const lineCls = isDone ? 'bg-emerald-500' : 'bg-slate-700';
-    const labelCls = isActive ? 'text-white font-semibold' : isDone ? 'text-emerald-400' : 'text-slate-500';
+    const dotCls = isDone ? 'step-done'
+      : isActive ? 'step-active'
+      : 'step-pending';
+    const lineCls = isDone ? 'step-line-done' : 'step-line-pending';
+    const labelCls = isActive ? 'step-label-active' : isDone ? 'step-label-done' : 'step-label-pending';
     return `
       ${i > 0 ? `<div class="step-line ${lineCls}"></div>` : ''}
       <div class="flex flex-col items-center gap-0.5 flex-shrink-0">
@@ -347,7 +383,7 @@ function renderIssueDraft(ex, exState, num) {
   const modelBtn = !exState.modelRevealed
     ? `<div class="mt-5" id="model-btn-${num}">
         <button onclick="revealModel(${num})"
-          class="${allFound ? 'bg-slate-800 hover:bg-slate-900 cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
+          class="${allFound ? 'btn-success cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} font-bold px-6 py-3 rounded-xl transition-colors text-sm"
           ${allFound ? '' : 'disabled'}>
           ${allFound ? '📖 Reveal Model Answer' : `Find all ${ex.issueCount} issues to unlock the model answer`}
         </button>
@@ -355,7 +391,7 @@ function renderIssueDraft(ex, exState, num) {
 
   const nextBtn = (allFound || exState.modelRevealed)
     ? `<div class="mt-8 flex justify-end no-print">
-        <button onclick="nextExercise()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
+        <button onclick="nextExercise()" class="btn-success font-bold px-8 py-3 rounded-xl transition-colors">
           ${num < 4 ? `Exercise ${num + 1} →` : 'Final Exercise →'}
         </button>
       </div>` : '';
@@ -395,7 +431,7 @@ function renderExercise4(ex, exState) {
     const sel = exState.selected;
     let cls = 'border-2 rounded-xl p-4 transition-all border-slate-200 bg-white';
     if (sel) {
-      if (opt.correct) cls = 'border-2 rounded-xl p-4 border-emerald-500 bg-emerald-50';
+      if (opt.correct) cls = 'border-2 rounded-xl p-4 bg-blue-50';
       else if (opt.id === sel) cls = 'border-2 rounded-xl p-4 border-red-400 bg-red-50';
       else cls = 'border-2 rounded-xl p-4 border-slate-100 bg-slate-50 opacity-60';
     } else {
@@ -405,11 +441,12 @@ function renderExercise4(ex, exState) {
       ? (opt.correct ? '✓' : opt.id === sel ? '✗' : '○')
       : '○';
     const iconCls = sel
-      ? (opt.correct ? 'text-emerald-600 font-bold text-lg' : opt.id === sel ? 'text-red-500 font-bold text-lg' : 'text-slate-300')
+      ? (opt.correct ? 'font-bold text-lg' : opt.id === sel ? 'text-red-500 font-bold text-lg' : 'text-slate-300')
       : 'text-slate-400';
-    return `<div class="${cls}" onclick="${sel ? '' : `selectOption4('${opt.id}')`}">
+    const correctStyle = (sel && opt.correct) ? `style="border-color:var(--bright-blue)"` : '';
+    return `<div class="${cls}" ${correctStyle} onclick="${sel ? '' : `selectOption4('${opt.id}')`}">
       <div class="flex items-start gap-3">
-        <span class="${iconCls} flex-shrink-0 mt-0.5">${icon}</span>
+        <span class="${iconCls} flex-shrink-0 mt-0.5" ${sel && opt.correct ? `style="color:var(--bright-blue)"` : ''}>${icon}</span>
         <span class="text-sm text-slate-700">${opt.text}</span>
       </div>
     </div>`;
@@ -424,31 +461,31 @@ function renderExercise4(ex, exState) {
 
   const revealBtn = exState.selected && !exState.modelRevealed
     ? `<div class="mt-5 no-print">
-        <button onclick="revealModel(4)" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors">
+        <button onclick="revealModel(4)" class="btn-success font-bold px-6 py-3 rounded-xl text-sm transition-colors">
           📖 Show Required DTSA Notice Language
         </button>
       </div>` : '';
 
   const modelSection = exState.modelRevealed
     ? `<div class="fade-in mt-6">
-        <div class="bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-6">
+        <div class="model-block border-2 rounded-2xl p-6">
           <div class="mb-3">
-            <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ REQUIRED LANGUAGE</span>
-            <p class="text-xs text-emerald-600 mt-1 italic">${ex.model.cite}</p>
+            <span class="inline-flex items-center gap-1 text-xs font-bold model-badge px-3 py-1 rounded-full">✓ REQUIRED LANGUAGE</span>
+            <p class="text-xs mt-1 italic" style="color:var(--bright-blue)">${ex.model.cite}</p>
           </div>
-          <div class="clause-text text-slate-800 bg-white rounded-xl p-5 border border-emerald-200 text-sm">
+          <div class="clause-text text-slate-800 bg-white rounded-xl p-5 model-inner border text-sm">
             <strong>§ [__]. Notice of Immunity Under the Defend Trade Secrets Act.</strong><br><br>
             ${ex.model.text}
           </div>
-          <div class="mt-4 bg-emerald-100 rounded-lg p-3">
-            <p class="text-xs text-emerald-800"><strong>Practical rule:</strong> This paragraph costs nothing to include and must appear in every employment agreement, NDA, and contractor agreement signed after May 11, 2016. Without it, § 1833(b)(3)(C) permanently forfeits your right to exemplary (2×) damages and attorney's fees — even on a slam-dunk willful misappropriation claim.</p>
+          <div class="mt-4 model-tip rounded-lg p-3">
+            <p class="text-xs"><strong>Practical rule:</strong> This paragraph costs nothing to include and must appear in every employment agreement, NDA, and contractor agreement signed after May 11, 2016. Without it, § 1833(b)(3)(C) permanently forfeits your right to exemplary (2×) damages and attorney's fees — even on a slam-dunk willful misappropriation claim.</p>
           </div>
         </div>
       </div>` : '';
 
   const nextBtn = exState.modelRevealed
     ? `<div class="mt-8 flex justify-end no-print">
-        <button onclick="nextExercise()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
+        <button onclick="nextExercise()" class="btn-success font-bold px-8 py-3 rounded-xl transition-colors">
           ★ Assemble the Full Agreement →
         </button>
       </div>` : '';
@@ -462,9 +499,9 @@ function renderExercise4(ex, exState) {
           ['💡', 'Invention Assignment', '"Hereby assigns" — immediate'],
           ['🚫', 'Non-Solicitation', '2-yr, material contact only']
         ].map(([icon, title, sub]) => `
-          <div class="bg-white rounded-xl p-3 border border-emerald-200 text-center">
+          <div class="bg-white rounded-xl p-3 text-center" style="border:1px solid var(--light-blue)">
             <div class="text-lg mb-1">${icon}</div>
-            <p class="text-xs font-bold text-emerald-700">${title}</p>
+            <p class="text-xs font-bold" style="color:var(--bright-blue)">${title}</p>
             <p class="text-xs text-slate-400">${sub}</p>
           </div>`).join('')}
       </div>
@@ -474,7 +511,7 @@ function renderExercise4(ex, exState) {
     <div class="space-y-3 mb-2">${optHtml}</div>
     ${consequenceHtml}
     ${revealBtn}
-    ${modelSection}
+    <div id="model-4">${modelSection}</div>
     ${nextBtn}`;
 }
 
@@ -488,18 +525,18 @@ function buildModelAnswer(model) {
   }).join('');
 
   return `<div class="fade-in mt-6">
-    <div class="bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-6">
+    <div class="model-block border-2 rounded-2xl p-6">
       <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
         <div>
-          <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ MODEL LANGUAGE</span>
-          <p class="text-xs text-emerald-600 mt-1 italic">${model.cite}</p>
+          <span class="inline-flex items-center gap-1 text-xs font-bold model-badge px-3 py-1 rounded-full">✓ MODEL LANGUAGE</span>
+          <p class="text-xs mt-1 italic" style="color:var(--bright-blue)">${model.cite}</p>
         </div>
       </div>
-      <div class="clause-text text-slate-800 bg-white rounded-xl p-5 border border-emerald-200">
+      <div class="clause-text text-slate-800 bg-white rounded-xl p-5 model-inner border">
         ${segs}
       </div>
-      <div class="mt-4 bg-emerald-100 rounded-lg p-3 no-print">
-        <p class="text-xs text-emerald-800 font-medium">▲ Highlighted phrases are the key drafting improvements. Hover each one to see why it matters.</p>
+      <div class="mt-4 model-tip rounded-lg p-3 no-print">
+        <p class="text-xs font-medium">▲ Highlighted phrases are the key drafting improvements. Hover each one to see why it matters.</p>
       </div>
     </div>
   </div>`;
@@ -522,8 +559,8 @@ function renderCapstone() {
       <div class="text-4xl mb-3">⭐</div>
       <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Assembled Agreement</h2>
       <p class="text-slate-500 mt-1">Pico Salsa, LLC — Employee Confidentiality &amp; Assignment Agreement</p>
-      <div class="inline-flex items-center gap-2 mt-3 bg-emerald-50 border border-emerald-300 px-4 py-2 rounded-full">
-        <span class="text-emerald-700 font-bold text-sm">4 / 4 Clauses Compliant</span>
+      <div class="inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full" style="background:#eef6fd;border:1px solid var(--light-blue)">
+        <span class="font-bold text-sm" style="color:var(--catholic-blue)">4 / 4 Clauses Compliant</span>
       </div>
     </div>
 
@@ -532,14 +569,14 @@ function renderCapstone() {
       <h3 class="font-bold text-slate-700 mb-4">Compliance Scorecard</h3>
       <div class="space-y-3">
         ${scoreItems.map(item => `
-          <div class="flex items-start gap-4 p-3 bg-emerald-50 rounded-xl border border-emerald-100">
+          <div class="flex items-start gap-4 p-3 rounded-xl" style="background:#eef6fd;border:1px solid var(--light-blue-green)">
             <span class="text-xl flex-shrink-0">${item.icon}</span>
             <div class="flex-1 min-w-0">
               <p class="font-semibold text-slate-800 text-sm">${item.title}</p>
               <p class="text-xs text-slate-600 mt-0.5">${item.note}</p>
-              <p class="text-xs text-emerald-600 mt-0.5 italic">📚 ${item.cite}</p>
+              <p class="text-xs mt-0.5 italic" style="color:var(--bright-blue)">📚 ${item.cite}</p>
             </div>
-            <span class="text-emerald-500 font-bold text-lg flex-shrink-0">✓</span>
+            <span class="font-bold text-lg flex-shrink-0" style="color:var(--catholic-red)">✓</span>
           </div>`).join('')}
       </div>
     </div>
@@ -559,9 +596,9 @@ function renderCapstone() {
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 1. Confidential Information</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Corrected</span>
+            <span class="text-xs px-2 py-0.5 rounded-full no-print" style="background:#dbeafe;color:var(--bright-blue)">✓ Corrected</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2" style="border-color:var(--light-blue)">
             "Confidential Information" means all nonpublic information disclosed by Company, directly or indirectly, in written, oral, electronic, visual, or any other form, that Employee knows or reasonably should know is confidential based on the nature of the information or the circumstances surrounding its disclosure. Confidential Information includes, without limitation, technical data, trade secrets, know-how, product designs, marketing plans, business models, financial data, internal policies, customer and supplier information, employee data, pricing strategies, and any analysis, compilations, or summaries derived from such information.
             <br><br>
             Employee agrees to use Confidential Information solely in furtherance of Employee's duties for Company, to restrict disclosure to individuals with a need to know who are bound by obligations no less protective than those herein, and to protect Confidential Information with the same degree of care used to protect Company's own confidential information, but in no event less than a reasonable degree of care. Employee shall not reverse engineer, decompile, or otherwise attempt to derive the underlying materials from any Confidential Information and shall return or destroy all Confidential Information upon request or upon termination of employment.
@@ -576,9 +613,9 @@ function renderCapstone() {
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 2. Assignment of Inventions</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Corrected</span>
+            <span class="text-xs px-2 py-0.5 rounded-full no-print" style="background:#dbeafe;color:var(--bright-blue)">✓ Corrected</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2" style="border-color:var(--light-blue)">
             Employee agrees that all inventions, discoveries, improvements, processes, designs, developments, ideas, trade secrets, and other works of authorship (collectively, "Inventions") conceived, developed, or reduced to practice by Employee, alone or with others, during the term of employment, and that relate in any manner to Company's business, operations, research, or anticipated work, shall be the sole and exclusive property of Company. Employee <strong>hereby assigns</strong> to Company all right, title, and interest in and to such Inventions, whether or not patentable or registrable, and agrees to execute all documents necessary to confirm such ownership. This obligation applies regardless of whether the Invention was developed during working hours or using Company equipment, and shall survive the termination of employment.
           </div>
         </div>
@@ -589,9 +626,9 @@ function renderCapstone() {
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 3. Non-Solicitation</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Corrected</span>
+            <span class="text-xs px-2 py-0.5 rounded-full no-print" style="background:#dbeafe;color:var(--bright-blue)">✓ Corrected</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2" style="border-color:var(--light-blue)">
             Employee agrees that for a period of two (2) years following the termination of employment for any reason, Employee shall not, directly or indirectly, solicit, induce, or attempt to induce any employee, contractor, or consultant of Company to terminate their relationship with Company. Employee further agrees that, for the same period, Employee shall not solicit or attempt to solicit, for the purpose of offering competing products or services, any customer or prospective customer of Company with whom Employee had material contact during the twelve (12) months preceding the termination of employment. This restriction shall apply regardless of whether the solicitation is initiated by Employee, the former colleague, or the customer, and regardless of whether such conduct is undertaken on behalf of Employee individually or through another business or entity.
           </div>
         </div>
@@ -602,9 +639,9 @@ function renderCapstone() {
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 4. Notice of Immunity Under the Defend Trade Secrets Act</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Added</span>
+            <span class="text-xs px-2 py-0.5 rounded-full no-print" style="background:#dbeafe;color:var(--bright-blue)">✓ Added</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2" style="border-color:var(--light-blue)">
             Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal. Nothing in this Agreement is intended to, or shall, prohibit Employee from reporting possible violations of federal or state law or regulation to any government agency or entity, or from making disclosures that are protected under the whistleblower provisions of applicable law, and Employee does not need prior authorization from Company to make any such reports or disclosures.
           </div>
         </div>
@@ -631,13 +668,13 @@ function renderCapstone() {
 
     <!-- Action buttons -->
     <div class="flex flex-wrap gap-3 mt-8 justify-center no-print">
-      <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
+      <button onclick="window.print()" class="btn-primary font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
         🖨 Print Agreement
       </button>
       <button onclick="copyAgreement()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
         📋 Copy Agreement Text
       </button>
-      <a href="../index.html" class="border-2 border-emerald-300 hover:border-emerald-500 text-emerald-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
+      <a href="../index.html" class="font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2" style="border:2px solid var(--light-blue);color:var(--bright-blue)">
         ← Course Home
       </a>
     </div>
@@ -672,12 +709,12 @@ function render() {
       <div class="flex items-center gap-3 mb-2">
         <span class="text-3xl">${ex.icon}</span>
         <div>
-          <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Exercise ${ex.number} of 4 — ${ex.subtitle}</div>
+          <div class="text-xs font-bold uppercase tracking-widest" style="color:var(--bright-blue)">Exercise ${ex.number} of 4 — ${ex.subtitle}</div>
           <h2 class="text-xl md:text-2xl font-bold text-slate-900">${ex.title}</h2>
         </div>
       </div>
-      <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3 mt-3">
-        <p class="text-sm text-emerald-800"><strong>Objective:</strong> ${ex.objective}</p>
+      <div class="rounded-xl px-5 py-3 mt-3" style="background:#eef6fd;border:1px solid var(--light-blue)">
+        <p class="text-sm" style="color:var(--catholic-blue)"><strong>Objective:</strong> ${ex.objective}</p>
       </div>
       <p class="text-slate-600 mt-4 leading-relaxed text-sm">${ex.context}</p>
     </div>
