@@ -46,6 +46,44 @@ const CHAPTERS = [
   },
 ];
 
+const CLASS_ACTIVITIES = [
+  {
+    href: './chapters/team-charter.html',
+    tag: 'Team Exercise',
+    title: 'TSPP Team Charter',
+    desc: 'Build a trade secret protection plan for your team — roles, responsibilities, and governance commitments.',
+    arrow: 'Open activity →',
+  },
+  {
+    href: './chapters/firm-strengths.html',
+    tag: 'Self-Assessment',
+    title: 'Firm Strengths Finder',
+    desc: 'Identify and map your firm\'s unique strengths to trade secret protection strategies.',
+    arrow: 'Open activity →',
+  },
+  {
+    href: './patent-or-TS/index.html',
+    tag: 'IP Strategy Tool',
+    title: 'Patent vs. Trade Secret',
+    desc: 'Interactive hypotheticals to sharpen your judgment on when to patent and when to keep it secret.',
+    arrow: 'Open tool →',
+  },
+  {
+    href: './patent-or-TS/class-activities.html',
+    tag: 'Structured Exercises',
+    title: 'Patent/TS Class Activities',
+    desc: 'Guided classroom exercises with rubrics, discussion prompts, and group activities.',
+    arrow: 'Open exercises →',
+  },
+  {
+    href: './drafting-lab/index.html',
+    tag: 'Drafting Lab',
+    title: 'Internal Mitigation Drafting Lab',
+    desc: 'Audit a defective employment agreement clause-by-clause, find every legal flaw, and redraft toward a compliant agreement.',
+    arrow: 'Open lab →',
+  },
+];
+
 export default function Home() {
   return (
     <div>
@@ -65,6 +103,23 @@ export default function Home() {
             <span className="card-arrow">Open chapter →</span>
           </Link>
         ))}
+      </div>
+
+      <div className="activities-section">
+        <h2 className="activities-heading">Class Activities</h2>
+        <p className="activities-subheading">
+          Hands-on exercises, interactive tools, and drafting labs to reinforce each chapter's concepts.
+        </p>
+        <div className="chapter-grid">
+          {CLASS_ACTIVITIES.map(({ href, tag, title, desc, arrow }) => (
+            <a key={href} href={href} className="activity-card">
+              <span className="ch-num">{tag}</span>
+              <h2>{title}</h2>
+              <p>{desc}</p>
+              <span className="card-arrow">{arrow}</span>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );
