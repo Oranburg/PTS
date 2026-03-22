@@ -86,9 +86,9 @@
       <div>
         <p class="text-sm font-bold text-amber-900">Your Client: Pico Salsa, LLC — Austin, Texas</p>
         <p class="text-sm text-amber-800 mt-1 leading-relaxed">
-          R&amp;D technician <strong>Evan Lopez</strong> just submitted his two-week notice to join <strong>SalsaTech</strong> — your client's primary competitor.
-          Founder <strong>Miguel Rios</strong> has pulled the employment agreement Evan signed at hire and asked you, as outside counsel, to find every legal defect and redraft the key clauses before the next hire signs a copy.
-          The crown jewel at risk: <strong>FermentCurves_v8</strong> — Evan's proprietary anaerobic fermentation timing process (18 min. at 34°C) that gives Pico Salsa its distinctively bright capsaicin profile.
+          R&amp;D technician <strong>Jordan Webb</strong> just submitted his two-week notice to join <strong>RivalCraft Foods</strong> — a direct competitor now entering the premium fermented salsa market.
+          Co-founder <strong>Valentina Rivera</strong> has pulled the employment agreement Jordan signed at hire and asked you, as outside counsel, to find every legal defect and redraft the key clauses before the next hire signs a copy.
+          The crown jewel at risk: Pico Salsa's proprietary <strong>low-pressure fermentation process</strong> — a sub-atmospheric pressure technique that allows beneficial yeasts to thrive at lower temperatures while retaining the volatile flavor compounds that define the product.
         </p>
       </div>
     </div>
@@ -124,7 +124,7 @@ const exercises = {
     subtitle: 'NDA § 1',
     icon: '📄',
     objective: 'Identify why this clause fails to protect Pico Salsa\'s fermentation process as the disclosing party — then find the language that fixes it.',
-    context: 'Miguel drafted the employee NDA by adapting a template he found online. The template was designed for a company <em>receiving</em> confidential information from a vendor — not for a company protecting its own secrets from employees. Read the clause and click every phrase you believe is legally defective.',
+    context: 'Valentina drafted the employee NDA by adapting a template she found online. The template was designed for a company <em>receiving</em> confidential information from a vendor — not for a company protecting its own secrets from employees. Read the clause and click every phrase you believe is legally defective.',
     issueCount: 3,
     badDraft: {
       label: 'DRAFT — § 1. Confidential Information',
@@ -140,7 +140,7 @@ const exercises = {
     issues: {
       A: {
         label: 'Issue A — Marking Requirement Destroys Oral Disclosures',
-        explanation: 'FermentCurves_v8 was developed through hands-on instruction and observation in the pilot kitchen — it was never formally "marked." Under this clause, the fermentation process would not qualify as Confidential Information at all. In <em>nClosures Inc. v. Block &amp; Co.</em>, 770 F.3d 598 (7th Cir. 2014), the court rejected a trade secret claim precisely because no documents were marked and no formal protections were in place. Courts require <em>structure</em>, not hope.',
+        explanation: 'Pico Salsa\'s low-pressure fermentation technique was developed through hands-on experimentation and oral instruction — the process parameters were never formally "marked" as confidential documents. Under this clause, the fermentation process would not qualify as Confidential Information at all. In <em>nClosures Inc. v. Block &amp; Co.</em>, 770 F.3d 598 (7th Cir. 2014), the court rejected a trade secret claim precisely because no documents were marked and no formal protections were in place. Courts require <em>structure</em>, not hope.',
         cite: 'nClosures Inc. v. Block &amp; Co., 770 F.3d 598 (7th Cir. 2014)'
       },
       B: {
@@ -150,7 +150,7 @@ const exercises = {
       },
       C: {
         label: 'Issue C — One-Year Expiry Kills Trade Secret Protection',
-        explanation: 'Trade secrets can last indefinitely — Coca-Cola\'s formula has been protected for over 130 years. A one-year confidentiality expiry means Evan could freely share FermentCurves_v8 with SalsaTech on day 366, with no legal consequence. The correct formulation has general confidential information expire after a defined period, but carves out trade secrets to survive <strong>"so long as the information remains a trade secret under applicable law."</strong>',
+        explanation: 'Trade secrets can last indefinitely — Coca-Cola\'s formula has been protected for over 130 years. A one-year confidentiality expiry means Jordan could freely share Pico Salsa\'s fermentation process with RivalCraft Foods on day 366, with no legal consequence. The correct formulation has general confidential information expire after a defined period, but carves out trade secrets to survive <strong>"so long as the information remains a trade secret under applicable law."</strong>',
         cite: 'UTSA § 1(4)(b); Defend Trade Secrets Act, 18 U.S.C. § 1839(3)'
       }
     },
@@ -163,7 +163,7 @@ const exercises = {
         { text: '. Confidential Information includes, without limitation, technical data, trade secrets, know-how, product designs, marketing plans, business models, financial data, internal policies, customer and supplier information, employee data, pricing strategies, and any analysis, compilations, or summaries derived from such information.\n\nThe Receiving Party agrees to use the Confidential Information solely for the purpose of evaluating or pursuing a business relationship with the Disclosing Party, to restrict disclosure to those employees and agents who have a need to know and are bound by obligations of confidentiality no less protective than those set forth herein, and to protect the Confidential Information with the same degree of care used to protect its own confidential information, but ', h: false },
         { text: 'in no event less than a reasonable degree of care', h: true, note: 'Floor standard — "no less than" reasonable care, regardless of the employee\'s own personal security practices.' },
         { text: '. The Receiving Party shall not reverse engineer, decompile, or otherwise attempt to derive the underlying materials from any Confidential Information and shall return or destroy all Confidential Information upon request or upon termination of the relationship.\n\nThis Agreement shall continue in effect with respect to any Confidential Information for a period of two (2) years from the date of disclosure, except that ', h: false },
-        { text: 'the Receiving Party\'s obligations with respect to any trade secret shall survive so long as the information remains a trade secret under applicable law', h: true, note: 'Indefinite trade secret survival — FermentCurves_v8 is protected as long as it remains secret, regardless of the Agreement\'s general term.' },
+        { text: 'the Receiving Party\'s obligations with respect to any trade secret shall survive so long as the information remains a trade secret under applicable law', h: true, note: 'Indefinite trade secret survival — Pico Salsa\'s fermentation process is protected as long as it remains secret, regardless of the Agreement\'s general term.' },
         { text: '.', h: false }
       ]
     }
@@ -175,7 +175,7 @@ const exercises = {
     subtitle: 'NDA § 2',
     icon: '💡',
     objective: 'Find the two drafting problems — one of which is a two-word error that a Supreme Court case says costs Pico Salsa ownership of its own process.',
-    context: 'FermentCurves_v8 is worth nothing to Pico Salsa if Evan owns it. The agreement includes an invention assignment clause — but it was drafted in language that, under controlling Supreme Court precedent, never actually transferred title to the company. Find both defects.',
+    context: 'Pico Salsa\'s low-pressure fermentation process is worth nothing to the company if Jordan owns it. The agreement includes an invention assignment clause — but it was drafted in language that, under controlling Supreme Court precedent, never actually transferred title to the company. Find both defects.',
     issueCount: 2,
     badDraft: {
       label: 'DRAFT — § 2. Assignment of Inventions',
@@ -190,7 +190,7 @@ const exercises = {
     issues: {
       A: {
         label: 'Issue A — "Agrees to Assign" Is a Promise, Not a Transfer',
-        explanation: '<strong><em>Stanford v. Roche Molecular Systems</em>, 563 U.S. 776 (2011)</strong>: The Supreme Court held that "agree to assign" is a contractual <em>promise</em> — it creates an obligation to execute a future assignment, but does not itself transfer title. Title stays with Evan until he separately countersigns an assignment instrument. If he walks out without doing so, Pico Salsa owns nothing — not even the process developed on company time in the company kitchen. The two-word fix: change "agrees to assign" to <strong>"hereby assigns."</strong> Present tense with "hereby" triggers an immediate transfer by operation of law at the moment the invention is created. No further action required.',
+        explanation: '<strong><em>Stanford v. Roche Molecular Systems</em>, 563 U.S. 776 (2011)</strong>: The Supreme Court held that "agree to assign" is a contractual <em>promise</em> — it creates an obligation to execute a future assignment, but does not itself transfer title. Title stays with Jordan until he separately countersigns an assignment instrument. If he walks out without doing so, Pico Salsa owns nothing — not even process improvements developed on company time using company equipment. The two-word fix: change "agrees to assign" to <strong>"hereby assigns."</strong> Present tense with "hereby" triggers an immediate transfer by operation of law at the moment the invention is created. No further action required.',
         cite: 'Stanford v. Roche Molecular Systems, 563 U.S. 776 (2011); Abraxis BioScience v. Navinta, 672 F.3d 1239 (Fed. Cir. 2011)'
       },
       B: {
@@ -206,7 +206,7 @@ const exercises = {
         { text: 'Employee agrees that all inventions, discoveries, improvements, processes, designs, developments, ideas, trade secrets, and other works of authorship (collectively, "Inventions") conceived, developed, or reduced to practice by Employee, alone or with others, during the term of employment, and that relate in any manner to Company\'s business, operations, research, ', h: false },
         { text: 'or anticipated work', h: true, note: 'Covers emerging R&D directions, not just current product lines — closes the "current business" loophole.' },
         { text: ', shall be the sole and exclusive property of Company. Employee ', h: false },
-        { text: 'hereby assigns', h: true, note: 'Present tense + "hereby" = immediate transfer by operation of law. Stanford v. Roche (2011): FermentCurves_v8 belonged to Pico Salsa the moment Evan had the insight — no countersignature required.' },
+        { text: 'hereby assigns', h: true, note: 'Present tense + "hereby" = immediate transfer by operation of law. Stanford v. Roche (2011): any process improvement Jordan developed belonged to Pico Salsa the moment it was reduced to practice — no countersignature required.' },
         { text: ' to Company all right, title, and interest in and to such Inventions, whether or not patentable or registrable, and agrees to execute all documents necessary to confirm such ownership. This obligation applies regardless of whether the Invention was developed during working hours or using Company equipment, and shall survive the termination of employment.', h: false }
       ]
     }
@@ -218,7 +218,7 @@ const exercises = {
     subtitle: 'NDA § 3',
     icon: '🚫',
     objective: 'Find the three drafting problems that would cause a court to strike this clause entirely — leaving Pico Salsa with no protection at all.',
-    context: 'Evan knows Pico Salsa\'s key customers, pricing relationships, and R&amp;D team personally. Without an enforceable non-solicitation clause, he can legally poach every one of them the day he leaves. This clause attempts protection — but its three defects are enough for a court to void the entire provision, leaving Miguel with nothing.',
+    context: 'Jordan knows Pico Salsa\'s key customers, pricing relationships, and R&amp;D team personally. Without an enforceable non-solicitation clause, he can legally poach every one of them the day he leaves. This clause attempts protection — but its three defects are enough for a court to void the entire provision, leaving Valentina with nothing.',
     issueCount: 3,
     badDraft: {
       label: 'DRAFT — § 3. Non-Solicitation',
@@ -239,7 +239,7 @@ const exercises = {
       },
       B: {
         label: 'Issue B — "Known to Employee" Has No Material Contact Limit',
-        explanation: '<strong><em>WellSpan Health v. Bayliss</em>, 2005 PA Super 76 (2005)</strong>: A non-solicit covering customers the employee had never actually worked with was struck down entirely. A non-solicitation clause must be limited to relationships the employee <em>personally developed or had direct contact with</em> — not every person the employee "became aware of" during employment. Evan may have glimpsed Pico Salsa\'s full customer list in a spreadsheet once. That is not a protectable relationship. Contrast <em>Lasership, Inc. v. Watson</em> (2009), upheld because limited to customers the employee had actually serviced.',
+        explanation: '<strong><em>WellSpan Health v. Bayliss</em>, 2005 PA Super 76 (2005)</strong>: A non-solicit covering customers the employee had never actually worked with was struck down entirely. A non-solicitation clause must be limited to relationships the employee <em>personally developed or had direct contact with</em> — not every person the employee "became aware of" during employment. Jordan may have glimpsed Pico Salsa\'s full customer list in a spreadsheet once. That is not a protectable relationship. Contrast <em>Lasership, Inc. v. Watson</em> (2009), upheld because limited to customers the employee had actually serviced.',
         cite: 'WellSpan Health v. Bayliss, 2005 PA Super 76 (2005); Lasership v. Watson, 79 Va. Cir. 205 (2009)'
       },
       C: {
@@ -267,7 +267,7 @@ const exercises = {
     subtitle: 'Federal Statutory Requirement',
     icon: '🔍',
     objective: 'You have corrected the three flawed clauses. But even a perfect NDA can omit something federal law requires. Identify what is missing.',
-    context: 'Miguel reviews the three corrected clauses and signs off. Six months later, Evan\'s misappropriation is confirmed — SalsaTech\'s new product line is clearly built on FermentCurves_v8. Pico Salsa files suit under the Defend Trade Secrets Act and proves willful misappropriation. In the damages phase, you discover a problem that cannot be fixed.',
+    context: 'Valentina reviews the three corrected clauses and signs off. Six months later, Jordan\'s misappropriation is confirmed — RivalCraft Foods\' new product line is clearly built on Pico Salsa\'s fermentation process. Pico Salsa files suit under the Defend Trade Secrets Act and proves willful misappropriation. In the damages phase, you discover a problem that cannot be fixed.',
     options: [
       { id: 'A', text: 'A governing law and choice-of-venue clause designating Travis County, Texas courts' },
       { id: 'B', text: 'A DTSA § 1833(b) whistleblower immunity notice — required in every employment agreement signed after May 11, 2016', correct: true },
@@ -616,7 +616,7 @@ function renderCapstone() {
           <div>
             <p class="font-semibold text-slate-700 mb-5">PICO SALSA, LLC</p>
             <div class="border-b border-slate-400 mb-1"></div>
-            <p class="text-xs text-slate-500">By: Miguel Rios, Founder &amp; CEO</p>
+            <p class="text-xs text-slate-500">By: Valentina Rivera, Co-Founder &amp; Chief Culinary Officer</p>
             <p class="text-xs text-slate-500 mt-4">Date: _____________________</p>
           </div>
           <div>
