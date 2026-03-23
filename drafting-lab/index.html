@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Internal Mitigation Drafting Lab — Pico Salsa Employment Clinic</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
     .clause-text { font-family: Georgia, 'Times New Roman', serif; line-height: 1.9; font-size: 0.9375rem; }
@@ -77,6 +79,25 @@
       transition: all 0.3s;
     }
     .step-line { flex: 1; height: 2px; margin: 0 2px; }
+    .phase-pip {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    .phase-tab {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 2px solid transparent;
+      user-select: none;
+    }
+    .phase-tab.active { border-color: currentColor; }
+    .phase-tab.locked { opacity: 0.4; cursor: not-allowed; }
+    .phase-tab.complete { opacity: 0.7; }
     @media print {
       .no-print { display: none !important; }
       .print-only { display: block !important; }
@@ -90,6 +111,7 @@
     .hint-toggle { cursor: pointer; user-select: none; }
     .hint-content { display: none; }
     .hint-content.open { display: block; }
+    .nego-side { min-height: 200px; max-height: 300px; overflow-y: auto; }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -112,22 +134,8 @@
   </div>
 </header>
 
-<!-- SCENARIO BANNER -->
-<div class="scenario-banner bg-amber-50 border-b border-amber-200 no-print">
-  <div class="max-w-5xl mx-auto px-4 md:px-6 py-4">
-    <div class="flex gap-3">
-      <span class="text-amber-500 text-xl flex-shrink-0 mt-0.5">⚖</span>
-      <div>
-        <p class="text-sm font-bold text-amber-900">Your Client: Pico Salsa, LLC — New York</p>
-        <p class="text-sm text-amber-800 mt-1 leading-relaxed">
-          R&amp;D technician <strong>Jordan Webb</strong> just submitted his two-week notice to join <strong>RivalCraft Foods</strong> — a direct competitor now entering the premium fermented salsa market.
-          Co-founder <strong>Valentina Rivera</strong> has pulled the employment agreement Jordan signed at hire and asked you, as outside counsel, to find every legal defect and redraft the key clauses before the next hire signs a copy.
-          The crown jewel at risk: Pico Salsa's proprietary <strong>low-pressure fermentation process</strong> — a sub-atmospheric pressure technique that allows beneficial yeasts to thrive at lower temperatures while retaining the volatile flavor compounds that define the product.
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- SCENARIO BANNER (dynamically updated by JS) -->
+<div id="scenario-banner" class="scenario-banner no-print"></div>
 
 <!-- MAIN -->
 <main class="max-w-5xl mx-auto px-4 md:px-6 py-10" id="main-content"></main>
@@ -137,18 +145,38 @@
 // STATE + PERSISTENCE
 // ============================================================
 const STORAGE_KEY = 'pts-drafting-lab-state';
+const PHASE_ORDER = ['employer', 'employee', 'negotiation'];
+
+function defaultPhaseState() {
+  return { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' };
+}
 
 function defaultState() {
   return {
     currentExercise: 1,
+    currentPhase: 'employer',
     exercises: {
-      1: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
-      2: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
-      3: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
+      1: { employer: defaultPhaseState(), employee: defaultPhaseState(), negotiation: { draft: '', reflection: '' }, phase: 'employer' },
+      2: { employer: defaultPhaseState(), employee: defaultPhaseState(), negotiation: { draft: '', reflection: '' }, phase: 'employer' },
+      3: { employer: defaultPhaseState(), employee: defaultPhaseState(), negotiation: { draft: '', reflection: '' }, phase: 'employer' },
       4: { selected: null, modelRevealed: false, reflection: '' }
     },
     capstoneSynthesis: ''
   };
+}
+
+function migrateV1toV2(old) {
+  const fresh = defaultState();
+  for (const k of [1, 2, 3]) {
+    if (old.exercises[k]) {
+      Object.assign(fresh.exercises[k].employer, old.exercises[k]);
+    }
+  }
+  if (old.exercises[4]) fresh.exercises[4] = { ...fresh.exercises[4], ...old.exercises[4] };
+  fresh.capstoneSynthesis = old.capstoneSynthesis || '';
+  fresh.currentExercise = old.currentExercise || 1;
+  fresh.currentPhase = 'employer';
+  return fresh;
 }
 
 function loadState() {
@@ -156,20 +184,25 @@ function loadState() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return defaultState();
     const parsed = JSON.parse(saved);
-    // Merge with defaults to handle new fields
+
+    // Detect v1 format (flat exercise state)
+    if (parsed.exercises && parsed.exercises[1] && 'submitted' in parsed.exercises[1] && !('employer' in parsed.exercises[1])) {
+      return migrateV1toV2(parsed);
+    }
+
+    // Merge with defaults for new fields
     const def = defaultState();
+    parsed.currentPhase = parsed.currentPhase || 'employer';
     parsed.capstoneSynthesis = parsed.capstoneSynthesis || '';
-    for (const k of [1,2,3]) {
-      if (parsed.exercises[k]) {
-        parsed.exercises[k].reflection = parsed.exercises[k].reflection || '';
-        parsed.exercises[k].comparison = parsed.exercises[k].comparison || '';
-        // Restore Sets from arrays
-        if (parsed.exercises[k].rubricResults) {
-          // rubricResults are plain objects — fine as is
-        }
-      } else {
-        parsed.exercises[k] = def.exercises[k];
+    for (const k of [1, 2, 3]) {
+      if (!parsed.exercises[k]) { parsed.exercises[k] = def.exercises[k]; continue; }
+      for (const ph of ['employer', 'employee']) {
+        if (!parsed.exercises[k][ph]) parsed.exercises[k][ph] = defaultPhaseState();
+        parsed.exercises[k][ph].reflection = parsed.exercises[k][ph].reflection || '';
+        parsed.exercises[k][ph].comparison = parsed.exercises[k][ph].comparison || '';
       }
+      if (!parsed.exercises[k].negotiation) parsed.exercises[k].negotiation = { draft: '', reflection: '' };
+      parsed.exercises[k].phase = parsed.exercises[k].phase || 'employer';
     }
     if (!parsed.exercises[4]) parsed.exercises[4] = def.exercises[4];
     parsed.exercises[4].reflection = parsed.exercises[4].reflection || '';
@@ -181,13 +214,12 @@ function loadState() {
 
 function saveState() {
   try {
-    // rubricResults contain functions from check — strip them before saving
     const toSave = JSON.parse(JSON.stringify(state, (key, val) => {
       if (key === 'check' && typeof val === 'function') return undefined;
       return val;
     }));
     localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-  } catch (e) { /* quota exceeded — silently fail */ }
+  } catch (e) { /* quota exceeded */ }
 }
 
 const state = loadState();
@@ -204,12 +236,11 @@ const exercises = {
     title: 'Confidential Information Definition',
     subtitle: 'NDA § 1',
     icon: '📄',
+    // --- EMPLOYER PHASE ---
     objective: 'Edit the clause to fix three drafting defects — the marking requirement, the care standard, and the one-year expiry — so it protects Pico Salsa as the disclosing party.',
     context: 'Valentina drafted the employee NDA by adapting a template she found online. The template was designed for a company <em>receiving</em> confidential information from a vendor — not for a company protecting its own secrets from employees. The clause below has three legal defects that would leave Pico Salsa\'s fermentation process unprotected. Edit it directly, then submit your draft.',
     readingHint: 'Re-read Textbook § 4.2.2 on confidential information definitions. Pay attention to the difference between the pro-disclosing and pro-receiving party templates.',
-    defaultDraft: `§ 1. Confidential Information
-
-"Confidential Information" means only such information that is marked in writing as confidential at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter. Confidential Information shall not include information that (a) was known to the receiving party without restriction before disclosure; (b) becomes publicly available through no fault of the receiving party; (c) is lawfully obtained from a third party without a duty of confidentiality; or (d) is independently developed by the receiving party without reference to this information. The receiving party shall protect Confidential Information using reasonable care, but no greater than the care it uses to protect its own information of similar sensitivity. The receiving party shall not be liable for accidental disclosure so long as it acted in good faith. Unless otherwise stated in writing, the confidentiality obligations under this Agreement shall expire one (1) year after the date of disclosure.`,
+    defaultDraft: `§ 1. Confidential Information\n\n"Confidential Information" means only such information that is marked in writing as confidential at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter. Confidential Information shall not include information that (a) was known to the receiving party without restriction before disclosure; (b) becomes publicly available through no fault of the receiving party; (c) is lawfully obtained from a third party without a duty of confidentiality; or (d) is independently developed by the receiving party without reference to this information. The receiving party shall protect Confidential Information using reasonable care, but no greater than the care it uses to protect its own information of similar sensitivity. The receiving party shall not be liable for accidental disclosure so long as it acted in good faith. Unless otherwise stated in writing, the confidentiality obligations under this Agreement shall expire one (1) year after the date of disclosure.`,
     rubric: [
       {
         id: 'no_marking',
@@ -252,7 +283,63 @@ const exercises = {
         { text: 'the Receiving Party\'s obligations with respect to any trade secret shall survive so long as the information remains a trade secret under applicable law', h: true, note: 'Indefinite trade secret survival — Pico Salsa\'s fermentation process is protected as long as it remains secret, regardless of the Agreement\'s general term.' },
         { text: '.', h: false }
       ]
-    }
+    },
+    // --- EMPLOYEE PHASE ---
+    employeeObjective: 'Edit the clause to protect Jordan Webb\'s ability to use his general fermentation knowledge and skills at RivalCraft Foods, while still respecting legitimate trade secret protections.',
+    employeeContext: 'You now represent <strong>Jordan Webb</strong>. He has general fermentation expertise developed over his career — before and during Pico Salsa. He needs a CI definition narrow enough that it does not prevent him from working in his field. Your goal: protect Jordan\'s professional mobility without giving him license to steal actual trade secrets.',
+    employeeReadingHint: 'Re-read Textbook § 4.2.2. Notice how the pro-receiving-party template is narrower than the pro-disclosing-party version. Think about what an employee needs to preserve their career mobility.',
+    employeeRubric: [
+      {
+        id: 'marking_required',
+        label: 'Keeps or strengthens the marking/designation requirement',
+        passNote: 'Good — a marking requirement limits what counts as CI to information the employer specifically flagged, preventing after-the-fact claims that casual conversations were confidential.',
+        failHint: 'Keep or strengthen the marking requirement. Without it, Pico Salsa could retroactively claim that anything Jordan ever saw or heard is confidential — including general fermentation techniques he learned before he was hired.',
+        check: t => /marked in writing/.test(t) || /designated.*in writing/.test(t) || /clearly identified/.test(t)
+      },
+      {
+        id: 'broad_exclusions',
+        label: 'Includes exclusion for general knowledge, skills, and experience',
+        passNote: 'Correct — the general knowledge/skills carve-out is the single most important protection for employee mobility. Without it, Jordan cannot use anything he learned on the job.',
+        failHint: 'Add an exclusion for "general knowledge, skills, and experience acquired during the course of employment." This is the most critical protection for Jordan — without it, basic fermentation know-how he uses daily becomes off-limits at his next job.',
+        check: t => /general knowledge/.test(t) || /general skill/.test(t) || /general experience/.test(t) || /professional skill/.test(t)
+      },
+      {
+        id: 'short_duration',
+        label: 'Confidentiality obligations limited to a defined term (not indefinite)',
+        passNote: 'Good — a defined term prevents perpetual obligations that effectively bar Jordan from his field forever.',
+        failHint: 'Set a definite expiration (one or two years) and do NOT add indefinite trade secret survival language. An indefinite obligation — even limited to trade secrets — is a perpetual cloud over Jordan\'s career that the employer can invoke at will.',
+        check: t => (/one\s*\(?\s*1\s*\)?\s*year/.test(t) || /two\s*\(?\s*2\s*\)?\s*year/.test(t)) && !/shall survive so long as/.test(t) && !/remains a trade secret/.test(t) && !/indefinit/.test(t)
+      },
+      {
+        id: 'care_ceiling',
+        label: 'Care standard capped ("no greater than"), not floored',
+        passNote: 'Correct — "no greater than reasonable care" caps Jordan\'s obligations, preventing claims that he should have taken extraordinary precautions.',
+        failHint: 'Keep or restore the "no greater than" ceiling. A floor standard ("no less than") exposes Jordan to liability for any security practice the employer later claims was inadequate. The ceiling limits what Pico Salsa can demand.',
+        check: t => /no greater than/.test(t) && !/no less than/.test(t) && !/in no event less/.test(t)
+      }
+    ],
+    employeeModel: {
+      label: 'MODEL — Pro-Employee / Receiving Party (Textbook § 4.2.2)',
+      cite: 'Oranburg, Protecting Trade Secrets § 4.2.2 (1st ed. 2026) — Receiving-Party Template',
+      segments: [
+        { text: '"Confidential Information" means only such information that is ', h: false },
+        { text: 'marked in writing as "Confidential" at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter', h: true, note: 'The marking requirement is the employee\'s best friend — it forces the employer to be specific about what\'s confidential, preventing retroactive claims.' },
+        { text: '. Confidential Information shall not include information that (a) was known to Employee without restriction before disclosure; (b) becomes publicly available through no fault of Employee; (c) is lawfully obtained from a third party without a duty of confidentiality; (d) is independently developed by Employee without reference to Confidential Information; or ', h: false },
+        { text: '(e) constitutes general knowledge, skills, and experience acquired by Employee during the course of employment', h: true, note: 'The general knowledge carve-out protects Jordan\'s ability to use the professional skills he develops on the job. Courts increasingly imply this even where the contract is silent.' },
+        { text: '. Employee shall protect Confidential Information using reasonable care, but ', h: false },
+        { text: 'no greater than the care Employee uses to protect their own information of similar sensitivity', h: true, note: 'The ceiling standard caps Jordan\'s obligation — he only needs to treat Pico Salsa\'s secrets as carefully as he treats his own.' },
+        { text: '. The confidentiality obligations under this Agreement shall expire ', h: false },
+        { text: 'one (1) year after the date of disclosure', h: true, note: 'A short, fixed term — no indefinite trade secret survival. Jordan\'s obligations end on a date certain, giving him predictability for career planning.' },
+        { text: '.', h: false }
+      ]
+    },
+    // --- NEGOTIATION PHASE ---
+    negotiationGuidance: [
+      { title: 'The Marking Requirement', text: 'This is the central battleground. Employers resist marking because oral disclosures (kitchen demonstrations, process discussions) are common and hard to label. A compromise: information that "a reasonable person in the recipient\'s position would understand to be confidential" OR that is marked — whichever is broader. This gives the employer contextual coverage while giving the employee a clearer standard than pure context alone.' },
+      { title: 'General Knowledge/Skills Exclusion', text: 'This is non-negotiable for competent employee-side counsel. Even employer-side templates routinely include it because courts imply it anyway. Refusing this exclusion signals bad faith and gains the employer nothing in court.' },
+      { title: 'Duration & Trade Secret Survival', text: 'Two years with indefinite trade secret survival is the commercial norm. An employee who insists on no trade secret survival is asking the employer to accept that the fermentation process becomes free knowledge on a fixed date — most employers will walk away. The compromise: two-year general term plus indefinite survival limited to information that actually qualifies as a trade secret under statutory definitions.' },
+      { title: 'New York Blue-Penciling', text: 'In New York, courts will narrow an overbroad CI definition rather than void it entirely. This means the employer has less incentive to compromise — they can draft broadly and let the court fix it. The employee should push for precision up front to avoid expensive, uncertain litigation over scope.' }
+    ]
   },
 
   2: {
@@ -263,22 +350,20 @@ const exercises = {
     objective: 'Fix the two-word error that costs Pico Salsa ownership of its own process under Stanford v. Roche, and close the scope gap that excludes anticipated R&D work.',
     context: 'Pico Salsa\'s low-pressure fermentation process is worth nothing to the company if Jordan owns it. The clause below was drafted in language that, under controlling Supreme Court precedent, never actually transferred title to the company. There are two distinct defects — one is a two-word change, the other requires expanding a defined scope. Find and fix both.',
     readingHint: 'Re-read Textbook § 4.2.4 on invention assignment clauses. Focus on the Supreme Court\'s holding in Stanford v. Roche about present-tense assignment language.',
-    defaultDraft: `§ 2. Assignment of Inventions
-
-Employee agrees to assign to Company any invention, discovery, improvement, process, design, or development (collectively, "Inventions") conceived or developed by Employee during the course of employment and that either (a) results from work performed for Company, or (b) uses Company's time, equipment, supplies, or proprietary information. This assignment shall not apply to any invention that was developed entirely on Employee's own time, does not relate to Company's current business or operations, and was created without use of Company resources. Employee agrees to execute all documents necessary to confirm such assignment.`,
+    defaultDraft: `§ 2. Assignment of Inventions\n\nEmployee agrees to assign to Company any invention, discovery, improvement, process, design, or development (collectively, "Inventions") conceived or developed by Employee during the course of employment and that either (a) results from work performed for Company, or (b) uses Company's time, equipment, supplies, or proprietary information. This assignment shall not apply to any invention that was developed entirely on Employee's own time, does not relate to Company's current business or operations, and was created without use of Company resources. Employee agrees to execute all documents necessary to confirm such assignment.`,
     rubric: [
       {
         id: 'hereby_assigns',
         label: '"Hereby assigns" — immediate transfer, not a promise',
-        passNote: 'Correct — "hereby assigns" creates an automatic transfer by operation of law the moment an invention is created. No countersignature required. Stanford v. Roche, 563 U.S. 776 (2011).',
-        failHint: 'Change "agrees to assign" to "hereby assigns." The Supreme Court held in Stanford v. Roche (2011) that "agrees to assign" is only a contractual promise — title stays with Jordan until he separately executes an assignment instrument. If he leaves without signing, Pico Salsa owns nothing.',
+        passNote: 'Correct — "hereby assigns" creates an automatic transfer by operation of law the moment an invention is created. Stanford v. Roche, 563 U.S. 776 (2011).',
+        failHint: 'Change "agrees to assign" to "hereby assigns." The Supreme Court held in Stanford v. Roche (2011) that "agrees to assign" is only a contractual promise — title stays with Jordan until he separately executes an assignment instrument.',
         check: t => /hereby assigns/.test(t)
       },
       {
         id: 'anticipated_work',
         label: 'Scope covers anticipated work, not just current business',
-        passNote: 'Correct — extending coverage to "anticipated work" or "anticipated business" closes the loophole for emerging product lines not yet formally designated.',
-        failHint: 'Replace "current business or operations" with broader language covering anticipated work, research, and future product lines. A competitor\'s lawyer can argue that Jordan\'s fermentation experiments predated any formally designated product line, placing his work outside the assignment\'s scope.',
+        passNote: 'Correct — extending coverage to "anticipated work" closes the loophole for emerging product lines.',
+        failHint: 'Replace "current business or operations" with broader language covering anticipated work, research, and future product lines.',
         check: t => /anticipated/.test(t)
       }
     ],
@@ -289,10 +374,65 @@ Employee agrees to assign to Company any invention, discovery, improvement, proc
         { text: 'Employee agrees that all inventions, discoveries, improvements, processes, designs, developments, ideas, trade secrets, and other works of authorship (collectively, "Inventions") conceived, developed, or reduced to practice by Employee, alone or with others, during the term of employment, and that relate in any manner to Company\'s business, operations, research, ', h: false },
         { text: 'or anticipated work', h: true, note: 'Covers emerging R&D directions, not just current product lines — closes the "current business" loophole.' },
         { text: ', shall be the sole and exclusive property of Company. Employee ', h: false },
-        { text: 'hereby assigns', h: true, note: 'Present tense + "hereby" = immediate transfer by operation of law. Stanford v. Roche (2011): any process improvement Jordan developed belonged to Pico Salsa the moment it was reduced to practice — no countersignature required.' },
+        { text: 'hereby assigns', h: true, note: 'Present tense + "hereby" = immediate transfer by operation of law. Stanford v. Roche (2011).' },
         { text: ' to Company all right, title, and interest in and to such Inventions, whether or not patentable or registrable, and agrees to execute all documents necessary to confirm such ownership. This obligation applies regardless of whether the Invention was developed during working hours or using Company equipment, and shall survive the termination of employment.', h: false }
       ]
-    }
+    },
+    // --- EMPLOYEE PHASE ---
+    employeeObjective: 'Edit the clause to protect Jordan\'s rights to his prior inventions, personal projects, and innovations unrelated to Pico Salsa\'s salsa business.',
+    employeeContext: 'You represent <strong>Jordan Webb</strong>. Before joining Pico Salsa, Jordan was developing a home fermentation monitoring app on his own time. He also has general fermentation know-how from his graduate studies. He needs this clause to NOT capture his prior work or his personal projects that have nothing to do with salsa production.',
+    employeeReadingHint: 'Re-read Textbook § 4.2.4. Pay attention to the Supreme Court\'s distinction between "hereby assigns" and "agrees to assign" — and think about why an employee might prefer the weaker language.',
+    employeeRubric: [
+      {
+        id: 'agrees_to_assign',
+        label: 'Uses "agrees to assign" (not "hereby assigns")',
+        passNote: 'Good — "agrees to assign" preserves Jordan\'s ability to negotiate each assignment individually. Title does not transfer automatically.',
+        failHint: 'Change "hereby assigns" back to "agrees to assign." Under Stanford v. Roche, "hereby assigns" causes immediate automatic transfer — Jordan loses title the moment he creates something, before he even knows it\'s covered.',
+        check: t => /agrees to assign/.test(t) && !/hereby assigns/.test(t)
+      },
+      {
+        id: 'prior_inventions',
+        label: 'Excludes prior inventions via a scheduled exhibit',
+        passNote: 'Correct — a prior inventions schedule (typically Exhibit A) protects everything Jordan created before his start date.',
+        failHint: 'Add a prior inventions exclusion: "This assignment shall not apply to inventions listed on Exhibit A (Prior Inventions), which Employee represents were conceived before the date of hire." The schedule is Jordan\'s proof of prior ownership.',
+        check: t => /prior invention/i.test(t) || /exhibit/i.test(t) || /schedule/i.test(t) || /appendix/i.test(t)
+      },
+      {
+        id: 'unrelated_excluded',
+        label: 'Scope limited to current business (not "anticipated" work)',
+        passNote: 'Good — limiting scope to "current business" prevents Pico Salsa from claiming inventions in fields it hasn\'t entered yet.',
+        failHint: 'Remove "anticipated work" and limit the scope to "current business or operations." The "anticipated" language is a blank check — Pico Salsa could claim it anticipated entering any field.',
+        check: t => (/current business/.test(t) || /current operations/.test(t)) && !/anticipated/.test(t)
+      },
+      {
+        id: 'personal_time',
+        label: 'Strong carve-out for inventions on personal time without company resources',
+        passNote: 'Correct — this carve-out (mirroring California Labor Code 2870 principles) protects Jordan\'s side projects.',
+        failHint: 'Strengthen the personal-time carve-out: inventions developed on Employee\'s own time, without use of Company resources, that do not relate to Company\'s current business. Without this, Jordan\'s personal fermentation app is captured even if he built it on weekends on his own laptop.',
+        check: t => (/own time/.test(t) || /personal time/.test(t) || /outside.*working hours/.test(t)) && (/without.*company/i.test(t) || /without.*use of/i.test(t))
+      }
+    ],
+    employeeModel: {
+      label: 'MODEL — Pro-Employee (Textbook § 4.2.4)',
+      cite: 'Oranburg, Protecting Trade Secrets § 4.2.4 (1st ed. 2026) — Employee-Side Template',
+      segments: [
+        { text: 'Employee ', h: false },
+        { text: 'agrees to assign', h: true, note: '"Agrees to assign" is only a promise to assign in the future — not an automatic transfer. Under Stanford v. Roche, Jordan retains title until he separately executes an assignment document, giving him leverage.' },
+        { text: ' to Company any Invention conceived or developed by Employee during the course of employment that (a) results from work performed for Company, or (b) uses Company\'s time, equipment, supplies, or proprietary information, and (c) relates to Company\'s ', h: false },
+        { text: 'current business or operations', h: true, note: 'Limited to "current" business — not "anticipated" work. Prevents Pico Salsa from claiming inventions in fields it hasn\'t entered yet.' },
+        { text: '. This assignment shall not apply to: (i) inventions ', h: false },
+        { text: 'listed on Exhibit A (Prior Inventions)', h: true, note: 'The prior inventions schedule is Jordan\'s insurance policy. Everything he created before hire — including his fermentation monitoring app — is carved out by name.' },
+        { text: ', which Employee represents were conceived before the date of hire; or (ii) inventions developed ', h: false },
+        { text: 'entirely on Employee\'s own time, without use of Company resources, that do not relate to Company\'s current business', h: true, note: 'The personal-time carve-out. Mirrors principles from California Lab. Code § 2870 (applied by analogy even in NY). Protects Jordan\'s side projects.' },
+        { text: '. Employee agrees to execute all documents reasonably necessary to confirm such assignment.', h: false }
+      ]
+    },
+    negotiationGuidance: [
+      { title: '"Hereby Assigns" vs. "Agrees to Assign"', text: 'This is the most consequential two-word change in IP law. Most employer-side lawyers will insist on "hereby assigns" because Stanford v. Roche makes anything less risky. The compromise: "hereby assigns" for work-related inventions, PLUS a strong prior inventions schedule and a personal-time carve-out. The employee gives up the "agrees to" leverage but gets certainty about what\'s excluded.' },
+      { title: '"Anticipated Work" Scope', text: 'A middle ground: "current business, operations, or research actively being conducted" — this covers ongoing R&D (like the fermentation project) but not speculative future product lines that Pico Salsa hasn\'t started yet.' },
+      { title: 'Prior Inventions Schedule', text: 'This is standard in any well-negotiated employment agreement. An employer who refuses to accept a prior inventions exhibit is signaling bad faith — or legal naivety. Both sides benefit: the employer knows exactly what it isn\'t getting; the employee has documented proof.' },
+      { title: 'State Invention Statutes', text: 'Many states (CA, DE, IL, MN, NC, WA) have statutes limiting what employers can claim. Even in New York, which lacks such a statute, courts apply unconscionability to overreaching assignment clauses. The employee has more leverage than they might think.' }
+    ]
   },
 
   3: {
@@ -303,29 +443,27 @@ Employee agrees to assign to Company any invention, discovery, improvement, proc
     objective: 'Fix the three defects that would cause a court to void this clause entirely, leaving Pico Salsa with no post-employment protection at all.',
     context: 'Jordan knows Pico Salsa\'s key customers, pricing relationships, and R&amp;D team personally. Without an enforceable non-solicitation clause, he can legally poach every one of them the day he leaves. The clause below has three defects that courts have used to void non-solicitation provisions outright — not narrow them, void them. Edit it to fix all three.',
     readingHint: 'Re-read Textbook § 4.2.3 on non-solicitation and non-competition clauses. Note the distinction between clauses courts narrow and clauses courts void entirely.',
-    defaultDraft: `§ 3. Non-Solicitation
-
-For a period of three (3) years following termination of employment for any reason, Employee shall not directly or indirectly solicit, recruit, hire, contact, or encourage any person or entity known to Employee during the course of employment to: (a) terminate their relationship with Company; (b) reduce their engagement with Company; or (c) do business with any competitor of Company. This restriction applies to all customers, prospective customers, suppliers, employees, contractors, and any other individuals Employee became aware of during employment, without limitation.`,
+    defaultDraft: `§ 3. Non-Solicitation\n\nFor a period of three (3) years following termination of employment for any reason, Employee shall not directly or indirectly solicit, recruit, hire, contact, or encourage any person or entity known to Employee during the course of employment to: (a) terminate their relationship with Company; (b) reduce their engagement with Company; or (c) do business with any competitor of Company. This restriction applies to all customers, prospective customers, suppliers, employees, contractors, and any other individuals Employee became aware of during employment, without limitation.`,
     rubric: [
       {
         id: 'duration_ok',
         label: 'Duration reduced to two years',
-        passNote: 'Correct — two years is the duration courts consistently enforce for non-senior employees with access to trade secrets.',
-        failHint: 'Reduce the restriction from three years to two years. Courts rarely enforce three-year non-solicitation clauses for non-senior employees, and many courts will void the whole provision rather than rewrite it to a shorter term.',
+        passNote: 'Correct — two years is the duration courts consistently enforce for non-senior employees.',
+        failHint: 'Reduce the restriction from three years to two years. Courts rarely enforce three-year non-solicitation clauses for non-senior employees.',
         check: t => /two\s*\(?\s*2\s*\)?\s*year/.test(t) && !/three\s*\(?\s*3\s*\)?\s*year/.test(t)
       },
       {
         id: 'material_contact',
         label: 'Scope limited to customers with whom Jordan had material contact',
-        passNote: 'Correct — tying the restriction to actual relationships Jordan personally developed makes it enforceable. WellSpan Health v. Bayliss (2005); Lasership v. Watson (2009).',
-        failHint: 'Replace "known to Employee during the course of employment" with a material-contact limit: customers "with whom Employee had material contact during the twelve (12) months preceding termination." WellSpan Health v. Bayliss (2005) struck down a clause covering customers the employee had never personally worked with.',
+        passNote: 'Correct — tying the restriction to actual relationships makes it enforceable. WellSpan Health v. Bayliss (2005); Lasership v. Watson (2009).',
+        failHint: 'Replace "known to Employee" with a material-contact limit: customers "with whom Employee had material contact during the twelve (12) months preceding termination."',
         check: t => /material contact/.test(t)
       },
       {
         id: 'no_without_limitation',
         label: '"Without limitation" removed',
         passNote: 'Correct — a well-drafted restriction is precisely bounded; it has no need for a "without limitation" disclaimer.',
-        failHint: 'Delete "without limitation." Courts read this phrase as an admission of overbreadth and use it to justify voiding the entire restriction rather than narrowing it.',
+        failHint: 'Delete "without limitation." Courts read this phrase as an admission of overbreadth.',
         check: t => !/without limitation/.test(t)
       }
     ],
@@ -336,10 +474,63 @@ For a period of three (3) years following termination of employment for any reas
         { text: 'Employee agrees that for a period of ', h: false },
         { text: 'two (2) years', h: true, note: 'Two years: duration courts consistently enforce for non-senior employees with trade secret access.' },
         { text: ' following the termination of employment for any reason, Employee shall not, directly or indirectly, solicit, induce, or attempt to induce any employee, contractor, or consultant of Company to terminate their relationship with Company. Employee further agrees that, for the same period, Employee shall not solicit or attempt to solicit, for the purpose of offering competing products or services, any customer or prospective customer of Company ', h: false },
-        { text: 'with whom Employee had material contact during the twelve (12) months preceding the termination of employment', h: true, note: '"Material contact" + 12-month lookback is the precisely tailored limitation that makes this clause enforceable. Lasership v. Watson (2009): upheld because "limited in both scope and duration and clearly connected to the protection of trade secrets and customer goodwill."' },
+        { text: 'with whom Employee had material contact during the twelve (12) months preceding the termination of employment', h: true, note: '"Material contact" + 12-month lookback: precisely tailored. Lasership v. Watson (2009).' },
         { text: '. This restriction shall apply regardless of whether the solicitation is initiated by Employee, the former colleague, or the customer, and regardless of whether such conduct is undertaken on behalf of Employee individually or through another business or entity.', h: false }
       ]
-    }
+    },
+    // --- EMPLOYEE PHASE ---
+    employeeObjective: 'Edit the clause to give Jordan maximum professional freedom after leaving Pico Salsa, while conceding only what a New York court would likely enforce anyway.',
+    employeeContext: 'You represent <strong>Jordan Webb</strong>. He is leaving for RivalCraft Foods and wants to maintain the professional relationships he has built over his career — including people he knew before Pico Salsa. He needs the non-solicitation to be as narrow as possible: shortest duration, narrowest scope, clear exceptions for inbound contacts, and no disguised non-compete.',
+    employeeReadingHint: 'Re-read Textbook § 4.2.3. Note the factors courts use to void (not just narrow) non-solicitation clauses. Think about what an employee needs to preserve their professional network.',
+    employeeRubric: [
+      {
+        id: 'one_year',
+        label: 'Duration reduced to one year or less',
+        passNote: 'Good — one year (or less) is the employee-side target. Many courts view 12 months as the outer limit for mid-level employees.',
+        failHint: 'Reduce the duration to one year or less. Two years is the employer\'s number; one year is the employee\'s target. For a mid-level R&D technician, one year is what most courts would enforce.',
+        check: t => (/one\s*\(?\s*1\s*\)?\s*year/.test(t) || /twelve\s*\(?\s*12\s*\)?\s*month/.test(t) || /six\s*\(?\s*6\s*\)?\s*month/.test(t)) && !/two\s*\(?\s*2\s*\)?\s*year/.test(t) && !/three\s*\(?\s*3\s*\)?\s*year/.test(t)
+      },
+      {
+        id: 'inbound_exception',
+        label: 'Exception for inbound contacts (customer reaches out first)',
+        passNote: 'Correct — an inbound contact exception means Jordan is not liable when a former customer or colleague contacts him first.',
+        failHint: 'Add an exception for inbound contacts: "This restriction shall not apply to contacts initiated by the customer, employee, or contractor without solicitation by Employee." Without this, Jordan is liable even when someone calls him unprompted.',
+        check: t => /inbound/i.test(t) || /initiated by.*customer/i.test(t) || /initiated by.*the employee/i.test(t) || /respond.*to.*contact/i.test(t) || /not.*initiated by/i.test(t) || /unsolicited/i.test(t)
+      },
+      {
+        id: 'no_non_compete',
+        label: 'No hidden non-compete language ("do business with any competitor" removed)',
+        passNote: 'Good — you removed the disguised non-compete. "Do business with any competitor" is a non-compete dressed as a non-solicitation.',
+        failHint: 'Delete "do business with any competitor of Company." This transforms a non-solicitation into a non-compete — a much harder restriction to enforce and one that some states prohibit entirely.',
+        check: t => !/do business with any competitor/.test(t) && !/compete with/.test(t) && !/competing business/.test(t)
+      },
+      {
+        id: 'scope_limit',
+        label: 'Scope limited to specific relationships (not "any person known to")',
+        passNote: 'Correct — tying the restriction to relationships Jordan personally developed makes it proportionate.',
+        failHint: 'Limit the scope to customers with whom Jordan had direct, personal contact. The current "any person or entity known to Employee" covers the entire customer list, including people Jordan never met.',
+        check: t => /material contact/i.test(t) || /personally served/i.test(t) || /directly worked with/i.test(t)
+      }
+    ],
+    employeeModel: {
+      label: 'MODEL — Pro-Employee (Textbook § 4.2.3)',
+      cite: 'Oranburg, Protecting Trade Secrets § 4.2.3 (1st ed. 2026) — Employee-Side Template',
+      segments: [
+        { text: 'Employee agrees that for a period of ', h: false },
+        { text: 'one (1) year', h: true, note: 'One year — the employee-side target. Most jurisdictions view this as the maximum enforceable period for a mid-level technician.' },
+        { text: ' following the termination of employment, Employee shall not directly solicit any customer or prospective customer of Company ', h: false },
+        { text: 'with whom Employee had material contact during the twelve (12) months preceding termination', h: true, note: 'Material contact + lookback: same precision the employer needs, but the employee benefits because it excludes customers they never personally served.' },
+        { text: ', for the purpose of diverting business to a direct competitor. ', h: false },
+        { text: 'This restriction shall not apply to any contact initiated by the customer or prospective customer without solicitation by Employee', h: true, note: 'The inbound exception: commercially standard and rarely contested. If a customer calls Jordan unprompted, he hasn\'t solicited anyone.' },
+        { text: '. Employee\'s obligation under this Section shall not be construed to prohibit Employee from accepting employment with any entity or engaging in any business activity.', h: false }
+      ]
+    },
+    negotiationGuidance: [
+      { title: 'Duration', text: 'Duration is the most traded variable. The employer wants two years; the employee wants six months. One year is the overwhelmingly common compromise for non-senior employees. In practice, most trade secret risk materializes in the first 6-12 months — by month 13, the employee\'s specific knowledge is largely stale.' },
+      { title: 'Inbound Contact Exception', text: 'The inbound-contact exception is commercially standard and rarely contested. An employer who refuses is overreaching — and a court is likely to impose the exception anyway. This is a low-cost concession for the employer and a high-value win for the employee.' },
+      { title: 'Disguised Non-Compete', text: '"Do business with any competitor" language transforms a non-solicitation into a non-compete. In California, Illinois, Oregon, and a growing number of states, this can void the entire clause. Even in New York, courts view this as a sign of overreach. The employer gains nothing by including it — the non-solicitation of specific clients is sufficient protection.' },
+      { title: 'Unconscionability Leverage', text: 'A court that finds a non-solicitation unconscionably broad may void it entirely — not blue-pencil it — leaving the employer with zero protection. This gives the employee real negotiation leverage: "Accept reasonable terms, or risk a court giving you nothing."' }
+    ]
   },
 
   4: {
@@ -356,7 +547,7 @@ For a period of three (3) years following termination of employment for any reas
       { id: 'C', text: 'A liquidated damages provision specifying a fixed penalty per breach' },
       { id: 'D', text: 'An acknowledgment clause confirming Employee received a copy of the agreement' }
     ],
-    consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Jordan\'s misappropriation was willful and malicious, even if RivalCraft\'s entire product line was built on stolen fermentation process data. Courts have denied enhanced remedies in cases where employers simply forgot to include one paragraph. The notice costs nothing to include. The remedy forfeiture is permanent.',
+    consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Jordan\'s misappropriation was willful and malicious.',
     reflectionPrompt: 'Why do you think Congress attached this forfeiture to the notice requirement? What employer behavior is § 1833(b)(3)(C) trying to change — and does the penalty fit?',
     model: {
       label: 'REQUIRED LANGUAGE — DTSA § 1833(b) Immunity Notice',
@@ -367,21 +558,106 @@ For a period of three (3) years following termination of employment for any reas
 };
 
 // ============================================================
+// PHASE HELPERS
+// ============================================================
+const PHASE_LABELS = {
+  employer: { icon: '🏢', label: 'Representing the Company', short: 'Company', color: 'amber' },
+  employee: { icon: '👤', label: 'Representing the Employee', short: 'Employee', color: 'indigo' },
+  negotiation: { icon: '🤝', label: 'Negotiation', short: 'Negotiate', color: 'purple' }
+};
+
+function getPhaseState(num, phase) {
+  if (phase === 'negotiation') return state.exercises[num].negotiation;
+  return state.exercises[num][phase];
+}
+
+function isPhaseUnlocked(num, phase) {
+  const exPhase = state.exercises[num].phase;
+  return PHASE_ORDER.indexOf(phase) <= PHASE_ORDER.indexOf(exPhase);
+}
+
+function isPhaseComplete(num, phase) {
+  if (phase === 'negotiation') return !!state.exercises[num].negotiation.draft;
+  return state.exercises[num][phase].submitted;
+}
+
+// ============================================================
 // RUBRIC CHECK
 // ============================================================
-function checkRubric(num, text) {
+function checkRubric(num, text, phase) {
   const t = text.toLowerCase();
-  return exercises[num].rubric.map(r => ({ ...r, pass: r.check(t) }));
+  const rubric = (phase === 'employee') ? exercises[num].employeeRubric : exercises[num].rubric;
+  return rubric.map(r => ({ ...r, pass: r.check(t) }));
 }
 
 // ============================================================
 // ESCAPE HTML
 // ============================================================
 function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ============================================================
+// SCENARIO BANNER
+// ============================================================
+function renderScenarioBanner() {
+  const banner = document.getElementById('scenario-banner');
+  const cur = state.currentExercise;
+  const phase = state.currentPhase;
+
+  if (cur === 'capstone' || cur === 4) {
+    // Neutral banner for Ex4 and capstone
+    banner.className = 'scenario-banner bg-amber-50 border-b border-amber-200 no-print';
+    banner.innerHTML = `<div class="max-w-5xl mx-auto px-4 md:px-6 py-4">
+      <div class="flex gap-3">
+        <span class="text-amber-500 text-xl flex-shrink-0 mt-0.5">⚖</span>
+        <div>
+          <p class="text-sm font-bold text-amber-900">Your Client: Pico Salsa, LLC — New York</p>
+          <p class="text-sm text-amber-800 mt-1 leading-relaxed">
+            R&amp;D technician <strong>Jordan Webb</strong> just submitted his two-week notice to join <strong>RivalCraft Foods</strong> — a direct competitor now entering the premium fermented salsa market.
+            Co-founder <strong>Valentina Rivera</strong> has pulled the employment agreement Jordan signed at hire and asked you, as outside counsel, to find every legal defect and redraft the key clauses before the next hire signs a copy.
+            The crown jewel at risk: Pico Salsa's proprietary <strong>low-pressure fermentation process</strong> — a sub-atmospheric pressure technique that allows beneficial yeasts to thrive at lower temperatures while retaining the volatile flavor compounds that define the product.
+          </p>
+        </div>
+      </div>
+    </div>`;
+    return;
+  }
+
+  if (phase === 'employer') {
+    banner.className = 'scenario-banner bg-amber-50 border-b border-amber-200 no-print';
+    banner.innerHTML = `<div class="max-w-5xl mx-auto px-4 md:px-6 py-4">
+      <div class="flex gap-3">
+        <span class="text-amber-500 text-xl flex-shrink-0 mt-0.5">🏢</span>
+        <div>
+          <p class="text-sm font-bold text-amber-900">Your Client: Pico Salsa, LLC — Employer</p>
+          <p class="text-sm text-amber-800 mt-1 leading-relaxed">You represent the company. Co-founder <strong>Valentina Rivera</strong> wants the strongest possible protections for Pico Salsa's proprietary <strong>low-pressure fermentation process</strong>. Draft this clause to maximize the company's legal position.</p>
+        </div>
+      </div>
+    </div>`;
+  } else if (phase === 'employee') {
+    banner.className = 'scenario-banner bg-indigo-50 border-b border-indigo-200 no-print';
+    banner.innerHTML = `<div class="max-w-5xl mx-auto px-4 md:px-6 py-4">
+      <div class="flex gap-3">
+        <span class="text-indigo-500 text-xl flex-shrink-0 mt-0.5">👤</span>
+        <div>
+          <p class="text-sm font-bold text-indigo-900">Your Client: Jordan Webb — Employee</p>
+          <p class="text-sm text-indigo-800 mt-1 leading-relaxed">You now represent the employee. <strong>Jordan Webb</strong> has general fermentation expertise developed over his career. He is leaving for <strong>RivalCraft Foods</strong> and needs this clause to protect his professional mobility — without giving him license to steal actual trade secrets.</p>
+        </div>
+      </div>
+    </div>`;
+  } else {
+    banner.className = 'scenario-banner bg-purple-50 border-b border-purple-200 no-print';
+    banner.innerHTML = `<div class="max-w-5xl mx-auto px-4 md:px-6 py-4">
+      <div class="flex gap-3">
+        <span class="text-purple-500 text-xl flex-shrink-0 mt-0.5">🤝</span>
+        <div>
+          <p class="text-sm font-bold text-purple-900">Role: Negotiating Counsel</p>
+          <p class="text-sm text-purple-800 mt-1 leading-relaxed">You've drafted from both sides. Now find the compromise. Consider leverage, commercial norms, and enforceability — courts won't uphold unconscionable terms, and some provisions are non-starters for each side. Draft a clause <strong>both parties could actually sign</strong>.</p>
+        </div>
+      </div>
+    </div>`;
+  }
 }
 
 // ============================================================
@@ -407,20 +683,62 @@ function renderProgressBar() {
       : 'bg-slate-700 text-slate-400';
     const lineCls = isDone ? 'bg-emerald-500' : 'bg-slate-700';
     const labelCls = isActive ? 'text-white font-semibold' : isDone ? 'text-emerald-400' : 'text-slate-500';
+
+    // Sub-phase pips for exercises 1-3
+    let pips = '';
+    if (typeof step.id === 'number' && step.id <= 3) {
+      pips = `<div class="flex gap-1 mt-1">` + PHASE_ORDER.map(ph => {
+        const complete = isPhaseComplete(step.id, ph);
+        const active = isActive && state.currentPhase === ph;
+        const cls = complete ? 'bg-emerald-400' : active ? 'bg-white ring-1 ring-emerald-400' : 'bg-slate-600';
+        return `<span class="phase-pip ${cls}"></span>`;
+      }).join('') + `</div>`;
+    }
+
     return `
       ${i > 0 ? `<div class="step-line ${lineCls}"></div>` : ''}
       <div class="flex flex-col items-center gap-0.5 flex-shrink-0">
         <div class="step-dot ${dotCls}">${isDone ? '✓' : step.id === 'capstone' ? '★' : step.id}</div>
         <span class="text-xs ${labelCls} hidden md:block whitespace-nowrap">${step.label}</span>
+        ${pips}
       </div>`;
   }).join('');
 }
 
 // ============================================================
-// RENDER DRAFT EXERCISE (1–3)
+// PHASE TABS
 // ============================================================
-function renderDraftExercise(ex, exState, num) {
+function renderPhaseTabs(num) {
+  return `<div class="flex flex-wrap gap-2 mb-5 no-print">
+    ${PHASE_ORDER.map(ph => {
+      const info = PHASE_LABELS[ph];
+      const unlocked = isPhaseUnlocked(num, ph);
+      const complete = isPhaseComplete(num, ph);
+      const active = state.currentPhase === ph;
+      const colors = {
+        employer: active ? 'text-amber-700 bg-amber-50 border-amber-400' : 'text-amber-600 bg-white hover:bg-amber-50',
+        employee: active ? 'text-indigo-700 bg-indigo-50 border-indigo-400' : 'text-indigo-600 bg-white hover:bg-indigo-50',
+        negotiation: active ? 'text-purple-700 bg-purple-50 border-purple-400' : 'text-purple-600 bg-white hover:bg-purple-50'
+      };
+      const cls = !unlocked ? 'phase-tab locked text-slate-400 bg-slate-100' : `phase-tab ${active ? 'active' : ''} ${complete && !active ? 'complete' : ''} ${colors[ph]}`;
+      const onclick = unlocked ? `switchPhase('${ph}')` : '';
+      return `<div class="${cls}" onclick="${onclick}">
+        <span>${info.icon}</span>
+        <span>${info.short}</span>
+        ${complete ? '<span class="text-xs">✓</span>' : ''}
+        ${!unlocked ? '<span class="text-xs">🔒</span>' : ''}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ============================================================
+// RENDER DRAFT EXERCISE (1–3, employer or employee phase)
+// ============================================================
+function renderDraftExercise(ex, exState, num, phase) {
   const draftValue = exState.lastDraft || ex.defaultDraft;
+  const rubricData = (phase === 'employee') ? ex.employeeRubric : ex.rubric;
+  const modelData = (phase === 'employee') ? ex.employeeModel : ex.model;
 
   // Key Terms Check
   let rubricHtml = '';
@@ -429,8 +747,7 @@ function renderDraftExercise(ex, exState, num) {
     const passed = results.filter(r => r.pass).length;
     const total = results.length;
     const allPass = passed === total;
-
-    rubricHtml = `<div class="fade-in mt-6" id="rubric-${num}">
+    rubricHtml = `<div class="fade-in mt-6" id="rubric-${num}-${phase}">
       <div class="flex items-center justify-between mb-1">
         <h3 class="font-semibold text-slate-700 text-sm">Key Terms Check — Attempt ${exState.attempts}</h3>
         <span class="text-sm font-bold ${allPass ? 'text-emerald-600' : 'text-slate-600'}">${passed} / ${total} textbook phrases present</span>
@@ -446,86 +763,73 @@ function renderDraftExercise(ex, exState, num) {
             </div>
           </div>`).join('')}
       </div>
-      <p class="text-xs mt-3 ${allPass ? 'text-emerald-700 font-medium' : 'text-slate-500'}">
-        ${allPass ? '✓ All textbook phrases present. Compare your draft to the model answer below.' : 'Compare your draft to the model answer to see how the textbook handles each issue.'}
-      </p>
     </div>`;
   }
 
-  // Reflection prompt
+  const phaseLabel = phase === 'employee' ? 'for Jordan Webb (Employee)' : 'for Pico Salsa (Company)';
   const reflectionHtml = exState.submitted
     ? `<div class="mt-6 bg-violet-50 border border-violet-200 rounded-2xl p-5 reflection-block">
         <p class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-1">Reflect</p>
-        <p class="text-sm text-violet-900 font-medium mb-3">What is the most important change you made, and why does it matter for Pico Salsa specifically?</p>
-        <textarea
-          class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none"
-          rows="3"
-          placeholder="Write 2–3 sentences. There's no right answer here — just articulate your reasoning."
-          oninput="updateField(${num}, 'reflection', this.value)"
+        <p class="text-sm text-violet-900 font-medium mb-3">What is the most important change you made ${phaseLabel}, and why?</p>
+        <textarea class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none" rows="3"
+          placeholder="Write 2–3 sentences. There's no right answer — just articulate your reasoning."
+          oninput="updateField(${num}, '${phase}', 'reflection', this.value)"
         >${escapeHtml(exState.reflection)}</textarea>
       </div>` : '';
 
-  const modelSection = exState.modelRevealed ? buildModelAnswer(ex.model) : '';
+  const modelSection = exState.modelRevealed ? buildModelAnswer(modelData) : '';
 
-  // Comparison prompt
   const comparisonHtml = exState.modelRevealed
     ? `<div class="mt-5 bg-orange-50 border border-orange-200 rounded-2xl p-5 comparison-block">
         <p class="text-xs font-bold text-orange-700 uppercase tracking-widest mb-1">Challenge the Model</p>
-        <p class="text-sm text-orange-900 font-medium mb-1">Where does your draft differ from the model answer — and can you defend your choices?</p>
-        <p class="text-xs text-orange-700 mb-3">The model represents one well-supported approach. A different approach can also be correct. If you made different drafting choices, explain why they work. If you think the model is overbroad, underbroad, or wrong about something, say so.</p>
-        <textarea
-          class="w-full border border-orange-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-orange-400 resize-none"
-          rows="4"
-          placeholder="Identify at least one specific difference between your draft and the model. Defend your choice or explain what the model gets right that you missed."
-          oninput="updateField(${num}, 'comparison', this.value)"
+        <p class="text-sm text-orange-900 font-medium mb-1">Where does your draft differ from the model — and can you defend your choices?</p>
+        <textarea class="w-full border border-orange-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-orange-400 resize-none" rows="4"
+          placeholder="Identify at least one specific difference. Defend your choice or explain what the model gets right."
+          oninput="updateField(${num}, '${phase}', 'comparison', this.value)"
         >${escapeHtml(exState.comparison)}</textarea>
       </div>` : '';
 
   const modelBtn = exState.submitted && !exState.modelRevealed
     ? `<div class="mt-4 no-print">
-        <button onclick="revealModel(${num})" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
-          📖 Show Model Answer
-        </button>
+        <button onclick="revealModel(${num}, '${phase}')" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">📖 Show Model Answer</button>
       </div>` : '';
 
   const nextBtn = exState.submitted
     ? `<div class="mt-8 flex justify-end no-print">
-        <button onclick="nextExercise()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
-          ${num < 4 ? `Exercise ${num + 1} →` : 'Final Exercise →'}
+        <button onclick="nextPhase()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
+          ${getNextLabel()}
         </button>
       </div>` : '';
 
-  // Reading hint
-  const hintHtml = ex.readingHint
+  const hint = (phase === 'employee' && ex.employeeReadingHint) ? ex.employeeReadingHint : ex.readingHint;
+  const hintHtml = hint
     ? `<div class="mt-3 no-print">
         <p class="hint-toggle text-xs text-slate-400 hover:text-slate-600" onclick="this.nextElementSibling.classList.toggle('open')">📚 Stuck? Click for a reading hint →</p>
         <div class="hint-content mt-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
-          <p class="text-xs text-blue-800">${ex.readingHint}</p>
+          <p class="text-xs text-blue-800">${hint}</p>
         </div>
       </div>` : '';
+
+  const badgeColor = phase === 'employee' ? 'text-indigo-700 bg-indigo-100' : 'text-blue-700 bg-blue-100';
 
   return `
     <div class="mb-4">
       <div class="flex flex-wrap items-center gap-2 mb-2">
-        <span class="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full">✏ EDIT THIS DRAFT</span>
-        <span class="text-xs text-slate-400">${ex.subtitle} — defective draft</span>
+        <span class="inline-flex items-center gap-1 text-xs font-bold ${badgeColor} px-3 py-1 rounded-full">✏ EDIT THIS DRAFT</span>
+        <span class="text-xs text-slate-400">${ex.subtitle} — ${phase === 'employee' ? 'employee-side redraft' : 'defective draft'}</span>
       </div>
       <textarea id="draft-textarea-${num}" class="draft-textarea" spellcheck="false">${escapeHtml(draftValue)}</textarea>
-      <p class="text-xs text-blue-600 mt-2 font-medium no-print">✏ Edit the clause text to fix all legal defects, then click Submit Draft.</p>
+      <p class="text-xs text-blue-600 mt-2 font-medium no-print">✏ Edit the clause text, then click Submit Draft.</p>
       ${hintHtml}
     </div>
-
     <div class="flex gap-3 no-print">
-      <button onclick="submitDraft(${num})"
-        class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+      <button onclick="submitDraft(${num}, '${phase}')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         ${exState.submitted ? '↺ Resubmit Draft' : 'Submit Draft →'}
       </button>
-      <button onclick="resetDraft(${num})"
-        class="border border-slate-300 hover:border-slate-400 text-slate-600 font-medium px-4 py-3 rounded-xl transition-colors text-sm">
+      <button onclick="resetDraft(${num}, '${phase}')" class="border border-slate-300 hover:border-slate-400 text-slate-600 font-medium px-4 py-3 rounded-xl transition-colors text-sm">
         Reset to original
       </button>
     </div>
-
     ${rubricHtml}
     ${reflectionHtml}
     ${modelBtn}
@@ -535,7 +839,80 @@ function renderDraftExercise(ex, exState, num) {
 }
 
 // ============================================================
-// RENDER EXERCISE 4 (multiple choice)
+// RENDER NEGOTIATION PHASE
+// ============================================================
+function renderNegotiationExercise(ex, num) {
+  const negoState = state.exercises[num].negotiation;
+  const employerDraft = state.exercises[num].employer.lastDraft || ex.defaultDraft;
+  const employeeDraft = state.exercises[num].employee.lastDraft || ex.defaultDraft;
+  const guidance = ex.negotiationGuidance || [];
+
+  const guidanceHtml = guidance.length ? `
+    <div class="mt-6 no-print">
+      <p class="hint-toggle text-sm font-semibold text-purple-700 cursor-pointer" onclick="this.nextElementSibling.classList.toggle('open')">📖 Negotiation Guidance — Click to Expand</p>
+      <div class="hint-content mt-3 bg-purple-50 border border-purple-200 rounded-2xl p-5 space-y-4">
+        ${guidance.map(g => `
+          <div>
+            <p class="font-bold text-purple-900 text-sm">${g.title}</p>
+            <p class="text-xs text-purple-800 leading-relaxed mt-1">${g.text}</p>
+          </div>`).join('')}
+        <div class="mt-3 bg-purple-100 rounded-lg p-3">
+          <p class="text-xs text-purple-800"><strong>Remember:</strong> A court that finds an agreement unconscionably one-sided may void the challenged provisions entirely — leaving the stronger party with <em>no</em> protection. The "best" agreement is one both sides can live with and a court will enforce.</p>
+        </div>
+      </div>
+    </div>` : '';
+
+  const reflectionHtml = negoState.draft
+    ? `<div class="mt-6 bg-purple-50 border border-purple-200 rounded-2xl p-5 reflection-block">
+        <p class="text-xs font-bold text-purple-700 uppercase tracking-widest mb-1">Negotiation Reflection</p>
+        <p class="text-sm text-purple-900 font-medium mb-3">What did you concede from each side, and why? Which provisions were non-negotiable?</p>
+        <textarea class="w-full border border-purple-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-purple-400 resize-none" rows="4"
+          placeholder="Identify what you gave up from the employer draft and the employee draft. Explain why the compromise works — or doesn't."
+          oninput="updateField(${num}, 'negotiation', 'reflection', this.value)"
+        >${escapeHtml(negoState.reflection || '')}</textarea>
+      </div>` : '';
+
+  const nextBtn = negoState.draft
+    ? `<div class="mt-8 flex justify-end no-print">
+        <button onclick="nextPhase()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
+          ${getNextLabel()}
+        </button>
+      </div>` : '';
+
+  return `
+    <div class="mb-6">
+      <p class="text-sm text-purple-800 leading-relaxed mb-4">Compare your two drafts below, then write a compromise version that <strong>both parties could actually sign</strong>.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="border-2 border-amber-300 rounded-2xl p-4 bg-amber-50">
+          <p class="text-xs font-bold text-amber-700 uppercase tracking-widest mb-2">🏢 Your Company Draft</p>
+          <div class="clause-text text-xs text-slate-700 nego-side whitespace-pre-wrap bg-white rounded-xl p-3 border border-amber-200">${escapeHtml(employerDraft)}</div>
+        </div>
+        <div class="border-2 border-indigo-300 rounded-2xl p-4 bg-indigo-50">
+          <p class="text-xs font-bold text-indigo-700 uppercase tracking-widest mb-2">👤 Your Employee Draft</p>
+          <div class="clause-text text-xs text-slate-700 nego-side whitespace-pre-wrap bg-white rounded-xl p-3 border border-indigo-200">${escapeHtml(employeeDraft)}</div>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+          <span class="inline-flex items-center gap-1 text-xs font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full">🤝 NEGOTIATE</span>
+          <span class="text-xs text-slate-400">${ex.subtitle} — compromise draft</span>
+        </div>
+        <textarea id="draft-textarea-${num}" class="draft-textarea" spellcheck="false"
+          placeholder="Write a compromise version of this clause that balances the interests of both Pico Salsa and Jordan Webb..."
+          oninput="state.exercises[${num}].negotiation.draft = this.value; saveState();"
+        >${escapeHtml(negoState.draft || '')}</textarea>
+      </div>
+    </div>
+
+    ${guidanceHtml}
+    ${reflectionHtml}
+    ${nextBtn}`;
+}
+
+// ============================================================
+// RENDER EXERCISE 4 (multiple choice — unchanged)
 // ============================================================
 function renderExercise4(ex, exState) {
   const optHtml = ex.options.map(opt => {
@@ -548,12 +925,8 @@ function renderExercise4(ex, exState) {
     } else {
       cls += ' cursor-pointer hover:border-slate-400';
     }
-    const icon = sel
-      ? (opt.correct ? '✓' : opt.id === sel ? '✗' : '○')
-      : '○';
-    const iconCls = sel
-      ? (opt.correct ? 'text-emerald-600 font-bold text-lg' : opt.id === sel ? 'text-red-500 font-bold text-lg' : 'text-slate-300')
-      : 'text-slate-400';
+    const icon = sel ? (opt.correct ? '✓' : opt.id === sel ? '✗' : '○') : '○';
+    const iconCls = sel ? (opt.correct ? 'text-emerald-600 font-bold text-lg' : opt.id === sel ? 'text-red-500 font-bold text-lg' : 'text-slate-300') : 'text-slate-400';
     return `<div class="${cls}" onclick="${sel ? '' : `selectOption4('${opt.id}')`}">
       <div class="flex items-start gap-3">
         <span class="${iconCls} flex-shrink-0 mt-0.5">${icon}</span>
@@ -562,7 +935,6 @@ function renderExercise4(ex, exState) {
     </div>`;
   }).join('');
 
-  // Reading hint
   const hintHtml = ex.readingHint
     ? `<div class="mb-5 no-print">
         <p class="hint-toggle text-xs text-slate-400 hover:text-slate-600" onclick="this.nextElementSibling.classList.toggle('open')">📚 Stuck? Click for a reading hint →</p>
@@ -575,62 +947,45 @@ function renderExercise4(ex, exState) {
     ? `<div class="fade-in mt-5 bg-amber-50 border border-amber-300 rounded-xl p-5">
         <p class="font-bold text-amber-900 mb-2">⚖ What This Costs Pico Salsa in Litigation</p>
         <p class="text-sm text-amber-800 leading-relaxed">${ex.consequence}</p>
-        <p class="text-xs text-amber-500 mt-2 italic">📚 18 U.S.C. § 1833(b)(3)(C); Defend Trade Secrets Act (2016)</p>
       </div>` : '';
 
-  // Exercise 4 reflection
   const reflectionHtml = exState.selected
     ? `<div class="mt-5 bg-violet-50 border border-violet-200 rounded-2xl p-5 reflection-block">
         <p class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-1">Reflect</p>
         <p class="text-sm text-violet-900 font-medium mb-3">${ex.reflectionPrompt}</p>
-        <textarea
-          class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none"
-          rows="3"
+        <textarea class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none" rows="3"
           placeholder="Consider what Congress was trying to accomplish and whether the penalty is proportionate."
-          oninput="updateField(4, 'reflection', this.value)"
+          oninput="state.exercises[4].reflection = this.value; saveState();"
         >${escapeHtml(exState.reflection || '')}</textarea>
       </div>` : '';
 
   const revealBtn = exState.selected && !exState.modelRevealed
-    ? `<div class="mt-5 no-print">
-        <button onclick="revealModel(4)" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors">
-          📖 Show Required DTSA Notice Language
-        </button>
-      </div>` : '';
+    ? `<div class="mt-5 no-print"><button onclick="revealModel(4)" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl text-sm transition-colors">📖 Show Required DTSA Notice Language</button></div>` : '';
 
   const modelSection = exState.modelRevealed
-    ? `<div class="fade-in mt-6">
-        <div class="bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-6">
-          <div class="mb-3">
-            <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ REQUIRED LANGUAGE</span>
-            <p class="text-xs text-emerald-600 mt-1 italic">${ex.model.cite}</p>
-          </div>
-          <div class="clause-text text-slate-800 bg-white rounded-xl p-5 border border-emerald-200 text-sm">
-            <strong>§ [__]. Notice of Immunity Under the Defend Trade Secrets Act.</strong><br><br>
-            ${ex.model.text}
-          </div>
-          <div class="mt-4 bg-emerald-100 rounded-lg p-3">
-            <p class="text-xs text-emerald-800"><strong>Practical rule:</strong> This paragraph costs nothing to include and must appear in every employment agreement, NDA, and contractor agreement signed after May 11, 2016. Without it, § 1833(b)(3)(C) permanently forfeits your right to exemplary (2×) damages and attorney's fees — even on a slam-dunk willful misappropriation claim.</p>
-          </div>
+    ? `<div class="fade-in mt-6"><div class="bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-6">
+        <div class="mb-3">
+          <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ REQUIRED LANGUAGE</span>
+          <p class="text-xs text-emerald-600 mt-1 italic">${ex.model.cite}</p>
         </div>
-      </div>` : '';
+        <div class="clause-text text-slate-800 bg-white rounded-xl p-5 border border-emerald-200 text-sm">
+          <strong>§ [__]. Notice of Immunity Under the Defend Trade Secrets Act.</strong><br><br>${ex.model.text}
+        </div>
+        <div class="mt-4 bg-emerald-100 rounded-lg p-3">
+          <p class="text-xs text-emerald-800"><strong>Practical rule:</strong> This paragraph costs nothing to include and must appear in every employment agreement signed after May 11, 2016.</p>
+        </div>
+      </div></div>` : '';
 
   const nextBtn = exState.modelRevealed
     ? `<div class="mt-8 flex justify-end no-print">
-        <button onclick="nextExercise()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
-          ★ Assemble the Full Agreement →
-        </button>
+        <button onclick="nextPhase()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">★ Assemble the Full Agreement →</button>
       </div>` : '';
 
   return `
     <div class="bg-slate-100 border border-slate-300 rounded-2xl p-5 mb-6">
       <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Three Corrected Clauses Are Now in Place</p>
       <div class="grid grid-cols-3 gap-3">
-        ${[
-          ['📄', 'CI Definition', 'Contextual, no marking, indefinite'],
-          ['💡', 'Invention Assignment', '"Hereby assigns" — immediate'],
-          ['🚫', 'Non-Solicitation', '2-yr, material contact only']
-        ].map(([icon, title, sub]) => `
+        ${[['📄','CI Definition','Contextual, no marking, indefinite'],['💡','Invention Assignment','"Hereby assigns" — immediate'],['🚫','Non-Solicitation','2-yr, material contact only']].map(([icon,title,sub]) => `
           <div class="bg-white rounded-xl p-3 border border-emerald-200 text-center">
             <div class="text-lg mb-1">${icon}</div>
             <p class="text-xs font-bold text-emerald-700">${title}</p>
@@ -638,7 +993,6 @@ function renderExercise4(ex, exState) {
           </div>`).join('')}
       </div>
     </div>
-
     ${hintHtml}
     <p class="font-semibold text-slate-700 mb-4">Which required element is still missing?</p>
     <div class="space-y-3 mb-2">${optHtml}</div>
@@ -650,90 +1004,82 @@ function renderExercise4(ex, exState) {
 }
 
 // ============================================================
-// HELPER — BUILD MODEL ANSWER BLOCK (with click-to-reveal tooltips)
+// HELPER — BUILD MODEL ANSWER BLOCK
 // ============================================================
 function buildModelAnswer(model) {
   const segs = model.segments.map(seg => {
     if (!seg.h) return seg.text.replace(/\n/g, '<br><br>');
     return `<span class="model-highlight" onclick="toggleTip(this)">▲ ${seg.text}<span class="tooltip">${escapeHtml(seg.note)}</span></span>`;
   }).join('');
-
-  return `<div class="fade-in mt-6">
-    <div class="bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-6">
-      <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
-        <div>
-          <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ MODEL LANGUAGE</span>
-          <p class="text-xs text-emerald-600 mt-1 italic">${model.cite}</p>
-        </div>
-      </div>
-      <div class="clause-text text-slate-800 bg-white rounded-xl p-5 border border-emerald-200">
-        ${segs}
-      </div>
-      <div class="mt-4 bg-emerald-100 rounded-lg p-3 no-print">
-        <p class="text-xs text-emerald-800 font-medium">▲ Click highlighted phrases to see why each drafting choice matters.</p>
+  return `<div class="fade-in mt-6"><div class="bg-emerald-50 border-2 border-emerald-400 rounded-2xl p-6">
+    <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
+      <div>
+        <span class="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">✓ MODEL LANGUAGE</span>
+        <p class="text-xs text-emerald-600 mt-1 italic">${model.cite}</p>
       </div>
     </div>
-  </div>`;
+    <div class="clause-text text-slate-800 bg-white rounded-xl p-5 border border-emerald-200">${segs}</div>
+    <div class="mt-4 bg-emerald-100 rounded-lg p-3 no-print">
+      <p class="text-xs text-emerald-800 font-medium">▲ Click highlighted phrases to see why each drafting choice matters.</p>
+    </div>
+  </div></div>`;
 }
 
 // ============================================================
-// RENDER CAPSTONE — with student drafts + synthesis
+// RENDER CAPSTONE
 // ============================================================
 function renderCapstone() {
   const scoreItems = [
     { icon: '📄', title: 'Confidential Information Definition', note: 'Contextual standard — no marking required; indefinite survival for trade secrets', cite: 'nClosures Inc. v. Block & Co. (7th Cir. 2014); UTSA § 1(4)' },
-    { icon: '💡', title: 'Invention Assignment', note: '"Hereby assigns" — immediate transfer by operation of law at creation', cite: 'Stanford v. Roche, 563 U.S. 776 (2011); Abraxis BioScience v. Navinta (Fed. Cir. 2011)' },
-    { icon: '🚫', title: 'Non-Solicitation', note: '2-year restriction, material contact + 12-month lookback — proportionate and enforceable', cite: 'Lasership v. Watson (2009); WellSpan Health v. Bayliss (2005)' },
-    { icon: '🔐', title: 'DTSA § 1833(b) Immunity Notice', note: 'Included — exemplary damages and attorney\'s fees preserved for willful misappropriation', cite: '18 U.S.C. § 1833(b)(3)(C); Defend Trade Secrets Act (2016)' }
+    { icon: '💡', title: 'Invention Assignment', note: '"Hereby assigns" — immediate transfer by operation of law at creation', cite: 'Stanford v. Roche, 563 U.S. 776 (2011)' },
+    { icon: '🚫', title: 'Non-Solicitation', note: '2-year restriction, material contact + 12-month lookback', cite: 'Lasership v. Watson (2009); WellSpan Health v. Bayliss (2005)' },
+    { icon: '🔐', title: 'DTSA § 1833(b) Immunity Notice', note: 'Included — exemplary damages and fees preserved', cite: '18 U.S.C. § 1833(b)(3)(C)' }
   ];
 
-  // Student draft sections (show their work if they submitted)
-  const studentDrafts = [1, 2, 3].map(n => {
-    const ex = exercises[n];
-    const exState = state.exercises[n];
-    const draft = exState.lastDraft || ex.defaultDraft;
-    const wasEdited = exState.submitted && exState.lastDraft && exState.lastDraft !== ex.defaultDraft;
-    return { num: n, title: ex.title, subtitle: ex.subtitle, draft, wasEdited, reflection: exState.reflection, comparison: exState.comparison };
+  // Student drafts: show all three phases for 1-3
+  const studentWorkSection = `<div class="bg-white border border-slate-200 rounded-2xl p-6 mb-8 shadow-sm">
+    <h3 class="font-bold text-slate-700 mb-1">Your Drafts — All Phases</h3>
+    <p class="text-xs text-slate-400 mb-4">Your edited clause text from each exercise phase.</p>
+    <div class="space-y-6">
+      ${[1,2,3].map(n => {
+        const ex = exercises[n];
+        const exS = state.exercises[n];
+        return `<div class="border border-slate-200 rounded-xl p-4">
+          <h4 class="font-bold text-slate-800 text-sm mb-3">${ex.subtitle}. ${ex.title}</h4>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            ${['employer','employee','negotiation'].map(ph => {
+              const label = PHASE_LABELS[ph];
+              const draft = ph === 'negotiation' ? exS.negotiation.draft : (exS[ph].lastDraft || '');
+              const hasContent = !!draft;
+              return `<div class="border rounded-lg p-3 ${hasContent ? 'border-slate-200' : 'border-slate-100 bg-slate-50'}">
+                <p class="text-xs font-bold mb-1" style="color: var(--tw-prose-body)">${label.icon} ${label.short}</p>
+                ${hasContent
+                  ? `<div class="clause-text text-xs text-slate-600 max-h-24 overflow-y-auto whitespace-pre-wrap">${escapeHtml(draft)}</div>`
+                  : `<p class="text-xs text-slate-400 italic">Not yet drafted</p>`}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+
+  const synthesisHtml = `<div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-8 reflection-block">
+    <p class="text-xs font-bold text-indigo-700 uppercase tracking-widest mb-1">Final Synthesis</p>
+    <p class="text-sm text-indigo-900 font-medium mb-1">Looking at the complete agreement, which clause is most vulnerable to a legal challenge — and what would you change if this were a real engagement?</p>
+    <p class="text-xs text-indigo-700 mb-3">Consider: jurisdiction-specific enforceability, missing protections, overbreadth risks, or provisions a court might still find unreasonable.</p>
+    <textarea class="w-full border border-indigo-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-indigo-400 resize-none" rows="4"
+      placeholder="Identify the weakest clause, explain why, and describe what you would do differently in a live engagement."
+      oninput="state.capstoneSynthesis = this.value; saveState();"
+    >${escapeHtml(state.capstoneSynthesis || '')}</textarea>
+  </div>`;
+
+  // Use negotiated drafts if available, otherwise model clauses
+  const clauseTexts = [1,2,3].map(n => {
+    const nego = state.exercises[n].negotiation.draft;
+    if (nego) return { text: nego, badge: '🤝 Negotiated', color: 'purple' };
+    return { text: null, badge: '✓ Model', color: 'emerald' };
   });
-
-  const studentWorkSection = `
-    <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-8 shadow-sm">
-      <h3 class="font-bold text-slate-700 mb-1">Your Drafts</h3>
-      <p class="text-xs text-slate-400 mb-4">Your edited clause text from each exercise.</p>
-      <div class="space-y-5">
-        ${studentDrafts.map(d => `
-          <div class="border border-slate-100 rounded-xl p-4">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="font-semibold text-slate-800 text-sm">${d.subtitle}. ${d.title}</span>
-              ${d.wasEdited ? '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Edited</span>' : '<span class="text-xs bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full">Unmodified</span>'}
-            </div>
-            <div class="clause-text text-slate-600 text-xs bg-slate-50 rounded-lg p-3 max-h-32 overflow-y-auto whitespace-pre-wrap">${escapeHtml(d.draft)}</div>
-            ${d.reflection ? `<div class="mt-2 border-l-2 border-violet-300 pl-3"><p class="text-xs text-violet-700"><strong>Reflection:</strong> ${escapeHtml(d.reflection)}</p></div>` : ''}
-            ${d.comparison ? `<div class="mt-2 border-l-2 border-orange-300 pl-3"><p class="text-xs text-orange-700"><strong>Model comparison:</strong> ${escapeHtml(d.comparison)}</p></div>` : ''}
-          </div>`).join('')}
-        ${state.exercises[4].reflection ? `
-          <div class="border border-slate-100 rounded-xl p-4">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="font-semibold text-slate-800 text-sm">§ 4. DTSA Notice</span>
-            </div>
-            <div class="mt-1 border-l-2 border-violet-300 pl-3"><p class="text-xs text-violet-700"><strong>Reflection:</strong> ${escapeHtml(state.exercises[4].reflection)}</p></div>
-          </div>` : ''}
-      </div>
-    </div>`;
-
-  // Capstone synthesis
-  const synthesisHtml = `
-    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-8 reflection-block">
-      <p class="text-xs font-bold text-indigo-700 uppercase tracking-widest mb-1">Final Synthesis</p>
-      <p class="text-sm text-indigo-900 font-medium mb-1">Looking at the complete agreement, which clause is most vulnerable to a legal challenge — and what would you change if this were a real engagement?</p>
-      <p class="text-xs text-indigo-700 mb-3">Consider: jurisdiction-specific enforceability, missing protections, overbreadth risks, or provisions a court might still find unreasonable.</p>
-      <textarea
-        class="w-full border border-indigo-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-indigo-400 resize-none"
-        rows="4"
-        placeholder="Identify the weakest clause, explain why, and describe what you would do differently in a live engagement."
-        oninput="state.capstoneSynthesis = this.value; saveState();"
-      >${escapeHtml(state.capstoneSynthesis || '')}</textarea>
-    </div>`;
 
   return `<div class="fade-in">
     <div class="text-center mb-8 no-print">
@@ -768,60 +1114,39 @@ function renderCapstone() {
         <h4 class="text-base text-slate-600 mt-1" style="font-family: Georgia, serif">Employee Confidentiality and Assignment Agreement</h4>
         <p class="text-sm text-slate-500 mt-3 max-w-xl mx-auto">This Agreement is entered into as of _____________, 20___, by and between Pico Salsa, LLC, a New York limited liability company ("Company"), and _________________________ ("Employee").</p>
       </div>
-
       <div class="px-6 md:px-10 py-8 space-y-8">
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 1. Confidential Information</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Corrected</span>
+            <span class="text-xs bg-${clauseTexts[0].color}-100 text-${clauseTexts[0].color}-700 px-2 py-0.5 rounded-full no-print">${clauseTexts[0].badge}</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
-            "Confidential Information" means all nonpublic information disclosed by Company, directly or indirectly, in written, oral, electronic, visual, or any other form, that Employee knows or reasonably should know is confidential based on the nature of the information or the circumstances surrounding its disclosure. Confidential Information includes, without limitation, technical data, trade secrets, know-how, product designs, marketing plans, business models, financial data, internal policies, customer and supplier information, employee data, pricing strategies, and any analysis, compilations, or summaries derived from such information.
-            <br><br>
-            Employee agrees to use Confidential Information solely in furtherance of Employee's duties for Company, to restrict disclosure to individuals with a need to know who are bound by obligations no less protective than those herein, and to protect Confidential Information with the same degree of care used to protect Company's own confidential information, but in no event less than a reasonable degree of care. Employee shall not reverse engineer, decompile, or otherwise attempt to derive the underlying materials from any Confidential Information and shall return or destroy all Confidential Information upon request or upon termination of employment.
-            <br><br>
-            These obligations shall continue for a period of two (2) years from the date of disclosure, except that Employee's obligations with respect to any trade secret shall survive so long as the information remains a trade secret under applicable law.
-          </div>
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200 whitespace-pre-wrap">${clauseTexts[0].text || `"Confidential Information" means all nonpublic information disclosed by Company, directly or indirectly, in written, oral, electronic, visual, or any other form, that Employee knows or reasonably should know is confidential based on the nature of the information or the circumstances surrounding its disclosure. Confidential Information includes, without limitation, technical data, trade secrets, know-how, product designs, marketing plans, business models, financial data, internal policies, customer and supplier information, employee data, pricing strategies, and any analysis, compilations, or summaries derived from such information.\n\nEmployee agrees to use Confidential Information solely in furtherance of Employee's duties for Company, to restrict disclosure to individuals with a need to know who are bound by obligations no less protective than those herein, and to protect Confidential Information with the same degree of care used to protect Company's own confidential information, but in no event less than a reasonable degree of care. Employee shall not reverse engineer, decompile, or otherwise attempt to derive the underlying materials from any Confidential Information and shall return or destroy all Confidential Information upon request or upon termination of employment.\n\nThese obligations shall continue for a period of two (2) years from the date of disclosure, except that Employee's obligations with respect to any trade secret shall survive so long as the information remains a trade secret under applicable law.`}</div>
         </div>
-
         <hr class="border-slate-100">
-
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 2. Assignment of Inventions</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Corrected</span>
+            <span class="text-xs bg-${clauseTexts[1].color}-100 text-${clauseTexts[1].color}-700 px-2 py-0.5 rounded-full no-print">${clauseTexts[1].badge}</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
-            Employee agrees that all inventions, discoveries, improvements, processes, designs, developments, ideas, trade secrets, and other works of authorship (collectively, "Inventions") conceived, developed, or reduced to practice by Employee, alone or with others, during the term of employment, and that relate in any manner to Company's business, operations, research, or anticipated work, shall be the sole and exclusive property of Company. Employee <strong>hereby assigns</strong> to Company all right, title, and interest in and to such Inventions, whether or not patentable or registrable, and agrees to execute all documents necessary to confirm such ownership. This obligation applies regardless of whether the Invention was developed during working hours or using Company equipment, and shall survive the termination of employment.
-          </div>
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200 whitespace-pre-wrap">${clauseTexts[1].text || `Employee agrees that all inventions, discoveries, improvements, processes, designs, developments, ideas, trade secrets, and other works of authorship (collectively, "Inventions") conceived, developed, or reduced to practice by Employee, alone or with others, during the term of employment, and that relate in any manner to Company's business, operations, research, or anticipated work, shall be the sole and exclusive property of Company. Employee hereby assigns to Company all right, title, and interest in and to such Inventions, whether or not patentable or registrable, and agrees to execute all documents necessary to confirm such ownership. This obligation applies regardless of whether the Invention was developed during working hours or using Company equipment, and shall survive the termination of employment.`}</div>
         </div>
-
         <hr class="border-slate-100">
-
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 3. Non-Solicitation</span>
-            <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Corrected</span>
+            <span class="text-xs bg-${clauseTexts[2].color}-100 text-${clauseTexts[2].color}-700 px-2 py-0.5 rounded-full no-print">${clauseTexts[2].badge}</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
-            Employee agrees that for a period of two (2) years following the termination of employment for any reason, Employee shall not, directly or indirectly, solicit, induce, or attempt to induce any employee, contractor, or consultant of Company to terminate their relationship with Company. Employee further agrees that, for the same period, Employee shall not solicit or attempt to solicit, for the purpose of offering competing products or services, any customer or prospective customer of Company with whom Employee had material contact during the twelve (12) months preceding the termination of employment. This restriction shall apply regardless of whether the solicitation is initiated by Employee, the former colleague, or the customer, and regardless of whether such conduct is undertaken on behalf of Employee individually or through another business or entity.
-          </div>
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200 whitespace-pre-wrap">${clauseTexts[2].text || `Employee agrees that for a period of two (2) years following the termination of employment for any reason, Employee shall not, directly or indirectly, solicit, induce, or attempt to induce any employee, contractor, or consultant of Company to terminate their relationship with Company. Employee further agrees that, for the same period, Employee shall not solicit or attempt to solicit, for the purpose of offering competing products or services, any customer or prospective customer of Company with whom Employee had material contact during the twelve (12) months preceding the termination of employment.`}</div>
         </div>
-
         <hr class="border-slate-100">
-
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 4. Notice of Immunity Under the Defend Trade Secrets Act</span>
             <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full no-print">✓ Added</span>
           </div>
-          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">
-            Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal. Nothing in this Agreement is intended to, or shall, prohibit Employee from reporting possible violations of federal or state law or regulation to any government agency or entity, or from making disclosures that are protected under the whistleblower provisions of applicable law, and Employee does not need prior authorization from Company to make any such reports or disclosures.
-          </div>
+          <div class="clause-text text-slate-700 text-sm pl-4 border-l-2 border-emerald-200">Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.</div>
         </div>
-
         <hr class="border-slate-200">
-
         <div class="grid grid-cols-2 gap-12 pt-2">
           <div>
             <p class="font-semibold text-slate-700 mb-5">PICO SALSA, LLC</p>
@@ -843,21 +1168,13 @@ function renderCapstone() {
     ${studentWorkSection}
 
     <div class="flex flex-wrap gap-3 mt-8 justify-center no-print">
-      <button onclick="downloadWork()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
-        📥 Download My Work
-      </button>
-      <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
-        🖨 Print Agreement
-      </button>
-      <button onclick="copyAgreement()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
-        📋 Copy Agreement Text
-      </button>
-      <button onclick="clearProgress()" class="border-2 border-red-200 hover:border-red-400 text-red-500 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
-        ↺ Start Over
-      </button>
-      <a href="../index.html" class="border-2 border-emerald-300 hover:border-emerald-500 text-emerald-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
-        ← Course Home
-      </a>
+      <button onclick="generateDocx('full')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">📥 Download as Word (.docx)</button>
+      <button onclick="generateDocx('agreement')" class="bg-slate-700 hover:bg-slate-800 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">📄 Agreement Only (.docx)</button>
+      <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">🖨 Print</button>
+      <button onclick="copyAgreement()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">📋 Copy Text</button>
+      <button onclick="downloadWork()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">📥 Download .txt</button>
+      <button onclick="clearProgress()" class="border-2 border-red-200 hover:border-red-400 text-red-500 font-bold px-6 py-3 rounded-xl transition-colors text-sm">↺ Start Over</button>
+      <a href="../index.html" class="border-2 border-emerald-300 hover:border-emerald-500 text-emerald-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">← Course Home</a>
     </div>
   </div>`;
 }
@@ -867,8 +1184,10 @@ function renderCapstone() {
 // ============================================================
 function render() {
   renderProgressBar();
+  renderScenarioBanner();
   const main = document.getElementById('main-content');
   const cur = state.currentExercise;
+  const phase = state.currentPhase;
 
   if (cur === 'capstone') {
     main.innerHTML = renderCapstone();
@@ -876,68 +1195,161 @@ function render() {
   }
 
   const ex = exercises[cur];
-  const exState = state.exercises[cur];
 
-  const body = (cur === 4)
-    ? renderExercise4(ex, exState)
-    : renderDraftExercise(ex, exState, cur);
+  if (cur === 4) {
+    const exState = state.exercises[4];
+    main.innerHTML = `<div class="fade-in">
+      <div class="mb-6">
+        <div class="flex items-center gap-3 mb-2">
+          <span class="text-3xl">${ex.icon}</span>
+          <div>
+            <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Exercise ${ex.number} of 4 — ${ex.subtitle}</div>
+            <h2 class="text-xl md:text-2xl font-bold text-slate-900">${ex.title}</h2>
+          </div>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3 mt-3">
+          <p class="text-sm text-emerald-800"><strong>Objective:</strong> ${ex.objective}</p>
+        </div>
+        <p class="text-slate-600 mt-4 leading-relaxed text-sm">${ex.context}</p>
+      </div>
+      ${renderExercise4(ex, exState)}
+    </div>`;
+    return;
+  }
+
+  // Exercises 1-3: phase-aware
+  const objective = (phase === 'employee' && ex.employeeObjective) ? ex.employeeObjective : ex.objective;
+  const context = (phase === 'employee' && ex.employeeContext) ? ex.employeeContext : ex.context;
+  const phaseColors = { employer: 'emerald', employee: 'indigo', negotiation: 'purple' };
+  const pc = phaseColors[phase];
+
+  let body;
+  if (phase === 'negotiation') {
+    body = renderNegotiationExercise(ex, cur);
+  } else {
+    const exState = getPhaseState(cur, phase);
+    body = renderDraftExercise(ex, exState, cur, phase);
+  }
 
   main.innerHTML = `<div class="fade-in">
     <div class="mb-6">
       <div class="flex items-center gap-3 mb-2">
         <span class="text-3xl">${ex.icon}</span>
         <div>
-          <div class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Exercise ${ex.number} of 4 — ${ex.subtitle}</div>
+          <div class="text-xs font-bold text-${pc}-600 uppercase tracking-widest">Exercise ${ex.number} of 4 — ${ex.subtitle}</div>
           <h2 class="text-xl md:text-2xl font-bold text-slate-900">${ex.title}</h2>
         </div>
       </div>
-      <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3 mt-3">
-        <p class="text-sm text-emerald-800"><strong>Objective:</strong> ${ex.objective}</p>
+      ${renderPhaseTabs(cur)}
+      <div class="bg-${pc}-50 border border-${pc}-200 rounded-xl px-5 py-3">
+        <p class="text-sm text-${pc}-800"><strong>Objective:</strong> ${objective}</p>
       </div>
-      <p class="text-slate-600 mt-4 leading-relaxed text-sm">${ex.context}</p>
+      <p class="text-slate-600 mt-4 leading-relaxed text-sm">${context}</p>
     </div>
     ${body}
   </div>`;
 }
 
 // ============================================================
+// NAVIGATION
+// ============================================================
+function getNextLabel() {
+  const cur = state.currentExercise;
+  const phase = state.currentPhase;
+  if (cur === 4) return '★ Assemble the Full Agreement →';
+  if (typeof cur === 'number' && cur <= 3) {
+    if (phase === 'employer') return '👤 Draft as Employee →';
+    if (phase === 'employee') return '🤝 Negotiate a Compromise →';
+    if (phase === 'negotiation') {
+      return cur < 3 ? `Exercise ${cur + 1} →` : 'Exercise 4 →';
+    }
+  }
+  return 'Next →';
+}
+
+function nextPhase() {
+  const cur = state.currentExercise;
+  const phase = state.currentPhase;
+
+  if (cur === 4) {
+    state.currentExercise = 'capstone';
+    state.currentPhase = 'employer';
+  } else if (typeof cur === 'number' && cur <= 3) {
+    if (phase === 'employer') {
+      state.currentPhase = 'employee';
+      state.exercises[cur].phase = 'employee';
+    } else if (phase === 'employee') {
+      state.currentPhase = 'negotiation';
+      state.exercises[cur].phase = 'negotiation';
+    } else {
+      // Move to next exercise
+      state.currentExercise = cur + 1;
+      state.currentPhase = (cur + 1 <= 3) ? 'employer' : 'employer';
+    }
+  }
+
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchPhase(phase) {
+  const cur = state.currentExercise;
+  if (typeof cur === 'number' && cur <= 3 && isPhaseUnlocked(cur, phase)) {
+    state.currentPhase = phase;
+    saveState();
+    render();
+  }
+}
+
+// ============================================================
 // HANDLERS
 // ============================================================
-function updateField(num, field, value) {
-  state.exercises[num][field] = value;
+function updateField(num, phase, field, value) {
+  if (phase === 'negotiation') {
+    state.exercises[num].negotiation[field] = value;
+  } else {
+    state.exercises[num][phase][field] = value;
+  }
   saveState();
 }
 
-function submitDraft(num) {
+function submitDraft(num, phase) {
   const textarea = document.getElementById(`draft-textarea-${num}`);
   if (!textarea) return;
   const text = textarea.value;
-  state.exercises[num].lastDraft = text;
-  state.exercises[num].attempts++;
-  state.exercises[num].submitted = true;
-  state.exercises[num].rubricResults = checkRubric(num, text);
+  const exState = state.exercises[num][phase];
+  exState.lastDraft = text;
+  exState.attempts++;
+  exState.submitted = true;
+  exState.rubricResults = checkRubric(num, text, phase);
   saveState();
   render();
   setTimeout(() => {
-    const rubric = document.getElementById(`rubric-${num}`);
+    const rubric = document.getElementById(`rubric-${num}-${phase}`);
     if (rubric) rubric.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 100);
 }
 
-function resetDraft(num) {
-  state.exercises[num].lastDraft = '';
-  state.exercises[num].submitted = false;
-  state.exercises[num].rubricResults = null;
-  state.exercises[num].attempts = 0;
-  state.exercises[num].reflection = '';
-  state.exercises[num].comparison = '';
-  state.exercises[num].modelRevealed = false;
+function resetDraft(num, phase) {
+  const exState = state.exercises[num][phase];
+  exState.lastDraft = '';
+  exState.submitted = false;
+  exState.rubricResults = null;
+  exState.attempts = 0;
+  exState.reflection = '';
+  exState.comparison = '';
+  exState.modelRevealed = false;
   saveState();
   render();
 }
 
-function revealModel(num) {
-  state.exercises[num].modelRevealed = true;
+function revealModel(num, phase) {
+  if (num === 4) {
+    state.exercises[4].modelRevealed = true;
+  } else {
+    state.exercises[num][phase || state.currentPhase].modelRevealed = true;
+  }
   saveState();
   render();
   setTimeout(() => {
@@ -952,23 +1364,13 @@ function selectOption4(optId) {
   render();
 }
 
-function nextExercise() {
-  const cur = state.currentExercise;
-  state.currentExercise = (cur === 4) ? 'capstone' : cur + 1;
-  saveState();
-  render();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
 function toggleTip(el) {
-  // Close any other open tooltips
   document.querySelectorAll('.model-highlight.show-tip').forEach(e => {
     if (e !== el) e.classList.remove('show-tip');
   });
   el.classList.toggle('show-tip');
 }
 
-// Close tooltips on outside click
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.model-highlight')) {
     document.querySelectorAll('.model-highlight.show-tip').forEach(el => el.classList.remove('show-tip'));
@@ -978,11 +1380,7 @@ document.addEventListener('click', function(e) {
 function copyAgreement() {
   const el = document.getElementById('assembled-agreement');
   if (!el) return;
-  navigator.clipboard.writeText(el.innerText).then(() => {
-    alert('Agreement text copied to clipboard.');
-  }).catch(() => {
-    alert('Copy failed — please select the text manually.');
-  });
+  navigator.clipboard.writeText(el.innerText).then(() => alert('Agreement text copied.')).catch(() => alert('Copy failed.'));
 }
 
 function clearProgress() {
@@ -994,7 +1392,7 @@ function clearProgress() {
 }
 
 // ============================================================
-// DOWNLOAD WORK
+// DOWNLOAD WORK (.txt fallback)
 // ============================================================
 function downloadWork() {
   const lines = [];
@@ -1006,48 +1404,40 @@ function downloadWork() {
 
   for (const num of [1, 2, 3]) {
     const ex = exercises[num];
-    const exState = state.exercises[num];
+    const exS = state.exercises[num];
     lines.push(hr);
     lines.push(`EXERCISE ${num}: ${ex.title} (${ex.subtitle})`);
     lines.push(hr);
-    lines.push('');
-    lines.push('YOUR DRAFT:');
-    lines.push(exState.lastDraft || ex.defaultDraft);
-    lines.push('');
-    if (exState.reflection) {
-      lines.push('REFLECTION:');
-      lines.push(exState.reflection);
+
+    for (const ph of ['employer', 'employee']) {
+      const phState = exS[ph];
       lines.push('');
+      lines.push(`--- ${ph.toUpperCase()} DRAFT ---`);
+      lines.push(phState.lastDraft || '(not yet drafted)');
+      if (phState.reflection) { lines.push(''); lines.push('REFLECTION:'); lines.push(phState.reflection); }
+      if (phState.comparison) { lines.push(''); lines.push('MODEL COMPARISON:'); lines.push(phState.comparison); }
     }
-    if (exState.comparison) {
-      lines.push('MODEL COMPARISON:');
-      lines.push(exState.comparison);
-      lines.push('');
-    }
+
+    lines.push('');
+    lines.push('--- NEGOTIATED DRAFT ---');
+    lines.push(exS.negotiation.draft || '(not yet drafted)');
+    if (exS.negotiation.reflection) { lines.push(''); lines.push('NEGOTIATION REFLECTION:'); lines.push(exS.negotiation.reflection); }
+    lines.push('');
   }
 
-  // Exercise 4
   lines.push(hr);
   lines.push('EXERCISE 4: The Missing Clause (DTSA § 1833(b))');
   lines.push(hr);
   lines.push('');
   const sel = state.exercises[4].selected;
   lines.push(`Answer selected: ${sel || '(none)'} ${sel === 'B' ? '(Correct)' : sel ? '(Incorrect)' : ''}`);
-  lines.push('');
-  if (state.exercises[4].reflection) {
-    lines.push('REFLECTION:');
-    lines.push(state.exercises[4].reflection);
-    lines.push('');
-  }
+  if (state.exercises[4].reflection) { lines.push(''); lines.push('REFLECTION:'); lines.push(state.exercises[4].reflection); }
 
-  // Capstone
   if (state.capstoneSynthesis) {
-    lines.push(hr);
+    lines.push(''); lines.push(hr);
     lines.push('FINAL SYNTHESIS');
-    lines.push(hr);
-    lines.push('');
+    lines.push(hr); lines.push('');
     lines.push(state.capstoneSynthesis);
-    lines.push('');
   }
 
   const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
@@ -1059,7 +1449,170 @@ function downloadWork() {
   URL.revokeObjectURL(url);
 }
 
-// Boot
+// ============================================================
+// DOCX EXPORT
+// ============================================================
+async function generateDocx(mode) {
+  if (!window.docx || !window.saveAs) {
+    alert('Word document library is still loading. Please try again in a moment.');
+    return;
+  }
+
+  const { Document, Paragraph, TextRun, Header, Footer, PageNumber, AlignmentType, HeadingLevel, BorderStyle, Packer, NumberFormat } = docx;
+
+  const TNR = 'Times New Roman';
+  const INTER = 'Inter';
+
+  function heading(text, level) {
+    return new Paragraph({
+      children: [new TextRun({ text, font: TNR, bold: true, size: level === 1 ? 28 : 24 })],
+      spacing: { before: level === 1 ? 400 : 240, after: 120 },
+    });
+  }
+
+  function bodyPara(text, opts = {}) {
+    return new Paragraph({
+      children: [new TextRun({ text, font: TNR, size: 24, ...opts })],
+      spacing: { after: 120, line: 276 },
+      indent: opts.indent ? { left: 720 } : undefined,
+    });
+  }
+
+  function clausePara(text) {
+    return new Paragraph({
+      children: [new TextRun({ text, font: TNR, size: 22 })],
+      spacing: { after: 80, line: 360 },
+      indent: { left: 720 },
+    });
+  }
+
+  function divider() {
+    return new Paragraph({
+      children: [new TextRun({ text: '—'.repeat(40), font: TNR, size: 20, color: '999999' })],
+      spacing: { before: 200, after: 200 },
+    });
+  }
+
+  const headerContent = new Header({
+    children: [new Paragraph({
+      children: [
+        new TextRun({ text: 'Pico Salsa, LLC — Employment Agreement Clinic', font: INTER, size: 16, color: '666666' }),
+        new TextRun({ text: '\tSTUDENT WORK PRODUCT', font: INTER, size: 16, color: '666666' }),
+      ],
+    })]
+  });
+
+  const footerContent = new Footer({
+    children: [new Paragraph({
+      alignment: AlignmentType.CENTER,
+      children: [new TextRun({ children: [PageNumber.CURRENT], font: INTER, size: 16, color: '999999' })],
+    })]
+  });
+
+  const children = [];
+
+  // Title
+  children.push(new Paragraph({
+    children: [new TextRun({ text: 'Internal Mitigation Drafting Lab', font: TNR, bold: true, size: 32 })],
+    alignment: AlignmentType.CENTER, spacing: { after: 80 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: 'Pico Salsa, LLC — Employee Confidentiality & Assignment Agreement', font: TNR, size: 24, italics: true })],
+    alignment: AlignmentType.CENTER, spacing: { after: 80 },
+  }));
+  children.push(new Paragraph({
+    children: [new TextRun({ text: `Exported: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, font: TNR, size: 20, color: '666666' })],
+    alignment: AlignmentType.CENTER, spacing: { after: 400 },
+  }));
+
+  if (mode === 'agreement') {
+    // Agreement only
+    children.push(heading('PICO SALSA, LLC', 1));
+    children.push(bodyPara('Employee Confidentiality and Assignment Agreement'));
+    children.push(divider());
+
+    for (const num of [1, 2, 3]) {
+      const ex = exercises[num];
+      const nego = state.exercises[num].negotiation.draft;
+      children.push(heading(`${ex.subtitle}. ${ex.title}`, 2));
+      const text = nego || `[Model clause — see textbook ${ex.model ? ex.model.cite : ''}]`;
+      text.split('\n').filter(l => l.trim()).forEach(line => children.push(clausePara(line)));
+      children.push(divider());
+    }
+
+    children.push(heading('§ 4. Notice of Immunity Under the Defend Trade Secrets Act', 2));
+    children.push(clausePara(exercises[4].model.text));
+  } else {
+    // Full work product
+    for (const num of [1, 2, 3]) {
+      const ex = exercises[num];
+      const exS = state.exercises[num];
+
+      children.push(heading(`Exercise ${num}: ${ex.title} (${ex.subtitle})`, 1));
+
+      for (const ph of ['employer', 'employee']) {
+        const phState = exS[ph];
+        const label = ph === 'employer' ? '🏢 Company Draft' : '👤 Employee Draft';
+        children.push(heading(label, 2));
+        const draft = phState.lastDraft || '(Not yet drafted)';
+        draft.split('\n').filter(l => l.trim()).forEach(line => children.push(clausePara(line)));
+
+        if (phState.reflection) {
+          children.push(bodyPara('Reflection:', { bold: true, italics: true }));
+          children.push(bodyPara(phState.reflection, { indent: true }));
+        }
+        if (phState.comparison) {
+          children.push(bodyPara('Model Comparison:', { bold: true, italics: true }));
+          children.push(bodyPara(phState.comparison, { indent: true }));
+        }
+      }
+
+      children.push(heading('🤝 Negotiated Draft', 2));
+      const negoDraft = exS.negotiation.draft || '(Not yet drafted)';
+      negoDraft.split('\n').filter(l => l.trim()).forEach(line => children.push(clausePara(line)));
+      if (exS.negotiation.reflection) {
+        children.push(bodyPara('Negotiation Reflection:', { bold: true, italics: true }));
+        children.push(bodyPara(exS.negotiation.reflection, { indent: true }));
+      }
+
+      children.push(divider());
+    }
+
+    // Exercise 4
+    children.push(heading('Exercise 4: The Missing Clause (DTSA § 1833(b))', 1));
+    const sel = state.exercises[4].selected;
+    children.push(bodyPara(`Answer: ${sel || '(none)'} ${sel === 'B' ? '(Correct)' : sel ? '(Incorrect)' : ''}`));
+    if (state.exercises[4].reflection) {
+      children.push(bodyPara('Reflection:', { bold: true, italics: true }));
+      children.push(bodyPara(state.exercises[4].reflection, { indent: true }));
+    }
+
+    // Synthesis
+    if (state.capstoneSynthesis) {
+      children.push(divider());
+      children.push(heading('Final Synthesis', 1));
+      children.push(bodyPara(state.capstoneSynthesis));
+    }
+  }
+
+  const doc = new Document({
+    sections: [{
+      headers: { default: headerContent },
+      footers: { default: footerContent },
+      children
+    }]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const filename = mode === 'agreement'
+    ? `pico-salsa-agreement-${new Date().toISOString().slice(0,10)}.docx`
+    : `drafting-lab-work-${new Date().toISOString().slice(0,10)}.docx`;
+  saveAs(blob, filename);
+}
+
+// ============================================================
+// BOOT
+// ============================================================
 render();
 </script>
 </body>
