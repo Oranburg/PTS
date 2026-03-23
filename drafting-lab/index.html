@@ -102,9 +102,9 @@
 const state = {
   currentExercise: 1,
   exercises: {
-    1: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false },
-    2: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false },
-    3: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false },
+    1: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
+    2: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
+    3: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
     4: { selected: null, modelRevealed: false }
   }
 };
@@ -364,7 +364,34 @@ function renderDraftExercise(ex, exState, num) {
     </div>`;
   }
 
+  // Reflection prompt — appears after first submission
+  const reflectionHtml = exState.submitted
+    ? `<div class="mt-6 bg-violet-50 border border-violet-200 rounded-2xl p-5 no-print">
+        <p class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-1">Reflect</p>
+        <p class="text-sm text-violet-900 font-medium mb-3">What is the most important change you made, and why does it matter for Pico Salsa specifically?</p>
+        <textarea
+          class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none"
+          rows="3"
+          placeholder="Write 2–3 sentences. There's no right answer here — just articulate your reasoning."
+          oninput="state.exercises[${num}].reflection = this.value"
+        >${escapeHtml(exState.reflection)}</textarea>
+      </div>` : '';
+
   const modelSection = exState.modelRevealed ? buildModelAnswer(ex.model) : '';
+
+  // Comparison prompt — appears after model answer is revealed
+  const comparisonHtml = exState.modelRevealed
+    ? `<div class="mt-5 bg-orange-50 border border-orange-200 rounded-2xl p-5 no-print">
+        <p class="text-xs font-bold text-orange-700 uppercase tracking-widest mb-1">Challenge the Model</p>
+        <p class="text-sm text-orange-900 font-medium mb-1">Where does your draft differ from the model answer — and can you defend your choices?</p>
+        <p class="text-xs text-orange-700 mb-3">The model represents one well-supported approach. A different approach can also be correct. If you made different drafting choices, explain why they work. If you think the model is overbroad, underbroad, or wrong about something, say so.</p>
+        <textarea
+          class="w-full border border-orange-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-orange-400 resize-none"
+          rows="4"
+          placeholder="Identify at least one specific difference between your draft and the model. Defend your choice or explain what the model gets right that you missed."
+          oninput="state.exercises[${num}].comparison = this.value"
+        >${escapeHtml(exState.comparison)}</textarea>
+      </div>` : '';
 
   const modelBtn = exState.submitted && !exState.modelRevealed
     ? `<div class="mt-4 no-print">
@@ -402,8 +429,10 @@ function renderDraftExercise(ex, exState, num) {
     </div>
 
     ${rubricHtml}
+    ${reflectionHtml}
     ${modelBtn}
     <div id="model-${num}">${modelSection}</div>
+    ${comparisonHtml}
     ${nextBtn}`;
 }
 
