@@ -31,7 +31,38 @@
       padding: 0 3px;
       border-radius: 2px;
       font-weight: 600;
+      cursor: pointer;
+      position: relative;
     }
+    .model-highlight .tooltip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.5;
+      width: max-content;
+      max-width: 320px;
+      z-index: 100;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+    .model-highlight .tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: #1e293b;
+    }
+    .model-highlight.show-tip .tooltip { display: block; }
     .fade-in { animation: fadeIn 0.35s ease; }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
@@ -48,11 +79,17 @@
     .step-line { flex: 1; height: 2px; margin: 0 2px; }
     @media print {
       .no-print { display: none !important; }
+      .print-only { display: block !important; }
       header, .scenario-banner { display: none !important; }
       body { background: white; }
       #main-content { padding: 0; }
       .fade-in { animation: none; }
+      .reflection-block, .comparison-block { break-inside: avoid; }
     }
+    .print-only { display: none; }
+    .hint-toggle { cursor: pointer; user-select: none; }
+    .hint-content { display: none; }
+    .hint-content.open { display: block; }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -97,17 +134,63 @@
 
 <script>
 // ============================================================
-// STATE
+// STATE + PERSISTENCE
 // ============================================================
-const state = {
-  currentExercise: 1,
-  exercises: {
-    1: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
-    2: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
-    3: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
-    4: { selected: null, modelRevealed: false }
+const STORAGE_KEY = 'pts-drafting-lab-state';
+
+function defaultState() {
+  return {
+    currentExercise: 1,
+    exercises: {
+      1: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
+      2: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
+      3: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false, reflection: '', comparison: '' },
+      4: { selected: null, modelRevealed: false, reflection: '' }
+    },
+    capstoneSynthesis: ''
+  };
+}
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return defaultState();
+    const parsed = JSON.parse(saved);
+    // Merge with defaults to handle new fields
+    const def = defaultState();
+    parsed.capstoneSynthesis = parsed.capstoneSynthesis || '';
+    for (const k of [1,2,3]) {
+      if (parsed.exercises[k]) {
+        parsed.exercises[k].reflection = parsed.exercises[k].reflection || '';
+        parsed.exercises[k].comparison = parsed.exercises[k].comparison || '';
+        // Restore Sets from arrays
+        if (parsed.exercises[k].rubricResults) {
+          // rubricResults are plain objects — fine as is
+        }
+      } else {
+        parsed.exercises[k] = def.exercises[k];
+      }
+    }
+    if (!parsed.exercises[4]) parsed.exercises[4] = def.exercises[4];
+    parsed.exercises[4].reflection = parsed.exercises[4].reflection || '';
+    return parsed;
+  } catch (e) {
+    return defaultState();
   }
-};
+}
+
+function saveState() {
+  try {
+    // rubricResults contain functions from check — strip them before saving
+    const toSave = JSON.parse(JSON.stringify(state, (key, val) => {
+      if (key === 'check' && typeof val === 'function') return undefined;
+      return val;
+    }));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+  } catch (e) { /* quota exceeded — silently fail */ }
+}
+
+const state = loadState();
 
 // ============================================================
 // EXERCISE DATA
@@ -123,6 +206,7 @@ const exercises = {
     icon: '📄',
     objective: 'Edit the clause to fix three drafting defects — the marking requirement, the care standard, and the one-year expiry — so it protects Pico Salsa as the disclosing party.',
     context: 'Valentina drafted the employee NDA by adapting a template she found online. The template was designed for a company <em>receiving</em> confidential information from a vendor — not for a company protecting its own secrets from employees. The clause below has three legal defects that would leave Pico Salsa\'s fermentation process unprotected. Edit it directly, then submit your draft.',
+    readingHint: 'Re-read Textbook § 4.2.2 on confidential information definitions. Pay attention to the difference between the pro-disclosing and pro-receiving party templates.',
     defaultDraft: `§ 1. Confidential Information
 
 "Confidential Information" means only such information that is marked in writing as confidential at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter. Confidential Information shall not include information that (a) was known to the receiving party without restriction before disclosure; (b) becomes publicly available through no fault of the receiving party; (c) is lawfully obtained from a third party without a duty of confidentiality; or (d) is independently developed by the receiving party without reference to this information. The receiving party shall protect Confidential Information using reasonable care, but no greater than the care it uses to protect its own information of similar sensitivity. The receiving party shall not be liable for accidental disclosure so long as it acted in good faith. Unless otherwise stated in writing, the confidentiality obligations under this Agreement shall expire one (1) year after the date of disclosure.`,
@@ -178,6 +262,7 @@ const exercises = {
     icon: '💡',
     objective: 'Fix the two-word error that costs Pico Salsa ownership of its own process under Stanford v. Roche, and close the scope gap that excludes anticipated R&D work.',
     context: 'Pico Salsa\'s low-pressure fermentation process is worth nothing to the company if Jordan owns it. The clause below was drafted in language that, under controlling Supreme Court precedent, never actually transferred title to the company. There are two distinct defects — one is a two-word change, the other requires expanding a defined scope. Find and fix both.',
+    readingHint: 'Re-read Textbook § 4.2.4 on invention assignment clauses. Focus on the Supreme Court\'s holding in Stanford v. Roche about present-tense assignment language.',
     defaultDraft: `§ 2. Assignment of Inventions
 
 Employee agrees to assign to Company any invention, discovery, improvement, process, design, or development (collectively, "Inventions") conceived or developed by Employee during the course of employment and that either (a) results from work performed for Company, or (b) uses Company's time, equipment, supplies, or proprietary information. This assignment shall not apply to any invention that was developed entirely on Employee's own time, does not relate to Company's current business or operations, and was created without use of Company resources. Employee agrees to execute all documents necessary to confirm such assignment.`,
@@ -217,6 +302,7 @@ Employee agrees to assign to Company any invention, discovery, improvement, proc
     icon: '🚫',
     objective: 'Fix the three defects that would cause a court to void this clause entirely, leaving Pico Salsa with no post-employment protection at all.',
     context: 'Jordan knows Pico Salsa\'s key customers, pricing relationships, and R&amp;D team personally. Without an enforceable non-solicitation clause, he can legally poach every one of them the day he leaves. The clause below has three defects that courts have used to void non-solicitation provisions outright — not narrow them, void them. Edit it to fix all three.',
+    readingHint: 'Re-read Textbook § 4.2.3 on non-solicitation and non-competition clauses. Note the distinction between clauses courts narrow and clauses courts void entirely.',
     defaultDraft: `§ 3. Non-Solicitation
 
 For a period of three (3) years following termination of employment for any reason, Employee shall not directly or indirectly solicit, recruit, hire, contact, or encourage any person or entity known to Employee during the course of employment to: (a) terminate their relationship with Company; (b) reduce their engagement with Company; or (c) do business with any competitor of Company. This restriction applies to all customers, prospective customers, suppliers, employees, contractors, and any other individuals Employee became aware of during employment, without limitation.`,
@@ -263,6 +349,7 @@ For a period of three (3) years following termination of employment for any reas
     icon: '🔍',
     objective: 'You have corrected the three flawed clauses. But even a perfect NDA can omit something federal law requires. Identify what is missing.',
     context: 'Valentina reviews the three corrected clauses and signs off. Six months later, Jordan\'s misappropriation is confirmed — RivalCraft Foods\' new product line is clearly built on Pico Salsa\'s fermentation process. Pico Salsa files suit under the Defend Trade Secrets Act and proves willful misappropriation. In the damages phase, you discover a problem that cannot be fixed.',
+    readingHint: 'Re-read the DTSA provisions in Textbook § 4.2. Think about what the federal statute requires employers to include — not just what protects them, but what they must disclose.',
     options: [
       { id: 'A', text: 'A governing law and choice-of-venue clause designating New York County, New York courts' },
       { id: 'B', text: 'A DTSA § 1833(b) whistleblower immunity notice — required in every employment agreement signed after May 11, 2016', correct: true },
@@ -270,6 +357,7 @@ For a period of three (3) years following termination of employment for any reas
       { id: 'D', text: 'An acknowledgment clause confirming Employee received a copy of the agreement' }
     ],
     consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Jordan\'s misappropriation was willful and malicious, even if RivalCraft\'s entire product line was built on stolen fermentation process data. Courts have denied enhanced remedies in cases where employers simply forgot to include one paragraph. The notice costs nothing to include. The remedy forfeiture is permanent.',
+    reflectionPrompt: 'Why do you think Congress attached this forfeiture to the notice requirement? What employer behavior is § 1833(b)(3)(C) trying to change — and does the penalty fit?',
     model: {
       label: 'REQUIRED LANGUAGE — DTSA § 1833(b) Immunity Notice',
       cite: 'Defend Trade Secrets Act, 18 U.S.C. § 1833(b)(1)–(2); LexisNexis, Confidentiality Agreement with Employee (Form)',
@@ -287,7 +375,7 @@ function checkRubric(num, text) {
 }
 
 // ============================================================
-// ESCAPE HTML (for textarea innerHTML)
+// ESCAPE HTML
 // ============================================================
 function escapeHtml(str) {
   return str
@@ -334,7 +422,7 @@ function renderProgressBar() {
 function renderDraftExercise(ex, exState, num) {
   const draftValue = exState.lastDraft || ex.defaultDraft;
 
-  // Rubric results section
+  // Key Terms Check
   let rubricHtml = '';
   if (exState.submitted && exState.rubricResults) {
     const results = exState.rubricResults;
@@ -364,24 +452,24 @@ function renderDraftExercise(ex, exState, num) {
     </div>`;
   }
 
-  // Reflection prompt — appears after first submission
+  // Reflection prompt
   const reflectionHtml = exState.submitted
-    ? `<div class="mt-6 bg-violet-50 border border-violet-200 rounded-2xl p-5 no-print">
+    ? `<div class="mt-6 bg-violet-50 border border-violet-200 rounded-2xl p-5 reflection-block">
         <p class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-1">Reflect</p>
         <p class="text-sm text-violet-900 font-medium mb-3">What is the most important change you made, and why does it matter for Pico Salsa specifically?</p>
         <textarea
           class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none"
           rows="3"
           placeholder="Write 2–3 sentences. There's no right answer here — just articulate your reasoning."
-          oninput="state.exercises[${num}].reflection = this.value"
+          oninput="updateField(${num}, 'reflection', this.value)"
         >${escapeHtml(exState.reflection)}</textarea>
       </div>` : '';
 
   const modelSection = exState.modelRevealed ? buildModelAnswer(ex.model) : '';
 
-  // Comparison prompt — appears after model answer is revealed
+  // Comparison prompt
   const comparisonHtml = exState.modelRevealed
-    ? `<div class="mt-5 bg-orange-50 border border-orange-200 rounded-2xl p-5 no-print">
+    ? `<div class="mt-5 bg-orange-50 border border-orange-200 rounded-2xl p-5 comparison-block">
         <p class="text-xs font-bold text-orange-700 uppercase tracking-widest mb-1">Challenge the Model</p>
         <p class="text-sm text-orange-900 font-medium mb-1">Where does your draft differ from the model answer — and can you defend your choices?</p>
         <p class="text-xs text-orange-700 mb-3">The model represents one well-supported approach. A different approach can also be correct. If you made different drafting choices, explain why they work. If you think the model is overbroad, underbroad, or wrong about something, say so.</p>
@@ -389,7 +477,7 @@ function renderDraftExercise(ex, exState, num) {
           class="w-full border border-orange-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-orange-400 resize-none"
           rows="4"
           placeholder="Identify at least one specific difference between your draft and the model. Defend your choice or explain what the model gets right that you missed."
-          oninput="state.exercises[${num}].comparison = this.value"
+          oninput="updateField(${num}, 'comparison', this.value)"
         >${escapeHtml(exState.comparison)}</textarea>
       </div>` : '';
 
@@ -407,6 +495,15 @@ function renderDraftExercise(ex, exState, num) {
         </button>
       </div>` : '';
 
+  // Reading hint
+  const hintHtml = ex.readingHint
+    ? `<div class="mt-3 no-print">
+        <p class="hint-toggle text-xs text-slate-400 hover:text-slate-600" onclick="this.nextElementSibling.classList.toggle('open')">📚 Stuck? Click for a reading hint →</p>
+        <div class="hint-content mt-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+          <p class="text-xs text-blue-800">${ex.readingHint}</p>
+        </div>
+      </div>` : '';
+
   return `
     <div class="mb-4">
       <div class="flex flex-wrap items-center gap-2 mb-2">
@@ -415,6 +512,7 @@ function renderDraftExercise(ex, exState, num) {
       </div>
       <textarea id="draft-textarea-${num}" class="draft-textarea" spellcheck="false">${escapeHtml(draftValue)}</textarea>
       <p class="text-xs text-blue-600 mt-2 font-medium no-print">✏ Edit the clause text to fix all legal defects, then click Submit Draft.</p>
+      ${hintHtml}
     </div>
 
     <div class="flex gap-3 no-print">
@@ -464,11 +562,33 @@ function renderExercise4(ex, exState) {
     </div>`;
   }).join('');
 
+  // Reading hint
+  const hintHtml = ex.readingHint
+    ? `<div class="mb-5 no-print">
+        <p class="hint-toggle text-xs text-slate-400 hover:text-slate-600" onclick="this.nextElementSibling.classList.toggle('open')">📚 Stuck? Click for a reading hint →</p>
+        <div class="hint-content mt-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+          <p class="text-xs text-blue-800">${ex.readingHint}</p>
+        </div>
+      </div>` : '';
+
   const consequenceHtml = exState.selected
     ? `<div class="fade-in mt-5 bg-amber-50 border border-amber-300 rounded-xl p-5">
         <p class="font-bold text-amber-900 mb-2">⚖ What This Costs Pico Salsa in Litigation</p>
         <p class="text-sm text-amber-800 leading-relaxed">${ex.consequence}</p>
         <p class="text-xs text-amber-500 mt-2 italic">📚 18 U.S.C. § 1833(b)(3)(C); Defend Trade Secrets Act (2016)</p>
+      </div>` : '';
+
+  // Exercise 4 reflection
+  const reflectionHtml = exState.selected
+    ? `<div class="mt-5 bg-violet-50 border border-violet-200 rounded-2xl p-5 reflection-block">
+        <p class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-1">Reflect</p>
+        <p class="text-sm text-violet-900 font-medium mb-3">${ex.reflectionPrompt}</p>
+        <textarea
+          class="w-full border border-violet-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-violet-400 resize-none"
+          rows="3"
+          placeholder="Consider what Congress was trying to accomplish and whether the penalty is proportionate."
+          oninput="updateField(4, 'reflection', this.value)"
+        >${escapeHtml(exState.reflection || '')}</textarea>
       </div>` : '';
 
   const revealBtn = exState.selected && !exState.modelRevealed
@@ -519,21 +639,23 @@ function renderExercise4(ex, exState) {
       </div>
     </div>
 
+    ${hintHtml}
     <p class="font-semibold text-slate-700 mb-4">Which required element is still missing?</p>
     <div class="space-y-3 mb-2">${optHtml}</div>
     ${consequenceHtml}
+    ${reflectionHtml}
     ${revealBtn}
     ${modelSection}
     ${nextBtn}`;
 }
 
 // ============================================================
-// HELPER — BUILD MODEL ANSWER BLOCK
+// HELPER — BUILD MODEL ANSWER BLOCK (with click-to-reveal tooltips)
 // ============================================================
 function buildModelAnswer(model) {
   const segs = model.segments.map(seg => {
     if (!seg.h) return seg.text.replace(/\n/g, '<br><br>');
-    return `<span class="model-highlight" title="${seg.note}">▲ ${seg.text}</span>`;
+    return `<span class="model-highlight" onclick="toggleTip(this)">▲ ${seg.text}<span class="tooltip">${escapeHtml(seg.note)}</span></span>`;
   }).join('');
 
   return `<div class="fade-in mt-6">
@@ -548,14 +670,14 @@ function buildModelAnswer(model) {
         ${segs}
       </div>
       <div class="mt-4 bg-emerald-100 rounded-lg p-3 no-print">
-        <p class="text-xs text-emerald-800 font-medium">▲ Highlighted phrases are the key drafting improvements. Hover each one to see why it matters.</p>
+        <p class="text-xs text-emerald-800 font-medium">▲ Click highlighted phrases to see why each drafting choice matters.</p>
       </div>
     </div>
   </div>`;
 }
 
 // ============================================================
-// RENDER CAPSTONE
+// RENDER CAPSTONE — with student drafts + synthesis
 // ============================================================
 function renderCapstone() {
   const scoreItems = [
@@ -564,6 +686,54 @@ function renderCapstone() {
     { icon: '🚫', title: 'Non-Solicitation', note: '2-year restriction, material contact + 12-month lookback — proportionate and enforceable', cite: 'Lasership v. Watson (2009); WellSpan Health v. Bayliss (2005)' },
     { icon: '🔐', title: 'DTSA § 1833(b) Immunity Notice', note: 'Included — exemplary damages and attorney\'s fees preserved for willful misappropriation', cite: '18 U.S.C. § 1833(b)(3)(C); Defend Trade Secrets Act (2016)' }
   ];
+
+  // Student draft sections (show their work if they submitted)
+  const studentDrafts = [1, 2, 3].map(n => {
+    const ex = exercises[n];
+    const exState = state.exercises[n];
+    const draft = exState.lastDraft || ex.defaultDraft;
+    const wasEdited = exState.submitted && exState.lastDraft && exState.lastDraft !== ex.defaultDraft;
+    return { num: n, title: ex.title, subtitle: ex.subtitle, draft, wasEdited, reflection: exState.reflection, comparison: exState.comparison };
+  });
+
+  const studentWorkSection = `
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-8 shadow-sm">
+      <h3 class="font-bold text-slate-700 mb-1">Your Drafts</h3>
+      <p class="text-xs text-slate-400 mb-4">Your edited clause text from each exercise.</p>
+      <div class="space-y-5">
+        ${studentDrafts.map(d => `
+          <div class="border border-slate-100 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="font-semibold text-slate-800 text-sm">${d.subtitle}. ${d.title}</span>
+              ${d.wasEdited ? '<span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Edited</span>' : '<span class="text-xs bg-slate-100 text-slate-400 px-2 py-0.5 rounded-full">Unmodified</span>'}
+            </div>
+            <div class="clause-text text-slate-600 text-xs bg-slate-50 rounded-lg p-3 max-h-32 overflow-y-auto whitespace-pre-wrap">${escapeHtml(d.draft)}</div>
+            ${d.reflection ? `<div class="mt-2 border-l-2 border-violet-300 pl-3"><p class="text-xs text-violet-700"><strong>Reflection:</strong> ${escapeHtml(d.reflection)}</p></div>` : ''}
+            ${d.comparison ? `<div class="mt-2 border-l-2 border-orange-300 pl-3"><p class="text-xs text-orange-700"><strong>Model comparison:</strong> ${escapeHtml(d.comparison)}</p></div>` : ''}
+          </div>`).join('')}
+        ${state.exercises[4].reflection ? `
+          <div class="border border-slate-100 rounded-xl p-4">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="font-semibold text-slate-800 text-sm">§ 4. DTSA Notice</span>
+            </div>
+            <div class="mt-1 border-l-2 border-violet-300 pl-3"><p class="text-xs text-violet-700"><strong>Reflection:</strong> ${escapeHtml(state.exercises[4].reflection)}</p></div>
+          </div>` : ''}
+      </div>
+    </div>`;
+
+  // Capstone synthesis
+  const synthesisHtml = `
+    <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-5 mb-8 reflection-block">
+      <p class="text-xs font-bold text-indigo-700 uppercase tracking-widest mb-1">Final Synthesis</p>
+      <p class="text-sm text-indigo-900 font-medium mb-1">Looking at the complete agreement, which clause is most vulnerable to a legal challenge — and what would you change if this were a real engagement?</p>
+      <p class="text-xs text-indigo-700 mb-3">Consider: jurisdiction-specific enforceability, missing protections, overbreadth risks, or provisions a court might still find unreasonable.</p>
+      <textarea
+        class="w-full border border-indigo-200 rounded-xl p-3 text-sm text-slate-700 bg-white focus:outline-none focus:border-indigo-400 resize-none"
+        rows="4"
+        placeholder="Identify the weakest clause, explain why, and describe what you would do differently in a live engagement."
+        oninput="state.capstoneSynthesis = this.value; saveState();"
+      >${escapeHtml(state.capstoneSynthesis || '')}</textarea>
+    </div>`;
 
   return `<div class="fade-in">
     <div class="text-center mb-8 no-print">
@@ -669,12 +839,21 @@ function renderCapstone() {
       </div>
     </div>
 
+    ${synthesisHtml}
+    ${studentWorkSection}
+
     <div class="flex flex-wrap gap-3 mt-8 justify-center no-print">
+      <button onclick="downloadWork()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+        📥 Download My Work
+      </button>
       <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         🖨 Print Agreement
       </button>
       <button onclick="copyAgreement()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         📋 Copy Agreement Text
+      </button>
+      <button onclick="clearProgress()" class="border-2 border-red-200 hover:border-red-400 text-red-500 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+        ↺ Start Over
       </button>
       <a href="../index.html" class="border-2 border-emerald-300 hover:border-emerald-500 text-emerald-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         ← Course Home
@@ -724,6 +903,11 @@ function render() {
 // ============================================================
 // HANDLERS
 // ============================================================
+function updateField(num, field, value) {
+  state.exercises[num][field] = value;
+  saveState();
+}
+
 function submitDraft(num) {
   const textarea = document.getElementById(`draft-textarea-${num}`);
   if (!textarea) return;
@@ -732,8 +916,8 @@ function submitDraft(num) {
   state.exercises[num].attempts++;
   state.exercises[num].submitted = true;
   state.exercises[num].rubricResults = checkRubric(num, text);
+  saveState();
   render();
-  // Scroll to rubric results
   setTimeout(() => {
     const rubric = document.getElementById(`rubric-${num}`);
     if (rubric) rubric.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -745,11 +929,16 @@ function resetDraft(num) {
   state.exercises[num].submitted = false;
   state.exercises[num].rubricResults = null;
   state.exercises[num].attempts = 0;
+  state.exercises[num].reflection = '';
+  state.exercises[num].comparison = '';
+  state.exercises[num].modelRevealed = false;
+  saveState();
   render();
 }
 
 function revealModel(num) {
   state.exercises[num].modelRevealed = true;
+  saveState();
   render();
   setTimeout(() => {
     const el = document.getElementById(`model-${num}`);
@@ -759,15 +948,32 @@ function revealModel(num) {
 
 function selectOption4(optId) {
   state.exercises[4].selected = optId;
+  saveState();
   render();
 }
 
 function nextExercise() {
   const cur = state.currentExercise;
   state.currentExercise = (cur === 4) ? 'capstone' : cur + 1;
+  saveState();
   render();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+function toggleTip(el) {
+  // Close any other open tooltips
+  document.querySelectorAll('.model-highlight.show-tip').forEach(e => {
+    if (e !== el) e.classList.remove('show-tip');
+  });
+  el.classList.toggle('show-tip');
+}
+
+// Close tooltips on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.model-highlight')) {
+    document.querySelectorAll('.model-highlight.show-tip').forEach(el => el.classList.remove('show-tip'));
+  }
+});
 
 function copyAgreement() {
   const el = document.getElementById('assembled-agreement');
@@ -777,6 +983,80 @@ function copyAgreement() {
   }).catch(() => {
     alert('Copy failed — please select the text manually.');
   });
+}
+
+function clearProgress() {
+  if (!confirm('This will erase all your drafts, reflections, and progress. Continue?')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  Object.assign(state, defaultState());
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// DOWNLOAD WORK
+// ============================================================
+function downloadWork() {
+  const lines = [];
+  const hr = '═'.repeat(60);
+  lines.push('INTERNAL MITIGATION DRAFTING LAB — STUDENT WORK');
+  lines.push('Pico Salsa, LLC — Employment Agreement Clinic');
+  lines.push(`Exported: ${new Date().toLocaleString()}`);
+  lines.push('');
+
+  for (const num of [1, 2, 3]) {
+    const ex = exercises[num];
+    const exState = state.exercises[num];
+    lines.push(hr);
+    lines.push(`EXERCISE ${num}: ${ex.title} (${ex.subtitle})`);
+    lines.push(hr);
+    lines.push('');
+    lines.push('YOUR DRAFT:');
+    lines.push(exState.lastDraft || ex.defaultDraft);
+    lines.push('');
+    if (exState.reflection) {
+      lines.push('REFLECTION:');
+      lines.push(exState.reflection);
+      lines.push('');
+    }
+    if (exState.comparison) {
+      lines.push('MODEL COMPARISON:');
+      lines.push(exState.comparison);
+      lines.push('');
+    }
+  }
+
+  // Exercise 4
+  lines.push(hr);
+  lines.push('EXERCISE 4: The Missing Clause (DTSA § 1833(b))');
+  lines.push(hr);
+  lines.push('');
+  const sel = state.exercises[4].selected;
+  lines.push(`Answer selected: ${sel || '(none)'} ${sel === 'B' ? '(Correct)' : sel ? '(Incorrect)' : ''}`);
+  lines.push('');
+  if (state.exercises[4].reflection) {
+    lines.push('REFLECTION:');
+    lines.push(state.exercises[4].reflection);
+    lines.push('');
+  }
+
+  // Capstone
+  if (state.capstoneSynthesis) {
+    lines.push(hr);
+    lines.push('FINAL SYNTHESIS');
+    lines.push(hr);
+    lines.push('');
+    lines.push(state.capstoneSynthesis);
+    lines.push('');
+  }
+
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `drafting-lab-work-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // Boot
