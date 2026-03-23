@@ -46,6 +46,8 @@ jobs:
           mkdir -p dist/patent-or-TS
           cp patent-or-TS/index.html dist/patent-or-TS/
           cp patent-or-TS/class-activities.html dist/patent-or-TS/
+          mkdir -p dist/drafting-lab
+          cp drafting-lab/index.html dist/drafting-lab/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
