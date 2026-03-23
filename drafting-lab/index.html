@@ -343,22 +343,23 @@ function renderDraftExercise(ex, exState, num) {
     const allPass = passed === total;
 
     rubricHtml = `<div class="fade-in mt-6" id="rubric-${num}">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-semibold text-slate-700 text-sm">Rubric — Attempt ${exState.attempts}</h3>
-        <span class="text-sm font-bold ${allPass ? 'text-emerald-600' : passed > 0 ? 'text-amber-600' : 'text-red-600'}">${passed} / ${total} elements correct</span>
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="font-semibold text-slate-700 text-sm">Key Terms Check — Attempt ${exState.attempts}</h3>
+        <span class="text-sm font-bold ${allPass ? 'text-emerald-600' : 'text-slate-600'}">${passed} / ${total} textbook phrases present</span>
       </div>
+      <p class="text-xs text-slate-400 mb-3 italic">This tool checks for specific phrases from the textbook. It cannot evaluate the quality of your drafting — that requires a human reader. Your draft may be legally sound even if phrases are missing.</p>
       <div class="space-y-2">
         ${results.map(r => `
-          <div class="flex items-start gap-3 p-3 rounded-xl ${r.pass ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'}">
-            <span class="flex-shrink-0 font-bold text-base mt-0.5 ${r.pass ? 'text-emerald-600' : 'text-red-500'}">${r.pass ? '✓' : '✗'}</span>
+          <div class="flex items-start gap-3 p-3 rounded-xl ${r.pass ? 'bg-emerald-50 border border-emerald-200' : 'bg-amber-50 border border-amber-200'}">
+            <span class="flex-shrink-0 font-bold text-base mt-0.5 ${r.pass ? 'text-emerald-600' : 'text-amber-500'}">${r.pass ? '✓' : '○'}</span>
             <div>
-              <p class="font-semibold text-sm ${r.pass ? 'text-emerald-800' : 'text-red-800'}">${r.label}</p>
-              <p class="text-xs mt-0.5 leading-relaxed ${r.pass ? 'text-emerald-700' : 'text-red-700'}">${r.pass ? r.passNote : r.failHint}</p>
+              <p class="font-semibold text-sm ${r.pass ? 'text-emerald-800' : 'text-amber-800'}">${r.label}</p>
+              <p class="text-xs mt-0.5 leading-relaxed ${r.pass ? 'text-emerald-700' : 'text-amber-700'}">${r.pass ? r.passNote : r.failHint}</p>
             </div>
           </div>`).join('')}
       </div>
       <p class="text-xs mt-3 ${allPass ? 'text-emerald-700 font-medium' : 'text-slate-500'}">
-        ${allPass ? '✓ All elements correct. Your draft captures the essential protections.' : 'Revise your draft above and resubmit to improve your score.'}
+        ${allPass ? '✓ All textbook phrases present. Compare your draft to the model answer below.' : 'Compare your draft to the model answer to see how the textbook handles each issue.'}
       </p>
     </div>`;
   }
