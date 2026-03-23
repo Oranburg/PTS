@@ -9,6 +9,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: "Inter", sans-serif; }
+        :root {
+            --catholic-red:   #B21F2C;
+            --bright-red:     #E82F35;
+            --light-red:      #E96955;
+            --catholic-blue:  #0A3255;
+            --bright-blue:    #2459A9;
+            --light-blue:     #6DACDE;
+            --yellow:         #FFD65C;
+            --light-blue-green: #B5E1E1;
+        }
         .answer-card { transition: all 0.2s ease; cursor: pointer; }
         .answer-card:has(input:checked) { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
         .instructor-note { display: none; }
@@ -113,26 +123,26 @@
 </div>
 
 <!-- Header -->
-<header class="fixed top-0 left-0 right-0 z-30 bg-gradient-to-r from-blue-800 to-indigo-900 text-white shadow-lg">
+<header class="fixed top-0 left-0 right-0 z-30 text-white shadow-lg" style="background: linear-gradient(135deg, var(--catholic-blue), var(--bright-blue))">
     <div class="max-w-screen-2xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-3">
                 <button onclick="toggleMobileNav()" class="md:hidden w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center hover:bg-opacity-30 transition-colors" aria-label="Toggle navigation">
                     <i class="fas fa-bars text-white"></i>
                 </button>
-                <div class="w-10 h-10 bg-white bg-opacity-20 rounded-lg items-center justify-center hidden md:flex">
+                <div class="w-10 h-10 rounded-lg items-center justify-center hidden md:flex" style="background:var(--catholic-red)">
                     <i class="fas fa-balance-scale text-white text-lg"></i>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold leading-tight">Patent or Trade Secret?</h1>
-                    <p class="text-blue-200 text-xs">Interactive IP Strategy Teaching Tool</p>
+                    <p class="text-xs" style="color:var(--light-blue)">Interactive IP Strategy Teaching Tool</p>
                 </div>
             </div>
             <div class="flex items-center gap-4 flex-wrap">
                 <div class="text-right">
-                    <p id="progressText" class="text-blue-200 text-xs mb-1">0 of 11 cases answered</p>
-                    <div class="w-40 bg-blue-950 bg-opacity-60 rounded-full h-2">
-                        <div id="progressBar" class="progress-bar-fill bg-green-400 h-2 rounded-full" style="width:0%"></div>
+                    <p id="progressText" class="text-xs mb-1" style="color:var(--light-blue)">0 of 11 cases answered</p>
+                    <div class="w-40 rounded-full h-2" style="background:rgba(10,50,85,0.6)">
+                        <div id="progressBar" class="progress-bar-fill h-2 rounded-full" style="width:0%;background:var(--yellow)"></div>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 bg-white bg-opacity-10 rounded-lg px-3 py-2">
