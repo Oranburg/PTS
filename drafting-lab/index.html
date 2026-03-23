@@ -8,25 +8,23 @@
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
     .clause-text { font-family: Georgia, 'Times New Roman', serif; line-height: 1.9; font-size: 0.9375rem; }
-    .problem-span {
-      background: #fef3c7;
-      border-bottom: 2px dashed #d97706;
-      cursor: pointer;
-      padding: 0 2px;
-      border-radius: 2px;
-      transition: background 0.15s;
+    .draft-textarea {
+      font-family: Georgia, 'Times New Roman', serif;
+      line-height: 1.8;
+      font-size: 0.9375rem;
+      width: 100%;
+      min-height: 200px;
+      resize: vertical;
+      border: 2px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 20px;
+      background: #fff;
+      color: #1e293b;
+      outline: none;
+      transition: border-color 0.15s;
+      box-sizing: border-box;
     }
-    .problem-span:hover { background: #fde68a; }
-    .problem-span.found {
-      background: #fee2e2;
-      border-bottom-color: #ef4444;
-      text-decoration: line-through;
-      text-decoration-color: #ef4444;
-    }
-    .problem-span.revealed {
-      background: #fee2e2;
-      border-bottom-color: #ef4444;
-    }
+    .draft-textarea:focus { border-color: #3b82f6; }
     .model-highlight {
       background: #bbf7d0;
       border-bottom: 2px solid #16a34a;
@@ -73,7 +71,6 @@
         <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest">Pico Salsa, LLC — Employment Agreement Clinic</p>
       </div>
     </div>
-    <!-- Progress Steps -->
     <div class="flex items-center no-print" id="progress-bar"></div>
   </div>
 </header>
@@ -84,7 +81,7 @@
     <div class="flex gap-3">
       <span class="text-amber-500 text-xl flex-shrink-0 mt-0.5">⚖</span>
       <div>
-        <p class="text-sm font-bold text-amber-900">Your Client: Pico Salsa, LLC — Austin, Texas</p>
+        <p class="text-sm font-bold text-amber-900">Your Client: Pico Salsa, LLC — New York</p>
         <p class="text-sm text-amber-800 mt-1 leading-relaxed">
           R&amp;D technician <strong>Jordan Webb</strong> just submitted his two-week notice to join <strong>RivalCraft Foods</strong> — a direct competitor now entering the premium fermented salsa market.
           Co-founder <strong>Valentina Rivera</strong> has pulled the employment agreement Jordan signed at hire and asked you, as outside counsel, to find every legal defect and redraft the key clauses before the next hire signs a copy.
@@ -105,15 +102,16 @@
 const state = {
   currentExercise: 1,
   exercises: {
-    1: { issuesFound: new Set(), modelRevealed: false, completed: false },
-    2: { issuesFound: new Set(), modelRevealed: false, completed: false },
-    3: { issuesFound: new Set(), modelRevealed: false, completed: false },
-    4: { selected: null, modelRevealed: false, completed: false }
+    1: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false },
+    2: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false },
+    3: { submitted: false, attempts: 0, rubricResults: null, lastDraft: '', modelRevealed: false },
+    4: { selected: null, modelRevealed: false }
   }
 };
 
 // ============================================================
-// EXERCISE DATA — clause text drawn verbatim from:
+// EXERCISE DATA
+// Clause text drawn from:
 //   Oranburg, Protecting Trade Secrets §§ 4.2.2–4.2.4 (1st ed. 2026)
 //   LexisNexis, Confidentiality Agreement with Employee (Form)
 // ============================================================
@@ -123,37 +121,41 @@ const exercises = {
     title: 'Confidential Information Definition',
     subtitle: 'NDA § 1',
     icon: '📄',
-    objective: 'Identify why this clause fails to protect Pico Salsa\'s fermentation process as the disclosing party — then find the language that fixes it.',
-    context: 'Valentina drafted the employee NDA by adapting a template she found online. The template was designed for a company <em>receiving</em> confidential information from a vendor — not for a company protecting its own secrets from employees. Read the clause and click every phrase you believe is legally defective.',
-    issueCount: 3,
-    badDraft: {
-      label: 'DRAFT — § 1. Confidential Information',
-      segments: [
-        { text: '"Confidential Information" means only such information that is ', isIssue: false },
-        { text: 'marked in writing as confidential at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter', isIssue: true, id: 'A' },
-        { text: '. Confidential Information shall not include information that (a) was known to the receiving party without restriction before disclosure; (b) becomes publicly available through no fault of the receiving party; (c) is lawfully obtained from a third party without a duty of confidentiality; or (d) is independently developed by the receiving party without reference to this information. The receiving party shall protect Confidential Information using reasonable care, but ', isIssue: false },
-        { text: 'no greater than the care it uses to protect its own information of similar sensitivity', isIssue: true, id: 'B' },
-        { text: '. The receiving party shall not be liable for accidental disclosure so long as it acted in good faith. ', isIssue: false },
-        { text: 'Unless otherwise stated in writing, the confidentiality obligations under this Agreement shall expire one (1) year after the date of disclosure.', isIssue: true, id: 'C' }
-      ]
-    },
-    issues: {
-      A: {
-        label: 'Issue A — Marking Requirement Destroys Oral Disclosures',
-        explanation: 'Pico Salsa\'s low-pressure fermentation technique was developed through hands-on experimentation and oral instruction — the process parameters were never formally "marked" as confidential documents. Under this clause, the fermentation process would not qualify as Confidential Information at all. In <em>nClosures Inc. v. Block &amp; Co.</em>, 770 F.3d 598 (7th Cir. 2014), the court rejected a trade secret claim precisely because no documents were marked and no formal protections were in place. Courts require <em>structure</em>, not hope.',
-        cite: 'nClosures Inc. v. Block &amp; Co., 770 F.3d 598 (7th Cir. 2014)'
+    objective: 'Edit the clause to fix three drafting defects — the marking requirement, the care standard, and the one-year expiry — so it protects Pico Salsa as the disclosing party.',
+    context: 'Valentina drafted the employee NDA by adapting a template she found online. The template was designed for a company <em>receiving</em> confidential information from a vendor — not for a company protecting its own secrets from employees. The clause below has three legal defects that would leave Pico Salsa\'s fermentation process unprotected. Edit it directly, then submit your draft.',
+    defaultDraft: `§ 1. Confidential Information
+
+"Confidential Information" means only such information that is marked in writing as confidential at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter. Confidential Information shall not include information that (a) was known to the receiving party without restriction before disclosure; (b) becomes publicly available through no fault of the receiving party; (c) is lawfully obtained from a third party without a duty of confidentiality; or (d) is independently developed by the receiving party without reference to this information. The receiving party shall protect Confidential Information using reasonable care, but no greater than the care it uses to protect its own information of similar sensitivity. The receiving party shall not be liable for accidental disclosure so long as it acted in good faith. Unless otherwise stated in writing, the confidentiality obligations under this Agreement shall expire one (1) year after the date of disclosure.`,
+    rubric: [
+      {
+        id: 'no_marking',
+        label: 'Replaces the marking requirement with a contextual standard',
+        passNote: 'Good — a contextual standard captures oral disclosures (like technique demonstrations in the kitchen) without requiring formal labels.',
+        failHint: 'The clause still requires information to be "marked in writing." Replace this with a contextual standard: what the recipient "knows or reasonably should know is confidential based on the nature of the information or the circumstances surrounding its disclosure."',
+        check: t => /reasonably should know/.test(t) || /nature of the information/.test(t) || /circumstances surrounding/.test(t)
       },
-      B: {
-        label: 'Issue B — "No Greater Than" Sets a Ceiling, Not a Floor',
-        explanation: '"No greater than" the receiving party\'s own care caps protection at whatever level Evan personally applies to his own files. An employee who keeps passwords on a sticky note could argue that same laxness is the applicable standard for Pico Salsa\'s trade secrets. The correct formulation — drawn from the pro-disclosing party template — is <strong>"in no event less than a reasonable degree of care,"</strong> which sets a <em>floor</em> independent of the recipient\'s own habits.',
-        cite: 'UTSA § 1(4); Restatement (Third) of Unfair Competition § 39'
+      {
+        id: 'care_floor',
+        label: 'Sets a care floor ("no less than"), not a ceiling ("no greater than")',
+        passNote: 'Correct — "in no event less than a reasonable degree of care" sets a minimum floor independent of the employee\'s own security habits.',
+        failHint: '"No greater than" caps protection at whatever standard Jordan personally applies to his own files. Change it to "in no event less than a reasonable degree of care."',
+        check: t => (/no\s+less\s+than/.test(t) || /in\s+no\s+event\s+less/.test(t)) && !/no\s+greater\s+than/.test(t)
       },
-      C: {
-        label: 'Issue C — One-Year Expiry Kills Trade Secret Protection',
-        explanation: 'Trade secrets can last indefinitely — Coca-Cola\'s formula has been protected for over 130 years. A one-year confidentiality expiry means Jordan could freely share Pico Salsa\'s fermentation process with RivalCraft Foods on day 366, with no legal consequence. The correct formulation has general confidential information expire after a defined period, but carves out trade secrets to survive <strong>"so long as the information remains a trade secret under applicable law."</strong>',
-        cite: 'UTSA § 1(4)(b); Defend Trade Secrets Act, 18 U.S.C. § 1839(3)'
+      {
+        id: 'ts_survival',
+        label: 'Trade secret obligations survive beyond any general expiry',
+        passNote: 'Correct — trade secret obligations must outlast the general confidentiality term. Coca-Cola\'s formula has been protected for over 130 years.',
+        failHint: 'Add a carve-out: "obligations with respect to any trade secret shall survive so long as the information remains a trade secret under applicable law." Without this, Jordan can freely share the fermentation process on day 366.',
+        check: t => /trade secret/.test(t) && (/so long as/.test(t) || /remains a trade secret/.test(t) || /continues to qualify/.test(t) || /survive/.test(t))
+      },
+      {
+        id: 'expiry_removed',
+        label: 'One-year blanket expiry removed or extended',
+        passNote: 'Correct — a one-year blanket expiry would let Jordan freely disclose the fermentation process one year after leaving.',
+        failHint: 'Remove or extend the "one (1) year" expiry. A general two-year term is acceptable as long as trade secrets are separately carved out to survive indefinitely.',
+        check: t => !/one\s*\(\s*1\s*\)\s*year/.test(t)
       }
-    },
+    ],
     model: {
       label: 'MODEL — Pro-Disclosing Party (Textbook § 4.2.2)',
       cite: 'Oranburg, Protecting Trade Secrets § 4.2.2 (1st ed. 2026)',
@@ -174,31 +176,27 @@ const exercises = {
     title: 'Invention Assignment Clause',
     subtitle: 'NDA § 2',
     icon: '💡',
-    objective: 'Find the two drafting problems — one of which is a two-word error that a Supreme Court case says costs Pico Salsa ownership of its own process.',
-    context: 'Pico Salsa\'s low-pressure fermentation process is worth nothing to the company if Jordan owns it. The agreement includes an invention assignment clause — but it was drafted in language that, under controlling Supreme Court precedent, never actually transferred title to the company. Find both defects.',
-    issueCount: 2,
-    badDraft: {
-      label: 'DRAFT — § 2. Assignment of Inventions',
-      segments: [
-        { text: 'Employee ', isIssue: false },
-        { text: 'agrees to assign', isIssue: true, id: 'A' },
-        { text: ' to Company any invention, discovery, improvement, process, design, or development (collectively, "Inventions") conceived or developed by Employee during the course of employment and that either (a) results from work performed for Company, or (b) uses Company\'s time, equipment, supplies, or proprietary information. This assignment shall not apply to any invention that was developed entirely on Employee\'s own time, does not relate to Company\'s ', isIssue: false },
-        { text: 'current business or operations', isIssue: true, id: 'B' },
-        { text: ', and was created without use of Company resources. Employee agrees to execute all documents necessary to confirm such assignment.', isIssue: false }
-      ]
-    },
-    issues: {
-      A: {
-        label: 'Issue A — "Agrees to Assign" Is a Promise, Not a Transfer',
-        explanation: '<strong><em>Stanford v. Roche Molecular Systems</em>, 563 U.S. 776 (2011)</strong>: The Supreme Court held that "agree to assign" is a contractual <em>promise</em> — it creates an obligation to execute a future assignment, but does not itself transfer title. Title stays with Jordan until he separately countersigns an assignment instrument. If he walks out without doing so, Pico Salsa owns nothing — not even process improvements developed on company time using company equipment. The two-word fix: change "agrees to assign" to <strong>"hereby assigns."</strong> Present tense with "hereby" triggers an immediate transfer by operation of law at the moment the invention is created. No further action required.',
-        cite: 'Stanford v. Roche Molecular Systems, 563 U.S. 776 (2011); Abraxis BioScience v. Navinta, 672 F.3d 1239 (Fed. Cir. 2011)'
+    objective: 'Fix the two-word error that costs Pico Salsa ownership of its own process under Stanford v. Roche, and close the scope gap that excludes anticipated R&D work.',
+    context: 'Pico Salsa\'s low-pressure fermentation process is worth nothing to the company if Jordan owns it. The clause below was drafted in language that, under controlling Supreme Court precedent, never actually transferred title to the company. There are two distinct defects — one is a two-word change, the other requires expanding a defined scope. Find and fix both.',
+    defaultDraft: `§ 2. Assignment of Inventions
+
+Employee agrees to assign to Company any invention, discovery, improvement, process, design, or development (collectively, "Inventions") conceived or developed by Employee during the course of employment and that either (a) results from work performed for Company, or (b) uses Company's time, equipment, supplies, or proprietary information. This assignment shall not apply to any invention that was developed entirely on Employee's own time, does not relate to Company's current business or operations, and was created without use of Company resources. Employee agrees to execute all documents necessary to confirm such assignment.`,
+    rubric: [
+      {
+        id: 'hereby_assigns',
+        label: '"Hereby assigns" — immediate transfer, not a promise',
+        passNote: 'Correct — "hereby assigns" creates an automatic transfer by operation of law the moment an invention is created. No countersignature required. Stanford v. Roche, 563 U.S. 776 (2011).',
+        failHint: 'Change "agrees to assign" to "hereby assigns." The Supreme Court held in Stanford v. Roche (2011) that "agrees to assign" is only a contractual promise — title stays with Jordan until he separately executes an assignment instrument. If he leaves without signing, Pico Salsa owns nothing.',
+        check: t => /hereby assigns/.test(t)
       },
-      B: {
-        label: 'Issue B — "Current Business" Misses Anticipated Work',
-        explanation: 'Limiting the assignment to inventions relating to "current business or operations" creates a gap for emerging product lines and R&amp;D directions. A competitor\'s lawyer will argue that when Evan was experimenting with fermentation timing, Pico Salsa had not formally designated that as a current product — placing FermentCurves_v8 outside the assignment\'s scope. The pro-employer formulation extends to the Company\'s business, operations, research, <strong>or anticipated work</strong> — closing this loophole.',
-        cite: 'See Cubic Corp. v. Marty, 229 Cal. App. 3d 1010 (1991); Textbook § 4.2.4'
+      {
+        id: 'anticipated_work',
+        label: 'Scope covers anticipated work, not just current business',
+        passNote: 'Correct — extending coverage to "anticipated work" or "anticipated business" closes the loophole for emerging product lines not yet formally designated.',
+        failHint: 'Replace "current business or operations" with broader language covering anticipated work, research, and future product lines. A competitor\'s lawyer can argue that Jordan\'s fermentation experiments predated any formally designated product line, placing his work outside the assignment\'s scope.',
+        check: t => /anticipated/.test(t)
       }
-    },
+    ],
     model: {
       label: 'MODEL — Pro-Employer (Textbook § 4.2.4)',
       cite: 'Oranburg, Protecting Trade Secrets § 4.2.4 (1st ed. 2026)',
@@ -217,37 +215,34 @@ const exercises = {
     title: 'Non-Solicitation Clause',
     subtitle: 'NDA § 3',
     icon: '🚫',
-    objective: 'Find the three drafting problems that would cause a court to strike this clause entirely — leaving Pico Salsa with no protection at all.',
-    context: 'Jordan knows Pico Salsa\'s key customers, pricing relationships, and R&amp;D team personally. Without an enforceable non-solicitation clause, he can legally poach every one of them the day he leaves. This clause attempts protection — but its three defects are enough for a court to void the entire provision, leaving Valentina with nothing.',
-    issueCount: 3,
-    badDraft: {
-      label: 'DRAFT — § 3. Non-Solicitation',
-      segments: [
-        { text: 'For a period of ', isIssue: false },
-        { text: 'three (3) years', isIssue: true, id: 'A' },
-        { text: ' following termination of employment for any reason, Employee shall not directly or indirectly solicit, recruit, hire, contact, or encourage any person or entity ', isIssue: false },
-        { text: 'known to Employee during the course of employment', isIssue: true, id: 'B' },
-        { text: ' to: (a) terminate their relationship with Company; (b) reduce their engagement with Company; or (c) do business with any competitor of Company. This restriction applies to all customers, prospective customers, suppliers, employees, contractors, and any other individuals Employee became aware of during employment, ', isIssue: false },
-        { text: 'without limitation.', isIssue: true, id: 'C' }
-      ]
-    },
-    issues: {
-      A: {
-        label: 'Issue A — Three-Year Duration Is Excessive',
-        explanation: 'Courts apply heightened scrutiny to duration. For a non-senior employee like Evan, a three-year restriction is rarely upheld and invites a court to either strike the clause entirely or "blue-pencil" it to a shorter period — but many courts refuse to blue-pencil at all, preferring to void the whole provision rather than rewrite the employer\'s contract. The textbook pro-employer formulation uses <strong>two (2) years</strong>, a duration courts consistently enforce for employees with access to trade secrets.',
-        cite: 'Reliable Fire Equip. Co. v. Arredondo, 965 N.E.2d 393 (Ill. 2011); Textbook § 4.3.2'
+    objective: 'Fix the three defects that would cause a court to void this clause entirely, leaving Pico Salsa with no post-employment protection at all.',
+    context: 'Jordan knows Pico Salsa\'s key customers, pricing relationships, and R&amp;D team personally. Without an enforceable non-solicitation clause, he can legally poach every one of them the day he leaves. The clause below has three defects that courts have used to void non-solicitation provisions outright — not narrow them, void them. Edit it to fix all three.',
+    defaultDraft: `§ 3. Non-Solicitation
+
+For a period of three (3) years following termination of employment for any reason, Employee shall not directly or indirectly solicit, recruit, hire, contact, or encourage any person or entity known to Employee during the course of employment to: (a) terminate their relationship with Company; (b) reduce their engagement with Company; or (c) do business with any competitor of Company. This restriction applies to all customers, prospective customers, suppliers, employees, contractors, and any other individuals Employee became aware of during employment, without limitation.`,
+    rubric: [
+      {
+        id: 'duration_ok',
+        label: 'Duration reduced to two years',
+        passNote: 'Correct — two years is the duration courts consistently enforce for non-senior employees with access to trade secrets.',
+        failHint: 'Reduce the restriction from three years to two years. Courts rarely enforce three-year non-solicitation clauses for non-senior employees, and many courts will void the whole provision rather than rewrite it to a shorter term.',
+        check: t => /two\s*\(?\s*2\s*\)?\s*year/.test(t) && !/three\s*\(?\s*3\s*\)?\s*year/.test(t)
       },
-      B: {
-        label: 'Issue B — "Known to Employee" Has No Material Contact Limit',
-        explanation: '<strong><em>WellSpan Health v. Bayliss</em>, 2005 PA Super 76 (2005)</strong>: A non-solicit covering customers the employee had never actually worked with was struck down entirely. A non-solicitation clause must be limited to relationships the employee <em>personally developed or had direct contact with</em> — not every person the employee "became aware of" during employment. Jordan may have glimpsed Pico Salsa\'s full customer list in a spreadsheet once. That is not a protectable relationship. Contrast <em>Lasership, Inc. v. Watson</em> (2009), upheld because limited to customers the employee had actually serviced.',
-        cite: 'WellSpan Health v. Bayliss, 2005 PA Super 76 (2005); Lasership v. Watson, 79 Va. Cir. 205 (2009)'
+      {
+        id: 'material_contact',
+        label: 'Scope limited to customers with whom Jordan had material contact',
+        passNote: 'Correct — tying the restriction to actual relationships Jordan personally developed makes it enforceable. WellSpan Health v. Bayliss (2005); Lasership v. Watson (2009).',
+        failHint: 'Replace "known to Employee during the course of employment" with a material-contact limit: customers "with whom Employee had material contact during the twelve (12) months preceding termination." WellSpan Health v. Bayliss (2005) struck down a clause covering customers the employee had never personally worked with.',
+        check: t => /material contact/.test(t)
       },
-      C: {
-        label: 'Issue C — "Without Limitation" Signals Overbreadth',
-        explanation: '"Without limitation" tells a court the drafter knew the clause was overbroad and tried to disclaim that reality in advance. It is a red flag. Courts read it as an admission of disproportionality and use it to justify striking the entire restriction rather than narrowing it. A well-drafted non-solicit is <em>precisely</em> limited — it does not need a "without limitation" saving clause because its scope is clearly defined, targeted, and tied to specific relationships and conduct.',
-        cite: 'Great Hill Equity Partners IV v. SIG Growth Equity Fund I, 2020 Del. Ch. LEXIS 76; Textbook § 4.3.2'
+      {
+        id: 'no_without_limitation',
+        label: '"Without limitation" removed',
+        passNote: 'Correct — a well-drafted restriction is precisely bounded; it has no need for a "without limitation" disclaimer.',
+        failHint: 'Delete "without limitation." Courts read this phrase as an admission of overbreadth and use it to justify voiding the entire restriction rather than narrowing it.',
+        check: t => !/without limitation/.test(t)
       }
-    },
+    ],
     model: {
       label: 'MODEL — Pro-Employer (Textbook § 4.2.3)',
       cite: 'Oranburg, Protecting Trade Secrets § 4.2.3 (1st ed. 2026)',
@@ -269,12 +264,12 @@ const exercises = {
     objective: 'You have corrected the three flawed clauses. But even a perfect NDA can omit something federal law requires. Identify what is missing.',
     context: 'Valentina reviews the three corrected clauses and signs off. Six months later, Jordan\'s misappropriation is confirmed — RivalCraft Foods\' new product line is clearly built on Pico Salsa\'s fermentation process. Pico Salsa files suit under the Defend Trade Secrets Act and proves willful misappropriation. In the damages phase, you discover a problem that cannot be fixed.',
     options: [
-      { id: 'A', text: 'A governing law and choice-of-venue clause designating Travis County, Texas courts' },
+      { id: 'A', text: 'A governing law and choice-of-venue clause designating New York County, New York courts' },
       { id: 'B', text: 'A DTSA § 1833(b) whistleblower immunity notice — required in every employment agreement signed after May 11, 2016', correct: true },
       { id: 'C', text: 'A liquidated damages provision specifying a fixed penalty per breach' },
       { id: 'D', text: 'An acknowledgment clause confirming Employee received a copy of the agreement' }
     ],
-    consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Evan\'s misappropriation was willful and malicious, even if SalsaTech\'s entire product line was built on stolen FermentCurves data. Courts have denied enhanced remedies in cases where employers simply forgot to include one paragraph. The notice costs nothing to include. The remedy forfeiture is permanent.',
+    consequence: 'Without the § 1833(b) notice, 18 U.S.C. § 1833(b)(3)(C) is automatic and explicit: the court <strong>cannot award exemplary (double) damages or attorney\'s fees</strong> — even if Jordan\'s misappropriation was willful and malicious, even if RivalCraft\'s entire product line was built on stolen fermentation process data. Courts have denied enhanced remedies in cases where employers simply forgot to include one paragraph. The notice costs nothing to include. The remedy forfeiture is permanent.',
     model: {
       label: 'REQUIRED LANGUAGE — DTSA § 1833(b) Immunity Notice',
       cite: 'Defend Trade Secrets Act, 18 U.S.C. § 1833(b)(1)–(2); LexisNexis, Confidentiality Agreement with Employee (Form)',
@@ -282,6 +277,24 @@ const exercises = {
     }
   }
 };
+
+// ============================================================
+// RUBRIC CHECK
+// ============================================================
+function checkRubric(num, text) {
+  const t = text.toLowerCase();
+  return exercises[num].rubric.map(r => ({ ...r, pass: r.check(t) }));
+}
+
+// ============================================================
+// ESCAPE HTML (for textarea innerHTML)
+// ============================================================
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
 
 // ============================================================
 // PROGRESS BAR
@@ -316,44 +329,50 @@ function renderProgressBar() {
 }
 
 // ============================================================
-// RENDER EXERCISES 1–3 (issue-spot format)
+// RENDER DRAFT EXERCISE (1–3)
 // ============================================================
-function renderIssueDraft(ex, exState, num) {
-  const segs = ex.badDraft.segments.map(seg => {
-    if (!seg.isIssue) return seg.text;
-    const isFound = exState.issuesFound.has(seg.id);
-    const cls = isFound ? 'problem-span found' : 'problem-span';
-    return `<span class="${cls}" onclick="clickIssue(${num},'${seg.id}')" title="Click to flag as an issue">${seg.text}</span>`;
-  }).join('');
+function renderDraftExercise(ex, exState, num) {
+  const draftValue = exState.lastDraft || ex.defaultDraft;
 
-  const issuesHtml = Object.entries(ex.issues).map(([id, issue]) => {
-    if (!exState.issuesFound.has(id)) {
-      return `<div class="text-slate-400 text-sm py-2.5 px-4 bg-slate-100 rounded-lg flex items-center gap-2">
-        <span class="text-slate-300 text-lg leading-none">○</span>
-        <span>Issue ${id} — <em>not yet found — click the problematic phrase above</em></span>
-      </div>`;
-    }
-    return `<div class="fade-in bg-red-50 border border-red-200 rounded-xl p-4">
-      <p class="font-bold text-red-800 text-sm mb-1.5">⚠ ${issue.label}</p>
-      <p class="text-sm text-red-700 leading-relaxed">${issue.explanation}</p>
-      <p class="text-xs text-red-400 mt-2 italic">📚 ${issue.cite}</p>
+  // Rubric results section
+  let rubricHtml = '';
+  if (exState.submitted && exState.rubricResults) {
+    const results = exState.rubricResults;
+    const passed = results.filter(r => r.pass).length;
+    const total = results.length;
+    const allPass = passed === total;
+
+    rubricHtml = `<div class="fade-in mt-6" id="rubric-${num}">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold text-slate-700 text-sm">Rubric — Attempt ${exState.attempts}</h3>
+        <span class="text-sm font-bold ${allPass ? 'text-emerald-600' : passed > 0 ? 'text-amber-600' : 'text-red-600'}">${passed} / ${total} elements correct</span>
+      </div>
+      <div class="space-y-2">
+        ${results.map(r => `
+          <div class="flex items-start gap-3 p-3 rounded-xl ${r.pass ? 'bg-emerald-50 border border-emerald-200' : 'bg-red-50 border border-red-200'}">
+            <span class="flex-shrink-0 font-bold text-base mt-0.5 ${r.pass ? 'text-emerald-600' : 'text-red-500'}">${r.pass ? '✓' : '✗'}</span>
+            <div>
+              <p class="font-semibold text-sm ${r.pass ? 'text-emerald-800' : 'text-red-800'}">${r.label}</p>
+              <p class="text-xs mt-0.5 leading-relaxed ${r.pass ? 'text-emerald-700' : 'text-red-700'}">${r.pass ? r.passNote : r.failHint}</p>
+            </div>
+          </div>`).join('')}
+      </div>
+      <p class="text-xs mt-3 ${allPass ? 'text-emerald-700 font-medium' : 'text-slate-500'}">
+        ${allPass ? '✓ All elements correct. Your draft captures the essential protections.' : 'Revise your draft above and resubmit to improve your score.'}
+      </p>
     </div>`;
-  }).join('');
-
-  const allFound = exState.issuesFound.size >= ex.issueCount;
+  }
 
   const modelSection = exState.modelRevealed ? buildModelAnswer(ex.model) : '';
 
-  const modelBtn = !exState.modelRevealed
-    ? `<div class="mt-5" id="model-btn-${num}">
-        <button onclick="revealModel(${num})"
-          class="${allFound ? 'bg-slate-800 hover:bg-slate-900 cursor-pointer' : 'bg-slate-200 text-slate-400 cursor-not-allowed'} text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm"
-          ${allFound ? '' : 'disabled'}>
-          ${allFound ? '📖 Reveal Model Answer' : `Find all ${ex.issueCount} issues to unlock the model answer`}
+  const modelBtn = exState.submitted && !exState.modelRevealed
+    ? `<div class="mt-4 no-print">
+        <button onclick="revealModel(${num})" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+          📖 Show Model Answer
         </button>
       </div>` : '';
 
-  const nextBtn = (allFound || exState.modelRevealed)
+  const nextBtn = exState.submitted
     ? `<div class="mt-8 flex justify-end no-print">
         <button onclick="nextExercise()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition-colors">
           ${num < 4 ? `Exercise ${num + 1} →` : 'Final Exercise →'}
@@ -361,27 +380,27 @@ function renderIssueDraft(ex, exState, num) {
       </div>` : '';
 
   return `
-    <div class="mb-5">
+    <div class="mb-4">
       <div class="flex flex-wrap items-center gap-2 mb-2">
-        <span class="inline-flex items-center gap-1 text-xs font-bold text-red-700 bg-red-100 px-3 py-1 rounded-full">⚠ DRAFT — PROBLEMS PRESENT</span>
-        <span class="text-xs text-slate-400">${ex.badDraft.label}</span>
+        <span class="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-blue-100 px-3 py-1 rounded-full">✏ EDIT THIS DRAFT</span>
+        <span class="text-xs text-slate-400">${ex.subtitle} — defective draft</span>
       </div>
-      <div class="bg-white border-2 border-red-200 rounded-2xl p-6 shadow-sm">
-        <div class="clause-text text-slate-800">${segs}</div>
-        <p class="text-xs text-amber-600 mt-4 font-medium no-print">💡 Click on phrases you believe are legally defective to flag them as issues.</p>
-      </div>
+      <textarea id="draft-textarea-${num}" class="draft-textarea" spellcheck="false">${escapeHtml(draftValue)}</textarea>
+      <p class="text-xs text-blue-600 mt-2 font-medium no-print">✏ Edit the clause text to fix all legal defects, then click Submit Draft.</p>
     </div>
 
-    <div class="mb-5">
-      <div class="flex items-center justify-between mb-3">
-        <h3 class="font-semibold text-slate-700 text-sm">Issues Found: <span class="text-emerald-600 font-bold">${exState.issuesFound.size}</span> / ${ex.issueCount}</h3>
-        ${!exState.modelRevealed
-          ? `<button onclick="revealAllIssues(${num})" class="text-xs text-slate-400 hover:text-slate-600 underline no-print">Reveal all issues</button>`
-          : ''}
-      </div>
-      <div class="space-y-3">${issuesHtml}</div>
+    <div class="flex gap-3 no-print">
+      <button onclick="submitDraft(${num})"
+        class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+        ${exState.submitted ? '↺ Resubmit Draft' : 'Submit Draft →'}
+      </button>
+      <button onclick="resetDraft(${num})"
+        class="border border-slate-300 hover:border-slate-400 text-slate-600 font-medium px-4 py-3 rounded-xl transition-colors text-sm">
+        Reset to original
+      </button>
     </div>
 
+    ${rubricHtml}
     ${modelBtn}
     <div id="model-${num}">${modelSection}</div>
     ${nextBtn}`;
@@ -510,14 +529,13 @@ function buildModelAnswer(model) {
 // ============================================================
 function renderCapstone() {
   const scoreItems = [
-    { icon: '📄', title: 'Confidential Information Definition', note: 'Contextual standard — no marking required; indefinite survival for trade secrets', cite: 'nClosures (7th Cir. 2014); BladeRoom (N.D. Cal. 2018)' },
-    { icon: '💡', title: 'Invention Assignment', note: '"Hereby assigns" — immediate transfer by operation of law at creation', cite: 'Stanford v. Roche, 563 U.S. 776 (2011); Abraxis (Fed. Cir. 2011)' },
-    { icon: '🚫', title: 'Non-Solicitation', note: '2-year restriction, material contact + 12-month lookback — proportionate and enforceable', cite: 'Lasership v. Watson (2009); TEKsystems v. Bolton (D. Kan. 2019)' },
+    { icon: '📄', title: 'Confidential Information Definition', note: 'Contextual standard — no marking required; indefinite survival for trade secrets', cite: 'nClosures Inc. v. Block & Co. (7th Cir. 2014); UTSA § 1(4)' },
+    { icon: '💡', title: 'Invention Assignment', note: '"Hereby assigns" — immediate transfer by operation of law at creation', cite: 'Stanford v. Roche, 563 U.S. 776 (2011); Abraxis BioScience v. Navinta (Fed. Cir. 2011)' },
+    { icon: '🚫', title: 'Non-Solicitation', note: '2-year restriction, material contact + 12-month lookback — proportionate and enforceable', cite: 'Lasership v. Watson (2009); WellSpan Health v. Bayliss (2005)' },
     { icon: '🔐', title: 'DTSA § 1833(b) Immunity Notice', note: 'Included — exemplary damages and attorney\'s fees preserved for willful misappropriation', cite: '18 U.S.C. § 1833(b)(3)(C); Defend Trade Secrets Act (2016)' }
   ];
 
   return `<div class="fade-in">
-    <!-- Capstone header -->
     <div class="text-center mb-8 no-print">
       <div class="text-4xl mb-3">⭐</div>
       <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Assembled Agreement</h2>
@@ -527,7 +545,6 @@ function renderCapstone() {
       </div>
     </div>
 
-    <!-- Compliance scorecard -->
     <div class="bg-white border border-slate-200 rounded-2xl p-6 mb-8 shadow-sm no-print">
       <h3 class="font-bold text-slate-700 mb-4">Compliance Scorecard</h3>
       <div class="space-y-3">
@@ -544,18 +561,15 @@ function renderCapstone() {
       </div>
     </div>
 
-    <!-- Assembled agreement document -->
     <div class="bg-white border-2 border-slate-200 rounded-2xl shadow-sm" id="assembled-agreement">
       <div class="border-b border-slate-200 px-6 md:px-10 py-7 text-center">
         <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Employment Agreement Excerpt</p>
         <h3 class="text-xl font-bold text-slate-900" style="font-family: Georgia, serif">PICO SALSA, LLC</h3>
         <h4 class="text-base text-slate-600 mt-1" style="font-family: Georgia, serif">Employee Confidentiality and Assignment Agreement</h4>
-        <p class="text-sm text-slate-500 mt-3 max-w-xl mx-auto">This Agreement is entered into as of _____________, 20___, by and between Pico Salsa, LLC, a Texas limited liability company ("Company"), and _________________________ ("Employee").</p>
+        <p class="text-sm text-slate-500 mt-3 max-w-xl mx-auto">This Agreement is entered into as of _____________, 20___, by and between Pico Salsa, LLC, a New York limited liability company ("Company"), and _________________________ ("Employee").</p>
       </div>
 
       <div class="px-6 md:px-10 py-8 space-y-8">
-
-        <!-- § 1 -->
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 1. Confidential Information</span>
@@ -572,7 +586,6 @@ function renderCapstone() {
 
         <hr class="border-slate-100">
 
-        <!-- § 2 -->
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 2. Assignment of Inventions</span>
@@ -585,7 +598,6 @@ function renderCapstone() {
 
         <hr class="border-slate-100">
 
-        <!-- § 3 -->
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 3. Non-Solicitation</span>
@@ -598,7 +610,6 @@ function renderCapstone() {
 
         <hr class="border-slate-100">
 
-        <!-- § 4 -->
         <div>
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="font-bold text-slate-800">§ 4. Notice of Immunity Under the Defend Trade Secrets Act</span>
@@ -611,7 +622,6 @@ function renderCapstone() {
 
         <hr class="border-slate-200">
 
-        <!-- Signature block -->
         <div class="grid grid-cols-2 gap-12 pt-2">
           <div>
             <p class="font-semibold text-slate-700 mb-5">PICO SALSA, LLC</p>
@@ -629,15 +639,14 @@ function renderCapstone() {
       </div>
     </div>
 
-    <!-- Action buttons -->
     <div class="flex flex-wrap gap-3 mt-8 justify-center no-print">
-      <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
+      <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         🖨 Print Agreement
       </button>
-      <button onclick="copyAgreement()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
+      <button onclick="copyAgreement()" class="border-2 border-slate-300 hover:border-slate-500 text-slate-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         📋 Copy Agreement Text
       </button>
-      <a href="../index.html" class="border-2 border-emerald-300 hover:border-emerald-500 text-emerald-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm flex items-center gap-2">
+      <a href="../index.html" class="border-2 border-emerald-300 hover:border-emerald-500 text-emerald-700 font-bold px-6 py-3 rounded-xl transition-colors text-sm">
         ← Course Home
       </a>
     </div>
@@ -660,12 +669,9 @@ function render() {
   const ex = exercises[cur];
   const exState = state.exercises[cur];
 
-  let body;
-  if (cur === 4) {
-    body = renderExercise4(ex, exState);
-  } else {
-    body = renderIssueDraft(ex, exState, cur);
-  }
+  const body = (cur === 4)
+    ? renderExercise4(ex, exState)
+    : renderDraftExercise(ex, exState, cur);
 
   main.innerHTML = `<div class="fade-in">
     <div class="mb-6">
@@ -688,23 +694,33 @@ function render() {
 // ============================================================
 // HANDLERS
 // ============================================================
-function clickIssue(num, id) {
-  if (state.exercises[num].modelRevealed) return;
-  state.exercises[num].issuesFound.add(id);
+function submitDraft(num) {
+  const textarea = document.getElementById(`draft-textarea-${num}`);
+  if (!textarea) return;
+  const text = textarea.value;
+  state.exercises[num].lastDraft = text;
+  state.exercises[num].attempts++;
+  state.exercises[num].submitted = true;
+  state.exercises[num].rubricResults = checkRubric(num, text);
   render();
+  // Scroll to rubric results
+  setTimeout(() => {
+    const rubric = document.getElementById(`rubric-${num}`);
+    if (rubric) rubric.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
 }
 
-function revealAllIssues(num) {
-  const ex = exercises[num];
-  Object.keys(ex.issues).forEach(id => state.exercises[num].issuesFound.add(id));
+function resetDraft(num) {
+  state.exercises[num].lastDraft = '';
+  state.exercises[num].submitted = false;
+  state.exercises[num].rubricResults = null;
+  state.exercises[num].attempts = 0;
   render();
 }
 
 function revealModel(num) {
   state.exercises[num].modelRevealed = true;
-  state.exercises[num].completed = true;
   render();
-  // Scroll model into view
   setTimeout(() => {
     const el = document.getElementById(`model-${num}`);
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -713,7 +729,6 @@ function revealModel(num) {
 
 function selectOption4(optId) {
   state.exercises[4].selected = optId;
-  if (optId === 'B') state.exercises[4].completed = true;
   render();
 }
 
