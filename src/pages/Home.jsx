@@ -82,6 +82,13 @@ const CLASS_ACTIVITIES = [
     desc: 'Audit a defective employment agreement clause-by-clause, find every legal flaw, and redraft toward a compliant agreement.',
     arrow: 'Open lab →',
   },
+  {
+    href: './deal-room/index.html',
+    tag: 'Deal Room',
+    title: 'Deal Room — Pico Salsa Engagement',
+    desc: 'Step into a simulated law firm deal room. Choose your client, identify risks, select precedents from a closed library, and assemble a complete employment agreement.',
+    arrow: 'Enter deal room →',
+  },
 ];
 
 export default function Home() {
