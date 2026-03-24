@@ -499,6 +499,7 @@ function defaultState() {
       clauses: [],       // selected clause types for TOC
       precedents: {},    // { ci: 'prec_id', assignment: 'prec_id', ... }
       riskProvisionMatches: {}, // { risk_id: [provision_id, ...], ... }
+      assignedClauses: [],  // clauses this student is responsible for (subset of clauses[])
       customizations: {},// { ci: 'edited text', ... }
       reflections: {},
       clientResponses: {},
@@ -1274,6 +1275,8 @@ function revisePhase(phaseId) {
   } else if (phaseId === 'architecture') {
     state.decisions.riskProvisionMatches = {};
     state.decisions.clauses = [];
+    state.decisions.assignedClauses = [];
+    delete state.decisions._tempAssign;
   }
   logAction('revised_phase', phaseId);
   saveState();
@@ -1745,9 +1748,11 @@ function submitArchitecture() {
 // PHASE 4: PRECEDENT LIBRARY
 // ============================================================
 function renderPrecedents() {
-  // Show precedents for each selected clause that has a precedent library
-  const clauseIds = state.decisions.clauses.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
-  if (!clauseIds.length) {
+  const allClauseIds = state.decisions.clauses.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
+  const assigned = state.decisions.assignedClauses || [];
+  const clauses = CLAUSE_TYPES[state.client] || [];
+
+  if (!allClauseIds.length) {
     return `<div class="fade-in">
       <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
       <p class="font-ui text-sm text-gray-500 mb-4">No precedents available for your selected clauses. Continue to customization.</p>
@@ -1755,17 +1760,62 @@ function renderPrecedents() {
     </div>`;
   }
 
-  const allSelected = clauseIds.every(id => state.decisions.precedents[id]);
+  // Step 1: Clause assignment (if not yet assigned)
+  if (!assigned.length) {
+    return `<div class="fade-in">
+      <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
+      <div class="feedback-box feedback-partner mb-6">
+        <p class="font-ui text-sm text-gray-800"><strong>Team Assignment.</strong> In practice, a senior partner assigns different sections of an agreement to different associates. Each person drafts their assigned sections; the team compiles the result.</p>
+        <p class="font-ui text-xs text-gray-600 mt-2">Select the clauses <strong>you</strong> will be responsible for. Your teammates will handle the rest. Choose at least 1 and up to ${Math.min(allClauseIds.length, 3)}.</p>
+      </div>
+      <div class="space-y-2">
+        ${allClauseIds.map(id => {
+          const c = clauses.find(x => x.id === id);
+          const hasPrecedents = PRECEDENTS[id] && PRECEDENTS[id][state.client] && PRECEDENTS[id][state.client].length > 0;
+          const tempAssigned = state.decisions._tempAssign || [];
+          const isChecked = tempAssigned.includes(id);
+          const atMax = tempAssigned.length >= Math.min(allClauseIds.length, 3) && !isChecked;
+          return `<label class="flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${isChecked ? 'border-cua-bright-blue bg-blue-50' : atMax ? 'border-gray-100 bg-gray-50 opacity-50' : 'border-gray-200 bg-white hover:border-gray-300'}">
+            <input type="checkbox" class="mt-1 accent-cua-bright-blue" ${isChecked ? 'checked' : ''} ${atMax ? 'disabled' : ''} onchange="toggleClauseAssign('${id}')">
+            <div>
+              <p class="font-ui text-sm font-medium text-gray-800">${c ? c.label : id}</p>
+              ${hasPrecedents ? `<p class="font-ui text-xs text-gray-400 mt-0.5">${PRECEDENTS[id][state.client].length} precedent options available</p>` : ''}
+            </div>
+          </label>`;
+        }).join('')}
+      </div>
+      <p class="font-ui text-xs text-gray-400 mt-3">Clauses you don't select will appear as "Assigned to Teammate" in the final agreement.</p>
+      ${(state.decisions._tempAssign || []).length >= 1 ? `<div class="mt-6">
+        <button onclick="confirmClauseAssignment()" class="btn-primary font-ui">Confirm My Assignment & Open Library</button>
+      </div>` : ''}
+    </div>`;
+  }
+
+  // Step 2: Show precedents only for assigned clauses
+  const myClauseIds = assigned.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
+  const unassignedIds = allClauseIds.filter(id => !assigned.includes(id));
+  const allMySelected = myClauseIds.every(id => state.decisions.precedents[id]);
 
   return `<div class="fade-in">
     <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
-    <p class="font-ui text-sm text-gray-500 mb-6">For each clause, review the available precedents and select the one that best serves your client. Click a card to select it.</p>
+    <p class="font-ui text-sm text-gray-500 mb-2">Review the available precedents for your assigned clauses and select the best option for your client.</p>
+    <p class="font-ui text-xs text-gray-400 mb-6">You are responsible for ${myClauseIds.length} of ${allClauseIds.length} clauses. ${unassignedIds.length ? `${unassignedIds.length} clause${unassignedIds.length > 1 ? 's are' : ' is'} assigned to your teammates.` : ''}</p>
+
+    ${unassignedIds.length ? `<div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-8">
+      <p class="font-ui text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assigned to Teammates</p>
+      <div class="space-y-1">
+        ${unassignedIds.map(id => {
+          const c = clauses.find(x => x.id === id);
+          return `<p class="font-ui text-sm text-gray-400">${c ? c.label : id} — <span class="italic">pending teammate draft</span></p>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+
     <div class="space-y-10">
-      ${clauseIds.map(clauseId => {
+      ${myClauseIds.map(clauseId => {
         const precs = PRECEDENTS[clauseId][state.client];
         const selectedId = state.decisions.precedents[clauseId];
-        const selectedPrec = selectedId ? precs.find(p => p.id === selectedId) : null;
-        const clauseLabel = (CLAUSE_TYPES[state.client] || []).find(c => c.id === clauseId);
+        const clauseLabel = clauses.find(c => c.id === clauseId);
         return `<div>
           <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-3">${clauseLabel ? clauseLabel.label : clauseId}</h3>
           <div class="space-y-3">
@@ -1791,11 +1841,11 @@ function renderPrecedents() {
                 ${isSel ? `<div class="feedback-box ${p.quality === 'good' ? 'feedback-good' : p.quality === 'subtle_defect' ? 'feedback-nudge' : 'feedback-warn'} mt-3">
                   <p class="font-ui text-xs text-gray-700">${p.feedback}</p>
                   ${p.quality !== 'good' ? `<p class="font-ui text-xs text-gray-500 mt-1 italic">You may continue with this selection or choose a different precedent.</p>` : ''}
-                  ${p.quality === 'overbroad' ? `<div class="mt-2">${negoBadge('challenge', 'Opposing counsel will attack', 'A competent employee-side lawyer will move to void this provision entirely, arguing it is unconscionably broad. You risk losing all protection — not just the overbroad parts.')}</div>` : ''}
-                  ${p.quality === 'bad_for_client' ? `<div class="mt-2">${negoBadge('challenge', 'Weakens your position', state.client === 'company' ? 'This precedent was designed for the receiving party. Using it to protect the disclosing party leaves critical gaps.' : 'This precedent favors the employer. It does not adequately protect your client\'s interests.')}</div>` : ''}
-                  ${p.quality === 'subtle_defect' ? `<div class="mt-2">${consequenceToggle(p.id, 'What happens if you miss this?', 'Under Stanford v. Roche (2011), "agrees to assign" means Pico Salsa does NOT automatically own Jordan\'s inventions. If Jordan leaves without signing a separate assignment document, Pico Salsa must sue for breach of contract — and may lose to a third party who obtains a present assignment from Jordan first.')}</div>` : ''}
-                  ${p.quality === 'wrong_jurisdiction' ? `<div class="mt-2">${jurisFlag(p.jurisdiction, 'This precedent is from a different jurisdiction. The legal framework may not apply in New York.')}</div>` : ''}
-                  ${p.quality === 'good' ? `<div class="mt-2">${negoBadge('standard', 'Commercially standard', 'This approach reflects prevailing market practice and is likely to survive judicial scrutiny.')}</div>` : ''}
+                  ${p.quality === 'overbroad' ? `<div class="mt-2">${negoBadge('challenge', 'Opposing counsel will attack', 'A competent employee-side lawyer will move to void this provision entirely, arguing it is unconscionably broad.')}</div>` : ''}
+                  ${p.quality === 'bad_for_client' ? `<div class="mt-2">${negoBadge('challenge', 'Weakens your position', state.client === 'company' ? 'This precedent was designed for the receiving party.' : 'This precedent favors the employer.')}</div>` : ''}
+                  ${p.quality === 'subtle_defect' ? `<div class="mt-2">${consequenceToggle(p.id, 'What happens if you miss this?', 'Under Stanford v. Roche (2011), "agrees to assign" means Pico Salsa does NOT automatically own Jordan\'s inventions.')}</div>` : ''}
+                  ${p.quality === 'wrong_jurisdiction' ? `<div class="mt-2">${jurisFlag(p.jurisdiction, 'This precedent is from a different jurisdiction.')}</div>` : ''}
+                  ${p.quality === 'good' ? `<div class="mt-2">${negoBadge('standard', 'Commercially standard', 'This approach reflects prevailing market practice.')}</div>` : ''}
                 </div>` : ''}
               </div>`;
             }).join('')}
@@ -1803,10 +1853,29 @@ function renderPrecedents() {
         </div>`;
       }).join('')}
     </div>
-    ${allSelected ? `<div class="mt-8 flex justify-end">
+    ${allMySelected ? `<div class="mt-8 flex justify-end">
       <button onclick="submitPrecedents()" class="btn-primary font-ui">Confirm Selections & Continue</button>
-    </div>` : `<p class="font-ui text-xs text-gray-400 mt-6">Select a precedent for each clause to continue.</p>`}
+    </div>` : `<p class="font-ui text-xs text-gray-400 mt-6">Select a precedent for each of your assigned clauses to continue.</p>`}
   </div>`;
+}
+
+function toggleClauseAssign(id) {
+  if (!state.decisions._tempAssign) state.decisions._tempAssign = [];
+  const idx = state.decisions._tempAssign.indexOf(id);
+  const max = Math.min(state.decisions.clauses.filter(cid => PRECEDENTS[cid] && PRECEDENTS[cid][state.client]).length, 3);
+  if (idx >= 0) state.decisions._tempAssign.splice(idx, 1);
+  else if (state.decisions._tempAssign.length < max) state.decisions._tempAssign.push(id);
+  saveState();
+  render();
+}
+
+function confirmClauseAssignment() {
+  state.decisions.assignedClauses = [...(state.decisions._tempAssign || [])];
+  delete state.decisions._tempAssign;
+  logAction('clauses_assigned', state.decisions.assignedClauses.join(', '));
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function selectPrecedent(clauseId, precId) {
@@ -1899,7 +1968,10 @@ function getCustomizationPrompts() { return getScenario().customizationPrompts; 
 // PHASE 5: CUSTOMIZATION
 // ============================================================
 function renderCustomize() {
-  const clauseIds = state.decisions.clauses.filter(id => state.decisions.precedents[id]);
+  // Only show clauses this student is assigned to (and has precedents for)
+  const assigned = state.decisions.assignedClauses || [];
+  const clauseIds = (assigned.length ? assigned : state.decisions.clauses).filter(id => state.decisions.precedents[id]);
+  const unassignedWithPrecedents = state.decisions.clauses.filter(id => state.decisions.precedents[id] && !clauseIds.includes(id));
   const clientResponse = state.decisions.clientResponses.customize || '';
   const hasResponse = clientResponse.trim().length > 0;
 
@@ -2041,12 +2113,19 @@ function renderAssemble() {
       <div class="px-6 md:px-10 py-8 space-y-6">
         ${clauseIds.map((id, i) => {
           const c = clauses.find(x => x.id === id);
+          const assigned = state.decisions.assignedClauses || [];
+          const isMyClause = !assigned.length || assigned.includes(id);
           const text = customTexts[id] || (PRECEDENTS[id] && PRECEDENTS[id][state.client] && state.decisions.precedents[id]
             ? PRECEDENTS[id][state.client].find(p => p.id === state.decisions.precedents[id])?.text
-            : null) || '[Clause text not yet drafted]';
+            : null) || (isMyClause ? '[Clause text not yet drafted]' : null);
           return `<div>
-            <p class="font-ui text-sm font-bold text-gray-800 mb-2">§ ${i + 1}. ${c ? c.label : id}</p>
-            <div class="clause-text text-gray-700 text-sm pl-4 border-l-2 border-cua-teal whitespace-pre-wrap">${annotateClauseText(text)}</div>
+            <div class="flex items-center gap-2 mb-2">
+              <p class="font-ui text-sm font-bold text-gray-800">§ ${i + 1}. ${c ? c.label : id}</p>
+              ${!isMyClause ? '<span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">Teammate</span>' : ''}
+            </div>
+            ${isMyClause
+              ? `<div class="clause-text text-gray-700 text-sm pl-4 border-l-2 border-cua-teal whitespace-pre-wrap">${annotateClauseText(text)}</div>`
+              : `<div class="pl-4 border-l-2 border-dashed border-gray-300 py-3"><p class="font-ui text-sm text-gray-400 italic">This section will be drafted by a teammate and compiled into the final agreement.</p></div>`}
           </div>${i < clauseIds.length - 1 ? '<hr class="border-gray-100">' : ''}`;
         }).join('')}
       </div>
