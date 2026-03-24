@@ -33,18 +33,18 @@
     }
   </script>
   <style>
-    body { font-family: 'Roboto', sans-serif; background: #f3f4f6; }
-    .clause-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1rem; line-height: 1.85; }
+    body { font-family: 'Roboto', sans-serif; background: #f8f9fb; }
+    .clause-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1rem; line-height: 1.85; color: #1e293b; }
     .memo-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1.05rem; line-height: 1.8; }
     .draft-textarea {
       font-family: 'Crimson Text', Georgia, serif;
       font-size: 1rem; line-height: 1.8;
       width: 100%; min-height: 180px; resize: vertical;
-      border: 2px solid #d1d5db; border-radius: 8px;
-      padding: 16px; background: #fff; color: #1e293b;
-      outline: none; transition: border-color 0.15s; box-sizing: border-box;
+      border: 2px solid #e2e5ea; border-radius: 10px;
+      padding: 18px; background: #fff; color: #1e293b;
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;
     }
-    .draft-textarea:focus { border-color: #2459A9; }
+    .draft-textarea:focus { border-color: #2459A9; box-shadow: 0 0 0 3px rgba(36,89,169,0.1); }
 
     /* Sidebar */
     .sidebar { width: 280px; position: sticky; top: 0; height: 100vh; overflow-y: auto; transition: width 0.2s; flex-shrink: 0; }
@@ -52,13 +52,13 @@
     .sidebar.collapsed .sidebar-label { display: none; }
     .sidebar.collapsed .sidebar-header-text { display: none; }
 
-    .phase-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 6px; cursor: pointer; transition: all 0.15s; font-size: 0.8125rem; }
+    .phase-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.8125rem; border-left: 3px solid transparent; margin-bottom: 1px; }
     .phase-item:hover { background: rgba(255,255,255,0.08); }
-    .phase-item.active { background: rgba(255,214,92,0.15); border-left: 3px solid #FFD65C; }
+    .phase-item.active { background: rgba(255,214,92,0.12); border-left-color: #FFD65C; }
     .phase-item.completed .phase-dot { background: #B5E1E1; }
-    .phase-item.locked { opacity: 0.4; cursor: not-allowed; }
-    .phase-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.3); color: rgba(255,255,255,0.6); }
-    .phase-item.active .phase-dot { border-color: #FFD65C; color: #FFD65C; }
+    .phase-item.locked { opacity: 0.35; cursor: not-allowed; }
+    .phase-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.5); transition: all 0.2s; }
+    .phase-item.active .phase-dot { border-color: #FFD65C; color: #FFD65C; background: rgba(255,214,92,0.1); }
     .phase-item.completed .phase-dot { border-color: #B5E1E1; color: #0A3255; }
 
     /* Reference panel */
@@ -66,16 +66,16 @@
     .ref-panel.open { width: 360px; }
 
     /* Cards */
-    .precedent-card { border: 2px solid #e5e7eb; border-radius: 10px; padding: 16px; background: #fff; cursor: pointer; transition: all 0.15s; }
-    .precedent-card:hover { border-color: #2459A9; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .precedent-card.selected { border-color: #0A3255; background: #f0f7ff; box-shadow: 0 0 0 3px rgba(36,89,169,0.15); }
-    .precedent-card.bad-selected { border-color: #E96955; background: #fef2f2; }
+    .precedent-card { border: 2px solid #e5e7eb; border-radius: 12px; padding: 18px; background: #fff; cursor: pointer; transition: all 0.2s; }
+    .precedent-card:hover { border-color: #2459A9; box-shadow: 0 4px 12px rgba(10,50,85,0.08); transform: translateY(-1px); }
+    .precedent-card.selected { border-color: #0A3255; background: #f0f7ff; box-shadow: 0 0 0 3px rgba(36,89,169,0.12); }
+    .precedent-card.bad-selected { border-color: #E96955; background: #fef2f2; box-shadow: 0 0 0 3px rgba(233,105,85,0.1); }
 
-    .feedback-box { border-radius: 10px; padding: 16px; margin-top: 12px; }
-    .feedback-good { background: #edfaf5; border: 1px solid #B5E1E1; }
-    .feedback-nudge { background: #fffbeb; border: 1px solid #FFD65C; }
-    .feedback-warn { background: #fef2f2; border: 1px solid #E96955; }
-    .feedback-partner { background: #f0f7ff; border: 1px solid #6DACDE; }
+    .feedback-box { border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
+    .feedback-good { background: #f0faf6; border: 1px solid #B5E1E1; border-left: 4px solid #B5E1E1; }
+    .feedback-nudge { background: #fffdf5; border: 1px solid #FFD65C; border-left: 4px solid #FFD65C; }
+    .feedback-warn { background: #fef5f3; border: 1px solid #E96955; border-left: 4px solid #E96955; }
+    .feedback-partner { background: #f5f9ff; border: 1px solid #6DACDE; border-left: 4px solid #6DACDE; }
 
     /* Drag and drop matching */
     .match-source { padding: 8px 14px; border: 2px solid #e5e7eb; border-radius: 8px; background: #fff; cursor: grab; font-size: 0.8125rem; transition: all 0.15s; user-select: none; display: inline-block; }
@@ -249,12 +249,28 @@
     .diff-add { background: rgba(181,225,225,0.3); text-decoration: none; }
     .diff-del { background: rgba(233,105,85,0.15); text-decoration: line-through; color: #9ca3af; }
 
+    /* Top bar accent */
+    .top-accent { height: 3px; background: linear-gradient(90deg, #B21F2C 0%, #E82F35 50%, #0A3255 100%); }
+
     /* Animations */
-    .fade-in { animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Button styles */
+    .btn-primary { background: #B21F2C; color: white; font-weight: 700; padding: 12px 28px; border-radius: 10px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8125rem; border: none; cursor: pointer; }
+    .btn-primary:hover { background: #E82F35; box-shadow: 0 4px 12px rgba(178,31,44,0.25); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary { background: #0A3255; color: white; font-weight: 700; padding: 12px 28px; border-radius: 10px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8125rem; border: none; cursor: pointer; }
+    .btn-secondary:hover { background: #2459A9; box-shadow: 0 4px 12px rgba(10,50,85,0.2); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: #2459A9; font-weight: 700; padding: 12px 28px; border-radius: 10px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8125rem; border: 2px solid #2459A9; cursor: pointer; }
+    .btn-outline:hover { background: #f0f7ff; box-shadow: 0 2px 8px rgba(36,89,169,0.1); }
+
+    /* Section headers */
+    .section-divider { height: 1px; background: linear-gradient(90deg, #e5e7eb 0%, transparent 100%); margin: 32px 0; }
 
     /* Login overlay */
-    .login-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; }
+    .login-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0A3255 0%, #1a4a7a 50%, #0A3255 100%); }
+    .login-overlay input:focus { border-color: #2459A9; box-shadow: 0 0 0 3px rgba(36,89,169,0.1); outline: none; }
 
     /* Print */
     @media print {
@@ -295,7 +311,7 @@
       <div class="bg-gray-50 rounded-lg p-3 mt-2">
         <p class="text-xs text-gray-500 font-ui leading-relaxed">Your decisions, time spent on each phase, and final work product are recorded and submitted to your professor. Take your time and make thoughtful choices.</p>
       </div>
-      <button id="login-btn" onclick="handleLogin()" class="w-full bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 rounded-lg transition-colors text-sm tracking-wide uppercase">Enter the Deal Room</button>
+      <button id="login-btn" onclick="handleLogin()" class="w-full btn-primary font-ui py-3.5">Enter the Deal Room</button>
       <p id="login-error" class="text-xs text-cua-bright-red font-ui hidden text-center">Please enter both your name and team name.</p>
     </div>
   </div>
@@ -327,6 +343,17 @@
     <!-- Phase nav -->
     <nav class="flex-1 py-3 px-2 space-y-1" id="phase-nav"></nav>
 
+    <!-- Progress bar -->
+    <div class="px-4 py-3 border-t border-white/10 sidebar-label">
+      <div class="flex items-center justify-between mb-1.5">
+        <p class="text-white/40 text-xs font-ui font-medium uppercase tracking-wider">Progress</p>
+        <p id="progress-pct" class="text-cua-yellow text-xs font-ui font-bold">0%</p>
+      </div>
+      <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div id="progress-fill" class="h-full bg-cua-teal rounded-full transition-all duration-500" style="width:0%"></div>
+      </div>
+    </div>
+
     <!-- Decision log -->
     <div class="px-4 py-3 border-t border-white/10 sidebar-label">
       <p class="text-white/40 text-xs font-ui font-medium uppercase tracking-wider mb-2">Decision Log</p>
@@ -346,6 +373,7 @@
 
   <!-- MAIN WORKSPACE -->
   <main class="flex-1 min-w-0">
+    <div class="top-accent"></div>
     <!-- Top bar -->
     <div class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between no-print">
       <div class="flex items-center gap-3">
@@ -1047,6 +1075,14 @@ function renderNav() {
   const precCount = Object.keys(state.decisions.precedents).length;
   if (precCount) entries.push(`Precedents: ${precCount} chosen`);
   log.innerHTML = entries.map(e => `<p>${e}</p>`).join('');
+
+  // Update progress bar
+  const completedCount = PHASES.filter(p => state.completed[p.id]).length;
+  const pct = Math.round((completedCount / PHASES.length) * 100);
+  const pctEl = document.getElementById('progress-pct');
+  const fillEl = document.getElementById('progress-fill');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (fillEl) fillEl.style.width = pct + '%';
 }
 
 function goToPhase(id) {
@@ -1192,7 +1228,7 @@ function renderIntake() {
           <textarea id="risk-justification" class="draft-textarea" style="min-height: 80px;" placeholder="Explain in 2-3 sentences why this risk matters most given the specific facts of this engagement..."
             oninput="state.decisions.reflections.riskJustification = this.value; saveState();">${escapeHtml(state.decisions.reflections.riskJustification || '')}</textarea>
         </div>
-        <button onclick="submitRisks()" class="mt-4 bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider ${!(state.decisions.reflections.riskJustification || '').trim() ? 'opacity-50 cursor-not-allowed' : ''}" ${!(state.decisions.reflections.riskJustification || '').trim() ? 'disabled' : ''}>Submit Risk Assessment</button>
+        <button onclick="submitRisks()" class="mt-4 btn-primary font-ui ${!(state.decisions.reflections.riskJustification || '').trim() ? 'opacity-50 cursor-not-allowed' : ''}" ${!(state.decisions.reflections.riskJustification || '').trim() ? 'disabled' : ''}>Submit Risk Assessment</button>
       </div>` : `<p class="font-ui text-xs text-gray-400 mt-3">${selCount}/3 selected</p>`}
     </div>`;
   } else {
@@ -1217,8 +1253,8 @@ function renderIntake() {
         ${missedCorrect.map(r => `<div class="feedback-box feedback-nudge"><p class="font-ui text-sm font-medium text-amber-800">Missed: ${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p></div>`).join('')}
       </div>
       <div class="mt-6 flex items-center justify-between">
-        ${(selectedIncorrect.length || missedCorrect.length) ? `<button onclick="revisePhase('intake')" class="border-2 border-cua-bright-blue text-cua-bright-blue hover:bg-blue-50 font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">← Revise My Selections</button>` : '<div></div>'}
-        <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Document Strategy →</button>
+        ${(selectedIncorrect.length || missedCorrect.length) ? `<button onclick="revisePhase('intake')" class="btn-outline font-ui">← Revise My Selections</button>` : '<div></div>'}
+        <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Document Strategy →</button>
       </div>
     </div>`;
   }
@@ -1279,7 +1315,7 @@ function renderStrategy() {
             <p class="font-ui text-sm font-medium text-gray-800">${s.label}</p>
           </div>`).join('')}
       </div>
-      ${selected ? `<button onclick="submitStrategy()" class="mt-6 bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Confirm Recommendation</button>` : ''}
+      ${selected ? `<button onclick="submitStrategy()" class="mt-6 btn-primary font-ui">Confirm Recommendation</button>` : ''}
     </div>`;
   }
 
@@ -1300,8 +1336,8 @@ function renderStrategy() {
       </div>` : ''}
     </div>
     <div class="mt-6 flex items-center justify-between">
-      ${!s.correct ? `<button onclick="revisePhase('strategy')" class="border-2 border-cua-bright-blue text-cua-bright-blue hover:bg-blue-50 font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">← Revise My Selection</button>` : '<div></div>'}
-      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Agreement Architecture →</button>
+      ${!s.correct ? `<button onclick="revisePhase('strategy')" class="btn-outline font-ui">← Revise My Selection</button>` : '<div></div>'}
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Agreement Architecture →</button>
     </div>
   </div>`;
 }
@@ -1405,7 +1441,7 @@ function renderArchitecture() {
         }).join('')}
       </div>
 
-      ${allMatched ? `<button onclick="submitArchitecture()" class="mt-6 bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Submit Matching</button>` : `<p class="font-ui text-xs text-gray-400 mt-4">Match at least one provision to each risk to continue.</p>`}
+      ${allMatched ? `<button onclick="submitArchitecture()" class="mt-6 btn-primary font-ui">Submit Matching</button>` : `<p class="font-ui text-xs text-gray-400 mt-4">Match at least one provision to each risk to continue.</p>`}
     </div>`;
   }
 
@@ -1482,8 +1518,8 @@ function renderArchitecture() {
     ${!requiredMissed.length && feedbackItems.every(f => f.type === 'good') ? `<div class="feedback-box feedback-good mt-4"><p class="font-ui text-sm text-emerald-800">Excellent. Every risk is addressed by the right provision.</p></div>` : ''}
 
     <div class="mt-6 flex items-center justify-between">
-      ${(requiredMissed.length || feedbackItems.some(f => f.type !== 'good')) ? `<button onclick="revisePhase('architecture')" class="border-2 border-cua-bright-blue text-cua-bright-blue hover:bg-blue-50 font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">← Revise My Matching</button>` : '<div></div>'}
-      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Precedent Library →</button>
+      ${(requiredMissed.length || feedbackItems.some(f => f.type !== 'good')) ? `<button onclick="revisePhase('architecture')" class="btn-outline font-ui">← Revise My Matching</button>` : '<div></div>'}
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Precedent Library →</button>
     </div>
   </div>`;
 }
@@ -1550,7 +1586,7 @@ function renderPrecedents() {
     return `<div class="fade-in">
       <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
       <p class="font-ui text-sm text-gray-500 mb-4">No precedents available for your selected clauses. Continue to customization.</p>
-      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue</button>
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue</button>
     </div>`;
   }
 
@@ -1603,7 +1639,7 @@ function renderPrecedents() {
       }).join('')}
     </div>
     ${allSelected ? `<div class="mt-8 flex justify-end">
-      <button onclick="submitPrecedents()" class="bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Confirm Selections & Continue</button>
+      <button onclick="submitPrecedents()" class="btn-primary font-ui">Confirm Selections & Continue</button>
     </div>` : `<p class="font-ui text-xs text-gray-400 mt-6">Select a precedent for each clause to continue.</p>`}
   </div>`;
 }
@@ -1717,7 +1753,7 @@ function renderCustomize() {
       ${!hasResponse ? '<p class="font-ui text-xs text-cua-light-red mt-1">A client response is required before you can continue.</p>' : ''}
     </div>
     <div class="mt-6 flex justify-end">
-      <button onclick="submitCustomizations()" class="bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider ${!canSubmit ? 'opacity-50 cursor-not-allowed' : ''}" ${!canSubmit ? 'disabled' : ''}>Finalize & Assemble</button>
+      <button onclick="submitCustomizations()" class="btn-primary font-ui ${!canSubmit ? 'opacity-50 cursor-not-allowed' : ''}" ${!canSubmit ? 'disabled' : ''}>Finalize & Assemble</button>
     </div>
   </div>`;
 }
@@ -1785,11 +1821,13 @@ function renderAssemble() {
       <p class="font-ui text-sm text-emerald-800 font-medium">No critical issues detected. Your agreement is internally consistent.</p>
     </div>`}
 
-    <div class="bg-white border-2 border-gray-200 rounded-xl shadow-sm" id="assembled-agreement">
-      <div class="border-b border-gray-200 px-6 md:px-10 py-7 text-center">
-        <p class="font-ui text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Draft Agreement</p>
-        <h3 class="font-headline text-xl text-cua-blue uppercase tracking-wide">Pico Salsa, LLC</h3>
-        <p class="font-body text-base text-gray-600 mt-1">Employee Confidentiality and Assignment Agreement</p>
+    <div class="bg-white border border-gray-200 rounded-xl shadow-md" id="assembled-agreement" style="box-shadow: 0 4px 24px rgba(10,50,85,0.08);">
+      <div class="border-b border-gray-200 px-6 md:px-10 py-8 text-center" style="background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);">
+        <div class="w-12 h-0.5 bg-cua-red mx-auto mb-4"></div>
+        <p class="font-ui text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">Draft Agreement</p>
+        <h3 class="font-headline text-2xl text-cua-blue uppercase tracking-wide">Pico Salsa, LLC</h3>
+        <p class="font-body text-base text-gray-500 mt-2 italic">Employee Confidentiality and Assignment Agreement</p>
+        <div class="w-12 h-0.5 bg-cua-blue mx-auto mt-4"></div>
       </div>
       <div class="px-6 md:px-10 py-8 space-y-6">
         ${clauseIds.map((id, i) => {
@@ -1805,7 +1843,7 @@ function renderAssemble() {
       </div>
     </div>
     <div class="mt-6 flex justify-end">
-      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Senior Partner Review</button>
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Senior Partner Review</button>
     </div>
   </div>`;
 }
@@ -1870,14 +1908,14 @@ function renderReview() {
       <p class="font-ui text-sm text-gray-600 mb-1">Completion Code: <strong class="font-mono text-cua-blue">${code}</strong></p>
       <p class="font-ui text-xs text-gray-400 mb-4">Save this code. Your professor may ask for it.</p>
       <div class="flex flex-wrap gap-3">
-        <button onclick="generateDocx()" class="bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-6 rounded-lg transition-colors text-sm uppercase tracking-wider">Download Work Product (.docx)</button>
-        <button onclick="window.print()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-6 rounded-lg transition-colors text-sm uppercase tracking-wider">Print Agreement</button>
-        <button onclick="copyAgreement()" class="border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-ui font-bold py-3 px-6 rounded-lg transition-colors text-sm">Copy Text</button>
+        <button onclick="generateDocx()" class="btn-primary font-ui">Download Work Product (.docx)</button>
+        <button onclick="window.print()" class="btn-secondary font-ui">Print Agreement</button>
+        <button onclick="copyAgreement()" class="btn-outline font-ui">Copy Text</button>
       </div>
     </div>
 
     ${!state.completed.review ? `<div class="mt-6 flex justify-end">
-      <button onclick="completePhase('review'); logAction('completed', '${code}'); render();" class="bg-cua-red hover:bg-cua-bright-red text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider ${!(state.decisions.reflections.final || '').trim() ? 'opacity-50 cursor-not-allowed' : ''}" ${!(state.decisions.reflections.final || '').trim() ? 'disabled' : ''}>Submit & Complete</button>
+      <button onclick="completePhase('review'); logAction('completed', '${code}'); render();" class="btn-primary font-ui ${!(state.decisions.reflections.final || '').trim() ? 'opacity-50 cursor-not-allowed' : ''}" ${!(state.decisions.reflections.final || '').trim() ? 'disabled' : ''}>Submit & Complete</button>
       ${!(state.decisions.reflections.final || '').trim() ? '<p class="font-ui text-xs text-gray-400 ml-4 self-center">Write a final reflection to submit.</p>' : ''}
     </div>` : `<div class="mt-6 feedback-box feedback-good"><p class="font-ui text-sm text-emerald-800 font-medium">Exercise complete. You may now enable Explore Mode in the sidebar to revisit any phase.</p></div>`}
   </div>`;
