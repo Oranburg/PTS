@@ -308,6 +308,10 @@
         <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Team / Group Name</label>
         <input id="login-team" type="text" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none" placeholder="e.g., Team Alpha">
       </div>
+      <div id="scenario-selector" class="hidden">
+        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Scenario</label>
+        <select id="login-scenario" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none bg-white"></select>
+      </div>
       <div class="bg-gray-50 rounded-lg p-3 mt-2">
         <p class="text-xs text-gray-500 font-ui leading-relaxed">Your decisions, time spent on each phase, and final work product are recorded and submitted to your professor. Take your time and make thoughtful choices.</p>
       </div>
@@ -329,7 +333,7 @@
         </div>
         <div class="sidebar-header-text">
           <p class="font-headline text-white text-sm uppercase tracking-wider leading-tight">Deal Room</p>
-          <p class="text-white/50 text-xs font-ui">PTS Chapter 4</p>
+          <p id="sidebar-chapter" class="text-white/50 text-xs font-ui">PTS Chapter 4</p>
         </div>
       </div>
     </div>
@@ -429,6 +433,7 @@ const PHASES = [
 function defaultState() {
   return {
     student: { name: '', team: '' },
+    scenarioId: ACTIVE_SCENARIO,
     client: null, // 'company' or 'employee'
     currentPhase: 'intake',
     exploreMode: false,
@@ -450,7 +455,7 @@ function defaultState() {
   };
 }
 
-let state = defaultState();
+var state = defaultState();
 
 function loadState() {
   try {
@@ -473,8 +478,45 @@ function logAction(action, detail) {
 }
 
 // ============================================================
-// FACT PATTERN DATA
+// SCENARIO FRAMEWORK
 // ============================================================
+// Each scenario is a self-contained data package with all the
+// content needed for a complete Deal Room exercise. The framework
+// supports multiple scenarios but defaults to 'pico_salsa' for
+// the current academic year.
+//
+// To add a new scenario for a future semester:
+// 1. Create a new object in SCENARIOS with a unique key
+// 2. Include all required fields (see pico_salsa for the template)
+// 3. Set ACTIVE_SCENARIO to the new key, or add a selector UI
+//
+// Required fields per scenario:
+//   id, title, subtitle, factPattern, risks, docStrategies,
+//   clauseTypes, precedents, references, legalTerms,
+//   riskProvisionMap, customizationPrompts
+// ============================================================
+
+var ACTIVE_SCENARIO = 'pico_salsa'; // Change this to switch scenarios
+var SCENARIOS = {};
+
+// ============================================================
+// SCENARIO: PICO SALSA (Default — Academic Year 2026-2027)
+// ============================================================
+// Clause text drawn from:
+//   Oranburg, Protecting Trade Secrets §§ 4.2.2–4.2.4 (1st ed. 2026)
+//   LexisNexis, Confidentiality Agreement with Employee (Form)
+// ============================================================
+
+SCENARIOS.pico_salsa = {
+  id: 'pico_salsa',
+  title: 'Pico Salsa Employment Agreement',
+  subtitle: 'Internal Mitigation — Departing Employee',
+  chapter: 'PTS Chapter 4',
+};
+
+// Scenario data is defined as module-level constants below,
+// then attached to the scenario object at the end of the data section.
+
 const FACT_PATTERN = {
   company: {
     client: 'Pico Salsa, LLC',
@@ -1002,8 +1044,11 @@ function handleLogin() {
   }
   state.student.name = name;
   state.student.team = team;
+  // Set scenario from selector (if multiple exist) or default
+  const scenarioSelect = document.getElementById('login-scenario');
+  if (scenarioSelect && scenarioSelect.value) state.scenarioId = scenarioSelect.value;
   state.timestamps.session_start = Date.now();
-  logAction('login', `${name} (${team})`);
+  logAction('login', `${name} (${team}) scenario:${state.scenarioId}`);
   saveState();
   document.getElementById('login-overlay').style.display = 'none';
   document.getElementById('app').style.display = 'flex';
@@ -1686,6 +1731,50 @@ const CUSTOMIZATION_PROMPTS = {
   }
 };
 
+// Attach all data to the Pico Salsa scenario
+Object.assign(SCENARIOS.pico_salsa, {
+  factPattern: FACT_PATTERN,
+  risks: RISKS,
+  docStrategies: DOC_STRATEGIES,
+  clauseTypes: CLAUSE_TYPES,
+  precedents: PRECEDENTS,
+  references: REFERENCES,
+  legalTerms: LEGAL_TERMS,
+  riskProvisionMap: RISK_PROVISION_MAP,
+  customizationPrompts: CUSTOMIZATION_PROMPTS,
+});
+
+// ============================================================
+// SCENARIO ACCESSOR
+// ============================================================
+// Returns the active scenario. All rendering code can call
+// getScenario() to access scenario-specific data. Currently
+// returns the hardcoded default; future versions can read from
+// state.scenarioId to support scenario selection.
+function getScenario() {
+  try {
+    const id = (typeof state !== 'undefined' && state && state.scenarioId) ? state.scenarioId : ACTIVE_SCENARIO;
+    return SCENARIOS[id] || SCENARIOS[ACTIVE_SCENARIO];
+  } catch(e) {
+    return SCENARIOS[ACTIVE_SCENARIO];
+  }
+}
+
+// Quick accessors for the most commonly used data.
+// These exist so we don't have to change every render function
+// right now — they return the same constants that the code
+// already references. When a second scenario is added, these
+// will be updated to read from getScenario().
+function getFactPattern() { return getScenario().factPattern; }
+function getRisks() { return getScenario().risks; }
+function getDocStrategies() { return getScenario().docStrategies; }
+function getClauseTypes() { return getScenario().clauseTypes; }
+function getPrecedents() { return getScenario().precedents; }
+function getReferences() { return getScenario().references; }
+function getLegalTerms() { return getScenario().legalTerms; }
+function getRiskProvisionMap() { return getScenario().riskProvisionMap; }
+function getCustomizationPrompts() { return getScenario().customizationPrompts; }
+
 // ============================================================
 // PHASE 5: CUSTOMIZATION
 // ============================================================
@@ -1956,6 +2045,7 @@ async function generateDocx() {
   children.push(new Paragraph({ children: [new TextRun({ text: 'Deal Room — Student Work Product', font: TNR, bold: true, size: 32 })], alignment: AlignmentType.CENTER, spacing: { after: 80 } }));
   children.push(bodyP(`Student: ${state.student.name}`));
   children.push(bodyP(`Team: ${state.student.team}`));
+  children.push(bodyP(`Scenario: ${getScenario().title}`));
   children.push(bodyP(`Client: ${state.client === 'company' ? 'Pico Salsa, LLC (Company)' : 'Jordan Webb (Employee)'}`));
   children.push(bodyP(`Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`));
   children.push(bodyP(`Time Spent: ${getTimeSpent()}`));
@@ -2006,6 +2096,20 @@ function getTimeSpent() {
 // ============================================================
 (function boot() {
   state = loadState();
+
+  // Populate scenario selector (only show if >1 scenario exists)
+  const scenarioKeys = Object.keys(SCENARIOS);
+  if (scenarioKeys.length > 1) {
+    const sel = document.getElementById('scenario-selector');
+    const select = document.getElementById('login-scenario');
+    if (sel && select) {
+      sel.classList.remove('hidden');
+      select.innerHTML = scenarioKeys.map(k =>
+        `<option value="${k}" ${k === ACTIVE_SCENARIO ? 'selected' : ''}>${SCENARIOS[k].title}</option>`
+      ).join('');
+    }
+  }
+
   if (state.student.name) {
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('app').style.display = 'flex';
@@ -2013,7 +2117,6 @@ function getTimeSpent() {
     document.getElementById('sidebar-team').textContent = state.student.team;
     render();
   }
-  // Timer removed
 })();
 </script>
 </body>
