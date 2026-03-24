@@ -48,6 +48,8 @@ jobs:
           cp patent-or-TS/class-activities.html dist/patent-or-TS/
           mkdir -p dist/drafting-lab
           cp drafting-lab/index.html dist/drafting-lab/
+          mkdir -p dist/deal-room
+          cp deal-room/index.html dist/deal-room/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
