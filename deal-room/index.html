@@ -332,7 +332,7 @@ const RISKS = {
     { id: 'customer_poach', label: 'Customer and supplier solicitation', correct: true, explanation: 'Jordan personally manages two of three key retail accounts. Without restriction, he can redirect those relationships to RivalCraft the day he starts.' },
     { id: 'ip_ownership', label: 'Ownership of inventions developed during employment', correct: true, explanation: 'Any process improvements or innovations Jordan developed at Pico Salsa need clear assignment to the company — especially under Stanford v. Roche.' },
     { id: 'team_poach', label: 'Employee recruitment / team raiding', correct: true, explanation: 'Jordan knows the R&D team and could recruit Pico Salsa\'s best people to RivalCraft.' },
-    { id: 'dtsa_compliance', label: 'Federal statutory compliance (DTSA notice requirement)', correct: true, explanation: 'The Defend Trade Secrets Act requires a whistleblower immunity notice in every employment agreement signed after May 11, 2016. Missing it forfeits exemplary damages.' },
+    { id: 'dtsa_compliance', label: 'Federal statutory compliance (DTSA notice requirement)', correct: true, explanation: 'The Defend Trade Secrets Act requires a whistleblower immunity notice in every employment agreement entered into or updated after May 11, 2016. Missing it forfeits exemplary damages.' },
     { id: 'noncompete', label: 'Preventing Jordan from working at RivalCraft entirely', correct: false, explanation: 'Valentina said "we can\'t stop Jordan from leaving." A non-compete would attempt exactly that — and New York has increasingly restricted non-compete enforceability. The goal is protecting specific assets, not blocking employment.' },
     { id: 'defamation', label: 'Defamation or disparagement risk', correct: false, explanation: 'There\'s no indication Jordan would disparage Pico Salsa. Including a non-disparagement clause isn\'t wrong, but it\'s not an immediate legal risk identified in the intake memo.' },
   ],
@@ -484,6 +484,56 @@ const PRECEDENTS = {
       }
     ]
   },
+  ci_obligations: {
+    company: [
+      {
+        id: 'ci_ob_floor',
+        label: 'Floor Standard — "No Less Than Reasonable Care"',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (1st ed. 2026)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Sets a minimum care floor independent of the employee\'s own practices. Pro-disclosing party.',
+        text: `Employee shall protect Confidential Information with the same degree of care used to protect Company's own confidential information, but in no event less than a reasonable degree of care. Employee shall not be liable for disclosures resulting from legal compulsion or court order, provided Employee gives Company prompt written notice.`,
+        feedback: 'Strong choice. The floor standard ("no less than") means Jordan must exercise at least reasonable care regardless of how casually he treats his own information. This prevents the argument that sloppy personal security habits set the contractual baseline.'
+      },
+      {
+        id: 'ci_ob_ceiling',
+        label: 'Ceiling Standard — "No Greater Than Own Care"',
+        source: 'LexisNexis, Confidentiality Agreement with Employee (Receiving Party Form)',
+        jurisdiction: 'General',
+        date: '2019',
+        quality: 'bad_for_client',
+        summary: 'Caps the employee\'s obligation at whatever care they use for their own information. Pro-receiving party.',
+        text: `Employee shall protect Confidential Information using reasonable care, but no greater than the care Employee uses to protect their own information of similar sensitivity. Employee shall not be liable for accidental disclosure so long as Employee acted in good faith.`,
+        feedback: 'Problematic for Pico Salsa. "No greater than" caps Jordan\'s obligation at his personal standard. If Jordan is careless with his own files, that becomes the contractual ceiling for protecting the fermentation process. The good-faith defense for "accidental disclosure" further weakens enforcement.'
+      }
+    ],
+    employee: [
+      {
+        id: 'ci_ob_ceiling_emp',
+        label: 'Ceiling Standard — Caps Obligation at Own Practices',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (Receiving Party Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: '"No greater than" caps Jordan\'s duty at his own standard. Good-faith defense for accidental disclosure.',
+        text: `Employee shall protect Confidential Information using reasonable care, but no greater than the care Employee uses to protect their own information of similar sensitivity. Employee shall not be liable for accidental disclosure so long as Employee acted in good faith.`,
+        feedback: 'Good for Jordan. The ceiling standard means Pico Salsa can\'t demand extraordinary precautions. The good-faith accidental disclosure defense provides realistic protection.'
+      },
+      {
+        id: 'ci_ob_floor_emp',
+        label: 'Floor Standard — "No Less Than Reasonable Care"',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Sets a minimum care floor. Employer can argue any lapse falls below "reasonable." Pro-employer.',
+        text: `Employee shall protect Confidential Information with at least a reasonable degree of care. Employee shall implement appropriate safeguards to prevent unauthorized disclosure, including but not limited to secure storage, access controls, and encryption where practicable.`,
+        feedback: 'Risky for Jordan. "At least a reasonable degree of care" is an open-ended floor — Pico Salsa can always argue Jordan should have done more. The "including but not limited to" list creates specific duties Jordan might inadvertently breach.'
+      }
+    ]
+  },
   invention_assignment: {
     company: [
       {
@@ -617,15 +667,20 @@ const REFERENCES = {
     type: 'Case Summary',
     text: 'The Supreme Court held that "agrees to assign" and "hereby assigns" have fundamentally different legal effects. "Agrees to assign" creates only a contractual obligation to assign in the future — title remains with the inventor until a separate assignment instrument is executed. "Hereby assigns" operates as a present transfer by operation of law, vesting title in the employer at the moment of invention. This distinction determined ownership of billions of dollars in HIV research patents.'
   },
+  bdo_seidman: {
+    title: 'BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999)',
+    type: 'Case Summary — New York',
+    text: 'The New York Court of Appeals\' leading case on restrictive covenant enforceability. The court held that a non-solicitation clause must be (1) no greater than required to protect the employer\'s legitimate interest, (2) not impose undue hardship on the employee, and (3) not injure the public. The court limited the restriction to clients the employee had personally served, rejecting the employer\'s attempt to cover its entire client base. This case established that New York courts will blue-pencil overbroad covenants — but only where the employer demonstrates good faith and absence of overreaching.'
+  },
   lasership_v_watson: {
     title: 'Lasership v. Watson, 79 Va. Cir. 205 (2009)',
-    type: 'Case Summary',
-    text: 'The court upheld a non-solicitation clause that was "limited in both scope and duration and clearly connected to the protection of trade secrets and customer goodwill." Key factors: two-year duration (reasonable), restriction limited to customers with whom the employee had "material contact" during the final 12 months (precisely tailored), and no disguised non-compete language.'
+    type: 'Case Summary — Virginia',
+    text: 'A Virginia Circuit Court upheld a non-solicitation clause that was "limited in both scope and duration and clearly connected to the protection of trade secrets and customer goodwill." Key factors: two-year duration (reasonable), restriction limited to customers with whom the employee had "material contact" during the final 12 months (precisely tailored), and no disguised non-compete language. Note: Virginia follows the all-or-nothing rule (no blue-penciling), so this case illustrates the importance of precision in drafting.'
   },
   dtsa_notice: {
     title: '18 U.S.C. § 1833(b) — DTSA Immunity Notice Requirement',
     type: 'Statutory Excerpt',
-    text: 'The Defend Trade Secrets Act (2016) requires that every employment contract or agreement "governing the use of a trade secret or other confidential information" include a notice of immunity for whistleblower disclosures. If the employer fails to include this notice, 18 U.S.C. § 1833(b)(3)(C) provides that the employer "may not be awarded" exemplary damages or attorney\'s fees in any DTSA action — even for willful and malicious misappropriation.'
+    text: 'The Defend Trade Secrets Act (2016) requires that every employment contract or agreement "governing the use of a trade secret or other confidential information" include a notice of immunity for whistleblower disclosures. If the employer fails to include this notice, 18 U.S.C. § 1833(b)(3)(B) provides that the employer "may not be awarded" exemplary damages or attorney\'s fees in any DTSA action — even for willful and malicious misappropriation.'
   },
   wellspan_v_bayliss: {
     title: 'WellSpan Health v. Bayliss (Pa. 2005)',
@@ -1286,8 +1341,7 @@ function selectPrecedent(clauseId, precId) {
 
 function submitPrecedents() {
   logAction('precedents_confirmed', JSON.stringify(state.decisions.precedents));
-  completePhase('precedents');
-  render();
+  nextPhase();
 }
 
 // ============================================================
@@ -1299,8 +1353,8 @@ const CUSTOMIZATION_PROMPTS = {
     employee: { prompt: 'Does this definition adequately protect Jordan\'s general fermentation expertise? Consider whether the exclusions are broad enough to cover skills he developed before Pico Salsa.', refId: null }
   },
   ci_obligations: {
-    company: { prompt: 'What care standard protects Pico Salsa best — "no less than reasonable care" or "the same care as its own information"? Consider what happens if Jordan\'s personal security practices are lax.', refId: null },
-    employee: { prompt: 'Is the care standard fair? Jordan shouldn\'t be held to a higher standard than the company itself uses. Check that the obligation is capped, not floored.', refId: null }
+    company: { prompt: 'The difference between a floor ("no less than") and a ceiling ("no greater than") determines who bears the risk of lax security. If Jordan keeps his own files on an unsecured laptop, which standard protects the fermentation process?', refId: null },
+    employee: { prompt: 'The care standard determines how much effort Jordan must spend protecting information. A floor standard means Pico Salsa can always argue he should have done more. A ceiling caps his obligation at his own practices. Which protects Jordan?', refId: null }
   },
   invention_assignment: {
     company: { prompt: 'Check the assignment language carefully. Does it say "hereby assigns" or "agrees to assign"? Under Stanford v. Roche, this two-word difference determines whether Pico Salsa automatically owns Jordan\'s inventions — or must sue to get them.', refId: 'stanford_v_roche' },
@@ -1411,7 +1465,7 @@ function renderAssemble() {
     issues.push({
       severity: 'critical',
       title: 'Missing: DTSA § 1833(b) Immunity Notice',
-      detail: 'Your agreement does not include the federally required whistleblower immunity notice. Under 18 U.S.C. § 1833(b)(3)(C), this omission automatically forfeits your client\'s right to exemplary damages and attorney\'s fees in any DTSA action — even for willful misappropriation.',
+      detail: 'Your agreement does not include the federally required whistleblower immunity notice. Under 18 U.S.C. § 1833(b)(3)(B), this omission automatically forfeits your client\'s right to exemplary damages and attorney\'s fees in any DTSA action — even for willful misappropriation.',
       ref: 'dtsa_notice'
     });
     if (!state.decisions.dtsaCaught || state.decisions.dtsaCaught === 'missed_phase3') {
