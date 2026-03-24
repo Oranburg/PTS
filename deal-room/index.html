@@ -1116,6 +1116,127 @@ const PRECEDENTS = {
         feedback: 'Acceptable but suboptimal. Two years is the employer\'s preferred duration — Jordan should push for one year. More importantly, there\'s no inbound contact exception. If a customer calls Jordan unprompted, he\'d technically be in violation by responding. That\'s unreasonable and negotiable.'
       }
     ]
+  },
+  ci_exclusions: {
+    employee: [
+      {
+        id: 'ci_ex_broad',
+        label: 'Broad Five-Part Exclusion with General Knowledge',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Standard exclusions plus general knowledge/skills carve-out. The strongest employee protection.',
+        text: `Confidential Information shall not include information that: (a) was known to Employee without restriction before disclosure; (b) becomes publicly available through no fault of Employee; (c) is lawfully obtained from a third party without a duty of confidentiality; (d) is independently developed by Employee without reference to Confidential Information; or (e) constitutes general knowledge, skills, and experience acquired by Employee during the course of employment.`,
+        feedback: 'Excellent choice. Clause (e) — the general knowledge exclusion — is the single most important protection for Jordan. It ensures his fermentation expertise, developed over his entire career, cannot be claimed as Pico Salsa\'s property.'
+      },
+      {
+        id: 'ci_ex_narrow',
+        label: 'Standard Four-Part Exclusion (No Knowledge Carve-Out)',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Standard exclusions only. Missing the general knowledge/skills protection.',
+        text: `Confidential Information shall not include information that: (a) was publicly available at the time of disclosure; (b) was known to Employee prior to disclosure; (c) was received from a third party without restriction; or (d) was independently developed by Employee.`,
+        feedback: 'Missing the critical protection. Without a general knowledge/skills exclusion, Pico Salsa could argue that fermentation techniques Jordan learned on the job — even techniques he already knew — are confidential. This would effectively bar him from his field.'
+      }
+    ]
+  },
+  prior_inventions: {
+    employee: [
+      {
+        id: 'pi_exhibit',
+        label: 'Prior Inventions Schedule with Exhibit Reference',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.4 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Carves out all pre-employment inventions via a scheduled exhibit. Standard practice.',
+        text: `The assignment obligations in this Agreement shall not apply to any invention, discovery, or work of authorship listed on Exhibit A (Prior Inventions), which Employee represents and warrants were conceived, developed, or reduced to practice prior to the date of Employee's employment with Company. Employee shall identify all Prior Inventions on Exhibit A at the time of executing this Agreement.`,
+        feedback: 'Standard and effective. The Exhibit A reference creates a clear, documented record of Jordan\'s pre-employment work — including the fermentation monitoring app. The representation and warranty language protects both parties.'
+      },
+      {
+        id: 'pi_blanket',
+        label: 'Blanket Pre-Employment Carve-Out (No Exhibit)',
+        source: 'Simplified Employment Template',
+        jurisdiction: 'General',
+        date: '2020',
+        quality: 'subtle_defect',
+        summary: 'Excludes pre-employment work but without a scheduled list. Harder to enforce.',
+        text: `This assignment shall not apply to inventions conceived or developed by Employee before the commencement of employment with Company.`,
+        feedback: 'The right idea but weak execution. Without a specific exhibit listing Jordan\'s prior inventions, the burden of proving something was "conceived before employment" falls entirely on Jordan. A scheduled list created at hire is much stronger evidence.'
+      }
+    ]
+  },
+  personal_time: {
+    employee: [
+      {
+        id: 'pt_robust',
+        label: 'Robust Personal Time Carve-Out',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.4 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Excludes inventions on own time, own resources, unrelated to company business. Mirrors Cal. Lab. Code § 2870 principles.',
+        text: `The assignment obligations in this Agreement shall not apply to any invention developed entirely on Employee's own time, without use of Company equipment, supplies, facilities, or Confidential Information, that does not relate to Company's current business or operations and does not result from any work performed by Employee for Company.`,
+        feedback: 'Strong protection for Jordan\'s personal projects. The fermentation monitoring app — built on his own time, own laptop, own money, unrelated to salsa — is clearly carved out. This mirrors the principles of California Lab. Code § 2870, applied by analogy even in New York.'
+      },
+      {
+        id: 'pt_weak',
+        label: 'Narrow Personal Time Exception',
+        source: 'Standard Employment Template (Employer-Favoring)',
+        jurisdiction: 'General',
+        date: '2019',
+        quality: 'bad_for_client',
+        summary: 'Personal time carve-out only applies to inventions completely unrelated to ANY company interest.',
+        text: `Employee's obligations under this Section shall not apply to inventions developed entirely on Employee's own time that have no relation whatsoever to Company's business, products, services, or research, whether current or anticipated.`,
+        feedback: 'Dangerously narrow for Jordan. The "anticipated" research language and "no relation whatsoever" standard mean Pico Salsa could argue that any fermentation-related side project — including Jordan\'s app — has some relation to their business. The threshold is too high.'
+      }
+    ]
+  },
+  noncompete_removal: {
+    employee: [
+      {
+        id: 'ncr_explicit',
+        label: 'Explicit Employment Freedom Clause',
+        source: 'Employee-Side Practice Template',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Affirmatively states that nothing in the agreement restricts competitive employment.',
+        text: `Nothing in this Agreement shall be construed as a non-competition agreement or as restricting Employee's right to accept employment with, or provide services to, any entity, including a direct competitor of Company. Employee's obligations under this Agreement are limited to the specific restrictions on solicitation and the protection of Confidential Information set forth herein.`,
+        feedback: 'Excellent protective language. This eliminates any argument that the non-solicitation clause is a disguised non-compete. It affirmatively preserves Jordan\'s right to work at RivalCraft.'
+      }
+    ]
+  },
+  dtsa_notice: {
+    company: [
+      {
+        id: 'dtsa_full',
+        label: 'Complete DTSA § 1833(b) Immunity Notice',
+        source: '18 U.S.C. § 1833(b)(1)–(2); Defend Trade Secrets Act (2016)',
+        jurisdiction: 'Federal',
+        date: '2016',
+        quality: 'good',
+        summary: 'Required statutory language. Must be included in every employment agreement entered into or updated after May 11, 2016.',
+        text: `Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.`,
+        feedback: 'This is the required language. It must appear verbatim (or substantially similar) in every employment agreement. Omitting it forfeits your right to exemplary damages and attorney\'s fees under 18 U.S.C. § 1833(b)(3)(B) — even for willful misappropriation.'
+      }
+    ],
+    employee: [
+      {
+        id: 'dtsa_full_emp',
+        label: 'Complete DTSA § 1833(b) Immunity Notice',
+        source: '18 U.S.C. § 1833(b)(1)–(2); Defend Trade Secrets Act (2016)',
+        jurisdiction: 'Federal',
+        date: '2016',
+        quality: 'good',
+        summary: 'Required statutory language protecting whistleblower immunity. Benefits the employee.',
+        text: `Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.`,
+        feedback: 'This notice actually protects Jordan — it guarantees whistleblower immunity. If Jordan discovers trade secret misuse or other legal violations, he can report them without liability. Ensure this is included in any agreement Jordan signs.'
+      }
+    ]
   }
 };
 
@@ -2114,6 +2235,15 @@ const CUSTOMIZATION_PROMPTS = {
   dtsa_notice: {
     company: { prompt: 'This is required statutory language. Verify it tracks 18 U.S.C. § 1833(b)(1)-(2) exactly. Missing a word here forfeits exemplary damages.', refId: 'dtsa_notice' },
     employee: { prompt: 'The DTSA notice actually protects employees — it guarantees whistleblower immunity. Verify the language is complete and accurate.', refId: 'dtsa_notice' }
+  },
+  ci_exclusions: {
+    employee: { prompt: 'Does clause (e) — the general knowledge exclusion — cover Jordan\'s pre-existing fermentation expertise? Consider whether "acquired during the course of employment" is broad enough, or whether you need "developed over Employee\'s career."', refId: null }
+  },
+  personal_time: {
+    employee: { prompt: 'Jordan\'s fermentation monitoring app was developed on his own time, own laptop, own money, before Pico Salsa. Does this carve-out clearly protect it? Check: (1) "entirely on own time," (2) "without use of Company resources," (3) "does not relate to current business."', refId: 'cal_lab_code_2870' }
+  },
+  noncompete_removal: {
+    employee: { prompt: 'This clause affirmatively preserves Jordan\'s right to work at RivalCraft. Is the language clear enough that no court could read the non-solicitation provisions as a disguised non-compete?', refId: 'ny_noncompete' }
   }
 };
 
