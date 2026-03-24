@@ -89,6 +89,60 @@
     .match-chip .remove-match { cursor: pointer; opacity: 0.6; font-size: 14px; }
     .match-chip .remove-match:hover { opacity: 1; }
 
+    /* Memo hints */
+    .memo-hint {
+      background: rgba(255,214,92,0.12);
+      border-bottom: 2px dotted #FFD65C;
+      cursor: help;
+      position: relative;
+      transition: background 0.15s;
+      padding: 0 1px;
+    }
+    .memo-hint:hover { background: rgba(255,214,92,0.25); }
+    .memo-hint .memo-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 0;
+      right: auto;
+      background: #0A3255;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.6;
+      width: 320px;
+      max-width: 90vw;
+      z-index: 150;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .memo-hint .memo-tip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 24px;
+      border: 7px solid transparent;
+      border-top-color: #0A3255;
+    }
+    .memo-hint.show-memo-tip .memo-tip { display: block; }
+    .memo-hint .memo-tip .tip-icon { color: #FFD65C; margin-right: 4px; }
+
+    /* Risk context card */
+    .risk-context {
+      background: #f5f9ff;
+      border: 1px solid #6DACDE;
+      border-left: 3px solid #2459A9;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #1e3a5f;
+      animation: fadeIn 0.3s ease;
+    }
+
     /* Client pushback */
     .client-msg { background: #fffbeb; border-left: 4px solid #FFD65C; border-radius: 0 10px 10px 0; padding: 14px 16px; }
 
@@ -527,11 +581,11 @@ const FACT_PATTERN = {
 <strong>TO:</strong> Outside Counsel<br>
 <strong>RE:</strong> Departing Employee — Urgent<br>
 <strong>DATE:</strong> [Today]<br><br>
-Jordan Webb, our lead R&D technician, just gave two weeks' notice. He's going to RivalCraft Foods — they're entering the premium fermented salsa market.<br><br>
-Jordan has been with us for three years. He was instrumental in developing our proprietary <strong>low-pressure fermentation process</strong> — a sub-atmospheric pressure technique that allows beneficial yeasts to thrive at lower temperatures while retaining the volatile flavor compounds that define our product. This is the crown jewel. Without it, we're just another salsa company.<br><br>
-Jordan also knows our customer pricing, our supplier relationships, and he personally manages two of our three key retail accounts.<br><br>
-I pulled the employment agreement Jordan signed when we hired him. Frankly, I'm not sure it's any good — I adapted a template I found online. I need you to tell me: <strong>what do we need to protect ourselves going forward with the next hire?</strong><br><br>
-We can't stop Jordan from leaving. But we need to make sure the next person who sits in that chair signs something that actually works.`,
+Jordan Webb, our lead R&D technician, just gave two weeks' notice. <span class="memo-hint" data-hint="A departing employee joining a direct competitor is the classic trigger for trade secret and non-solicitation concerns." data-risks="trade_secret,customer_poach">He's going to RivalCraft Foods — they're entering the premium fermented salsa market.</span><br><br>
+Jordan has been with us for three years. <span class="memo-hint" data-hint="When an employee helps develop a proprietary process, two questions arise: (1) who owns the IP, and (2) how do you keep it secret after they leave?" data-risks="trade_secret,ip_ownership">He was instrumental in developing our proprietary <strong>low-pressure fermentation process</strong></span> — a sub-atmospheric pressure technique that allows beneficial yeasts to thrive at lower temperatures while retaining the volatile flavor compounds that define our product. This is the crown jewel. Without it, we're just another salsa company.<br><br>
+<span class="memo-hint" data-hint="An employee who personally manages key accounts has relationships that walk out the door with them. This is a non-solicitation issue." data-risks="customer_poach">Jordan also knows our customer pricing, our supplier relationships, and he personally manages two of our three key retail accounts.</span><br><br>
+I pulled the employment agreement Jordan signed when we hired him. Frankly, I'm not sure it's any good — <span class="memo-hint" data-hint="An agreement 'adapted from a template found online' is a red flag. It likely lacks critical provisions — including any required by federal law." data-risks="dtsa_compliance">I adapted a template I found online.</span> I need you to tell me: <strong>what do we need to protect ourselves going forward with the next hire?</strong><br><br>
+<span class="memo-hint" data-hint="'We can't stop Jordan from leaving' — the client is telling you a non-compete is off the table. Listen to your client." data-risks="noncompete">We can't stop Jordan from leaving.</span> But we need to make sure the next person who sits in that chair signs something that actually works.`,
   },
   employee: {
     client: 'Jordan Webb',
@@ -542,10 +596,10 @@ We can't stop Jordan from leaving. But we need to make sure the next person who 
 <strong>RE:</strong> New Employment — Need Agreement Reviewed<br>
 <strong>DATE:</strong> [Today]<br><br>
 I just accepted a position with RivalCraft Foods as their Head of Fermentation R&D. I start in two weeks.<br><br>
-I've been at Pico Salsa for three years. Before that, I did graduate work in fermentation science at Cornell and worked at two other food companies. I have general expertise in fermentation that I developed over my whole career — not just at Pico Salsa.<br><br>
-Pico Salsa does have a specific technique — a <strong>low-pressure fermentation process</strong> that I helped refine. I understand I can't take their specific proprietary methods. But I need to be able to work in my field.<br><br>
-I've also been developing a <strong>home fermentation monitoring app</strong> on my own time, on my own laptop, using my own money. It has nothing to do with salsa. I started it before I joined Pico Salsa.<br><br>
-RivalCraft is sending me an employment agreement. I need you to review it and tell me what's reasonable and what's overreach. I know some restrictions are normal, but I don't want to sign something that prevents me from doing my job or takes ownership of my personal projects.<br><br>
+<span class="memo-hint" data-hint="Jordan's fermentation expertise predates Pico Salsa. An overbroad confidentiality definition could claim his general career knowledge as the employer's property." data-risks="general_knowledge,mobility">I've been at Pico Salsa for three years. Before that, I did graduate work in fermentation science at Cornell and worked at two other food companies. I have general expertise in fermentation that I developed over my whole career — not just at Pico Salsa.</span><br><br>
+Pico Salsa does have a specific technique — a <strong>low-pressure fermentation process</strong> that I helped refine. I understand I can't take their specific proprietary methods. <span class="memo-hint" data-hint="'I need to be able to work in my field' — this is the mobility concern. Overbroad restrictions could effectively bar Jordan from his profession." data-risks="mobility,scope_limits">But I need to be able to work in my field.</span><br><br>
+<span class="memo-hint" data-hint="A personal project developed on own time, own equipment, before joining the employer — this is an invention assignment issue. Without a carve-out, the employer could claim it." data-risks="personal_ip,prior_inventions">I've also been developing a <strong>home fermentation monitoring app</strong> on my own time, on my own laptop, using my own money. It has nothing to do with salsa. I started it before I joined Pico Salsa.</span><br><br>
+RivalCraft is sending me an employment agreement. I need you to review it and tell me what's reasonable and what's overreach. <span class="memo-hint" data-hint="'Some restrictions are normal' — Jordan accepts that some covenants are reasonable. The question is where the line is. Watch for disguised non-competes." data-risks="scope_limits,noncompete_block">I know some restrictions are normal, but I don't want to sign something that prevents me from doing my job or takes ownership of my personal projects.</span><br><br>
 <strong>What should I watch out for, and what should I push back on?</strong>`,
   }
 };
@@ -555,22 +609,64 @@ RivalCraft is sending me an employment agreement. I need you to review it and te
 // ============================================================
 const RISKS = {
   company: [
-    { id: 'trade_secret', label: 'Trade secret misappropriation (fermentation process)', correct: true, explanation: 'The low-pressure fermentation process is Pico Salsa\'s core competitive advantage. If Jordan shares it with RivalCraft, the company loses its market position permanently.' },
-    { id: 'customer_poach', label: 'Customer and supplier solicitation', correct: true, explanation: 'Jordan personally manages two of three key retail accounts. Without restriction, he can redirect those relationships to RivalCraft the day he starts.' },
-    { id: 'ip_ownership', label: 'Ownership of inventions developed during employment', correct: true, explanation: 'Any process improvements or innovations Jordan developed at Pico Salsa need clear assignment to the company — especially under Stanford v. Roche.' },
-    { id: 'team_poach', label: 'Employee recruitment / team raiding', correct: true, explanation: 'Jordan knows the R&D team and could recruit Pico Salsa\'s best people to RivalCraft.' },
-    { id: 'dtsa_compliance', label: 'Federal statutory compliance (DTSA notice requirement)', correct: true, explanation: 'The Defend Trade Secrets Act requires a whistleblower immunity notice in every employment agreement entered into or updated after May 11, 2016. Missing it forfeits exemplary damages.' },
-    { id: 'noncompete', label: 'Preventing Jordan from working at RivalCraft entirely', correct: false, explanation: 'Valentina said "we can\'t stop Jordan from leaving." A non-compete would attempt exactly that — and New York has increasingly restricted non-compete enforceability. The goal is protecting specific assets, not blocking employment.' },
-    { id: 'defamation', label: 'Defamation or disparagement risk', correct: false, explanation: 'There\'s no indication Jordan would disparage Pico Salsa. Including a non-disparagement clause isn\'t wrong, but it\'s not an immediate legal risk identified in the intake memo.' },
+    { id: 'trade_secret', label: 'Trade secret misappropriation (fermentation process)', correct: true,
+      context: 'Good eye. The memo says Jordan "was instrumental in developing" the fermentation process and is joining a direct competitor entering the same market.',
+      explanation: 'The low-pressure fermentation process is Pico Salsa\'s core competitive advantage. If Jordan shares it with RivalCraft, the company loses its market position permanently.',
+      memoRef: 'Re-read paragraph 2: "He was instrumental in developing our proprietary low-pressure fermentation process... This is the crown jewel."' },
+    { id: 'customer_poach', label: 'Customer and supplier solicitation', correct: true,
+      context: 'Correct. The memo says Jordan "personally manages two of our three key retail accounts" — those relationships are at risk.',
+      explanation: 'Jordan personally manages two of three key retail accounts. Without restriction, he can redirect those relationships to RivalCraft the day he starts.',
+      memoRef: 'Re-read paragraph 3: "Jordan also knows our customer pricing... and he personally manages two of our three key retail accounts."' },
+    { id: 'ip_ownership', label: 'Ownership of inventions developed during employment', correct: true,
+      context: 'Right. Jordan helped develop the process — but does Pico Salsa actually own the IP? That depends on the assignment language.',
+      explanation: 'Any process improvements or innovations Jordan developed at Pico Salsa need clear assignment to the company — especially under Stanford v. Roche.',
+      memoRef: 'Re-read paragraph 2: "He was instrumental in developing our proprietary low-pressure fermentation process." Who owns what Jordan developed?' },
+    { id: 'team_poach', label: 'Employee recruitment / team raiding', correct: true,
+      context: 'Yes — Jordan knows the R&D team and could recruit them to RivalCraft. This is a common non-solicitation concern.',
+      explanation: 'Jordan knows the R&D team and could recruit Pico Salsa\'s best people to RivalCraft.',
+      memoRef: 'The memo doesn\'t state this explicitly, but Jordan\'s role as lead R&D technician implies close relationships with the team.' },
+    { id: 'dtsa_compliance', label: 'Federal statutory compliance (DTSA notice requirement)', correct: true,
+      context: 'Sharp catch. The memo says Valentina "adapted a template found online" — an online template from before 2016 would be missing the required DTSA notice.',
+      explanation: 'The Defend Trade Secrets Act requires a whistleblower immunity notice in every employment agreement entered into or updated after May 11, 2016. Missing it forfeits exemplary damages.',
+      memoRef: 'Re-read paragraph 4: "I adapted a template I found online." When was that template written? Does it include post-2016 federal requirements?' },
+    { id: 'noncompete', label: 'Preventing Jordan from working at RivalCraft entirely', correct: false,
+      context: 'Careful — your own client told you this isn\'t the goal. Read the memo again.',
+      explanation: 'Valentina said "we can\'t stop Jordan from leaving." A non-compete would attempt exactly that — and New York has increasingly restricted non-compete enforceability. The goal is protecting specific assets, not blocking employment.',
+      memoRef: 'Re-read the final paragraph: "We can\'t stop Jordan from leaving." The client is telling you a non-compete is off the table.' },
+    { id: 'defamation', label: 'Defamation or disparagement risk', correct: false,
+      context: 'Nothing in the memo suggests Jordan would disparage Pico Salsa. This isn\'t wrong to consider, but it\'s not what the client is asking about.',
+      explanation: 'There\'s no indication Jordan would disparage Pico Salsa. Including a non-disparagement clause isn\'t wrong, but it\'s not an immediate legal risk identified in the intake memo.',
+      memoRef: 'Review the entire memo — is there any fact suggesting disparagement is a concern here?' },
   ],
   employee: [
-    { id: 'mobility', label: 'Professional mobility — ability to work in fermentation field', correct: true, explanation: 'Jordan\'s entire career is in fermentation science. Overbroad restrictions could effectively bar him from his profession.' },
-    { id: 'general_knowledge', label: 'Right to use general knowledge, skills, and experience', correct: true, explanation: 'Jordan\'s fermentation expertise predates Pico Salsa. A broad CI definition could claim his general know-how as confidential, trapping knowledge he brought to the job.' },
-    { id: 'personal_ip', label: 'Ownership of personal projects (fermentation monitoring app)', correct: true, explanation: 'Jordan\'s app was developed on his own time, with his own resources, before Pico Salsa. An overbroad invention assignment could capture it.' },
-    { id: 'prior_inventions', label: 'Protection of prior inventions and pre-employment work', correct: true, explanation: 'Anything Jordan created before joining Pico Salsa must be carved out. Without a prior inventions schedule, the employer could claim retroactive ownership.' },
-    { id: 'scope_limits', label: 'Reasonable scope and duration of any restrictions', correct: true, explanation: 'Courts require post-employment restrictions to be reasonable in duration, geographic scope, and activity scope. Jordan should push for the narrowest enforceable terms.' },
-    { id: 'noncompete_block', label: 'Ensuring no hidden non-compete provisions', correct: true, explanation: 'Non-solicitation clauses sometimes contain disguised non-compete language ("do business with any competitor"). Jordan needs to identify and remove these.' },
-    { id: 'salary', label: 'Negotiating a higher salary at RivalCraft', correct: false, explanation: 'Salary negotiation is important but it\'s not a legal risk arising from the employment agreement. The question is about the restrictive covenants.' },
+    { id: 'mobility', label: 'Professional mobility — ability to work in fermentation field', correct: true,
+      context: 'Right. Jordan\'s memo makes clear that fermentation is his entire career — not just his time at Pico Salsa.',
+      explanation: 'Jordan\'s entire career is in fermentation science. Overbroad restrictions could effectively bar him from his profession.',
+      memoRef: 'Re-read paragraph 2: "I have general expertise in fermentation that I developed over my whole career — not just at Pico Salsa."' },
+    { id: 'general_knowledge', label: 'Right to use general knowledge, skills, and experience', correct: true,
+      context: 'Good. Jordan has pre-existing expertise from Cornell and two prior employers. A broad CI definition could trap knowledge he brought to the job.',
+      explanation: 'Jordan\'s fermentation expertise predates Pico Salsa. A broad CI definition could claim his general know-how as confidential, trapping knowledge he brought to the job.',
+      memoRef: 'Re-read paragraph 2: "I did graduate work in fermentation science at Cornell and worked at two other food companies."' },
+    { id: 'personal_ip', label: 'Ownership of personal projects (fermentation monitoring app)', correct: true,
+      context: 'Exactly. Jordan\'s app was built on his own time, own laptop, own money, before Pico Salsa. But a broad invention assignment clause could claim it.',
+      explanation: 'Jordan\'s app was developed on his own time, with his own resources, before Pico Salsa. An overbroad invention assignment could capture it.',
+      memoRef: 'Re-read paragraph 4: "I\'ve also been developing a home fermentation monitoring app on my own time, on my own laptop, using my own money."' },
+    { id: 'prior_inventions', label: 'Protection of prior inventions and pre-employment work', correct: true,
+      context: 'Yes — everything Jordan created before hire needs to be explicitly carved out. The app is the obvious example, but there may be more.',
+      explanation: 'Anything Jordan created before joining Pico Salsa must be carved out. Without a prior inventions schedule, the employer could claim retroactive ownership.',
+      memoRef: 'Re-read paragraph 4: "I started it before I joined Pico Salsa." — What else did Jordan create before hire?' },
+    { id: 'scope_limits', label: 'Reasonable scope and duration of any restrictions', correct: true,
+      context: 'Correct. Jordan accepts "some restrictions are normal" but wants them reasonable. Duration, geography, and activity scope all matter.',
+      explanation: 'Courts require post-employment restrictions to be reasonable in duration, geographic scope, and activity scope. Jordan should push for the narrowest enforceable terms.',
+      memoRef: 'Re-read paragraph 5: "I know some restrictions are normal, but I don\'t want to sign something that prevents me from doing my job."' },
+    { id: 'noncompete_block', label: 'Ensuring no hidden non-compete provisions', correct: true,
+      context: 'Smart. Non-solicitation clauses sometimes hide non-compete language ("do business with any competitor"). Jordan needs to spot and remove these.',
+      explanation: 'Non-solicitation clauses sometimes contain disguised non-compete language ("do business with any competitor"). Jordan needs to identify and remove these.',
+      memoRef: 'This isn\'t stated directly in the memo — it\'s a drafting issue you\'ll need to watch for when reviewing the actual agreement language.' },
+    { id: 'salary', label: 'Negotiating a higher salary at RivalCraft', correct: false,
+      context: 'That\'s a business negotiation issue, not a legal risk from the employment agreement. Focus on what Jordan asked you about.',
+      explanation: 'Salary negotiation is important but it\'s not a legal risk arising from the employment agreement. The question is about the restrictive covenants.',
+      memoRef: 'Re-read the final line: "What should I watch out for, and what should I push back on?" — Jordan is asking about the agreement terms, not compensation.' },
   ]
 };
 
@@ -990,6 +1086,27 @@ document.addEventListener('click', function(e) {
   if (!e.target.closest('.legal-term')) {
     document.querySelectorAll('.legal-term.show-tip').forEach(el => el.classList.remove('show-tip'));
   }
+  if (!e.target.closest('.memo-hint')) {
+    document.querySelectorAll('.memo-hint.show-memo-tip').forEach(el => el.classList.remove('show-memo-tip'));
+  }
+});
+
+// Memo hint click handler (delegated — works on dynamically rendered content)
+document.addEventListener('click', function(e) {
+  const hint = e.target.closest('.memo-hint');
+  if (!hint) return;
+  e.stopPropagation();
+  // Close other tips
+  document.querySelectorAll('.memo-hint.show-memo-tip').forEach(el => { if (el !== hint) el.classList.remove('show-memo-tip'); });
+  // Toggle this tip — create tooltip if it doesn't exist
+  if (!hint.querySelector('.memo-tip')) {
+    const tipText = hint.dataset.hint || '';
+    const tipEl = document.createElement('span');
+    tipEl.className = 'memo-tip';
+    tipEl.innerHTML = `<span class="tip-icon">💡</span> ${tipText}`;
+    hint.appendChild(tipEl);
+  }
+  hint.classList.toggle('show-memo-tip');
 });
 
 // Build consequence toggle HTML
@@ -1253,9 +1370,12 @@ function renderIntake() {
           const isSelected = selected.includes(r.id);
           const rank = isSelected ? selected.indexOf(r.id) + 1 : null;
           const disabled = !isSelected && selCount >= 3;
-          return `<div class="flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${isSelected ? 'border-cua-bright-blue bg-blue-50' : disabled ? 'border-gray-100 bg-gray-50 opacity-50' : 'border-gray-200 bg-white hover:border-gray-300'}" onclick="${disabled ? '' : `toggleRisk('${r.id}')`}">
-            <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-ui font-bold ${isSelected ? 'bg-cua-bright-blue text-white' : 'bg-gray-200 text-gray-400'}">${rank || '—'}</div>
-            <span class="font-ui text-sm text-gray-700">${r.label}</span>
+          return `<div>
+            <div class="flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${isSelected ? 'border-cua-bright-blue bg-blue-50' : disabled ? 'border-gray-100 bg-gray-50 opacity-50' : 'border-gray-200 bg-white hover:border-gray-300'}" onclick="${disabled ? '' : `toggleRisk('${r.id}')`}">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-ui font-bold ${isSelected ? 'bg-cua-bright-blue text-white' : 'bg-gray-200 text-gray-400'}">${rank || '—'}</div>
+              <span class="font-ui text-sm text-gray-700">${r.label}</span>
+            </div>
+            ${isSelected && r.context ? `<div class="risk-context font-ui">${r.context}</div>` : ''}
           </div>`;
         }).join('')}
       </div>
@@ -1295,7 +1415,7 @@ function renderIntake() {
           const r = risks.find(x => x.id === id);
           return `<div class="feedback-box feedback-warn"><p class="font-ui text-sm font-medium text-cua-light-red">${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p></div>`;
         }).join('')}
-        ${missedCorrect.map(r => `<div class="feedback-box feedback-nudge"><p class="font-ui text-sm font-medium text-amber-800">Missed: ${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p></div>`).join('')}
+        ${missedCorrect.map(r => `<div class="feedback-box feedback-nudge"><p class="font-ui text-sm font-medium text-amber-800">Missed: ${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p>${r.memoRef ? `<p class="font-ui text-xs text-cua-bright-blue mt-1.5 italic">${r.memoRef}</p>` : ''}</div>`).join('')}
       </div>
       <div class="mt-6 flex items-center justify-between">
         ${(selectedIncorrect.length || missedCorrect.length) ? `<button onclick="revisePhase('intake')" class="btn-outline font-ui">← Revise My Selections</button>` : '<div></div>'}
@@ -1306,7 +1426,7 @@ function renderIntake() {
 
   return `<div class="fade-in">
     <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">The Engagement</h2>
-    <p class="font-ui text-sm text-gray-500 mb-6">Read the client intake memo carefully.</p>
+    <p class="font-ui text-sm text-gray-500 mb-6">Read the client intake memo carefully. <span class="text-cua-bright-blue">Highlighted phrases</span> contain clues — click them for guidance.</p>
     <div class="bg-white border border-gray-200 rounded-xl p-6 md:p-8 shadow-sm">
       <div class="memo-text text-gray-700">${fp.memo}</div>
     </div>
