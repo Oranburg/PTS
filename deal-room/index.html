@@ -1065,6 +1065,24 @@ function completePhase(id) {
   saveState();
 }
 
+function revisePhase(phaseId) {
+  // Reset the phase so student can redo their selection
+  state.completed[phaseId] = false;
+  if (phaseId === 'intake') {
+    state.decisions.risks = [];
+    state.decisions.reflections.riskJustification = '';
+  } else if (phaseId === 'strategy') {
+    state.decisions.documentType = null;
+  } else if (phaseId === 'architecture') {
+    state.decisions.riskProvisionMatches = {};
+    state.decisions.clauses = [];
+  }
+  logAction('revised_phase', phaseId);
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function nextPhase() {
   const idx = PHASES.findIndex(x => x.id === state.currentPhase);
   completePhase(state.currentPhase);
@@ -1198,8 +1216,9 @@ function renderIntake() {
         }).join('')}
         ${missedCorrect.map(r => `<div class="feedback-box feedback-nudge"><p class="font-ui text-sm font-medium text-amber-800">Missed: ${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p></div>`).join('')}
       </div>
-      <div class="mt-6 flex justify-end">
-        <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Document Strategy</button>
+      <div class="mt-6 flex items-center justify-between">
+        ${(selectedIncorrect.length || missedCorrect.length) ? `<button onclick="revisePhase('intake')" class="border-2 border-cua-bright-blue text-cua-bright-blue hover:bg-blue-50 font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">← Revise My Selections</button>` : '<div></div>'}
+        <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Document Strategy →</button>
       </div>
     </div>`;
   }
@@ -1280,8 +1299,9 @@ function renderStrategy() {
         <p class="font-ui text-sm text-amber-900"><strong>${state.client === 'company' ? 'Valentina' : 'Jordan'}:</strong> ${state.client === 'company' ? '"I trust your judgment, but can you walk me through why this is the right approach? I want to understand what we\'re building here."' : '"I just want to make sure I\'m not signing away my career. Walk me through what you recommend."'}</p>
       </div>` : ''}
     </div>
-    <div class="mt-6 flex justify-end">
-      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Agreement Architecture</button>
+    <div class="mt-6 flex items-center justify-between">
+      ${!s.correct ? `<button onclick="revisePhase('strategy')" class="border-2 border-cua-bright-blue text-cua-bright-blue hover:bg-blue-50 font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">← Revise My Selection</button>` : '<div></div>'}
+      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Agreement Architecture →</button>
     </div>
   </div>`;
 }
@@ -1461,8 +1481,9 @@ function renderArchitecture() {
 
     ${!requiredMissed.length && feedbackItems.every(f => f.type === 'good') ? `<div class="feedback-box feedback-good mt-4"><p class="font-ui text-sm text-emerald-800">Excellent. Every risk is addressed by the right provision.</p></div>` : ''}
 
-    <div class="mt-6 flex justify-end">
-      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Precedent Library</button>
+    <div class="mt-6 flex items-center justify-between">
+      ${(requiredMissed.length || feedbackItems.some(f => f.type !== 'good')) ? `<button onclick="revisePhase('architecture')" class="border-2 border-cua-bright-blue text-cua-bright-blue hover:bg-blue-50 font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">← Revise My Matching</button>` : '<div></div>'}
+      <button onclick="nextPhase()" class="bg-cua-blue hover:bg-cua-bright-blue text-white font-ui font-bold py-3 px-8 rounded-lg transition-colors text-sm uppercase tracking-wider">Continue to Precedent Library →</button>
     </div>
   </div>`;
 }
