@@ -92,6 +92,163 @@
     /* Client pushback */
     .client-msg { background: #fffbeb; border-left: 4px solid #FFD65C; border-radius: 0 10px 10px 0; padding: 14px 16px; }
 
+    /* Interactive legal terms */
+    .legal-term {
+      border-bottom: 1.5px dotted #2459A9;
+      cursor: help;
+      position: relative;
+      transition: background 0.15s;
+    }
+    .legal-term:hover { background: rgba(36,89,169,0.08); }
+    .legal-term .term-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0A3255;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.6;
+      width: max-content;
+      max-width: 340px;
+      z-index: 150;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .legal-term .term-tip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: #0A3255;
+    }
+    .legal-term.show-tip .term-tip { display: block; }
+    .legal-term .term-tip .tip-label {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #B5E1E1;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    /* Case citation links */
+    .case-cite {
+      color: #2459A9;
+      border-bottom: 1px solid #2459A9;
+      cursor: pointer;
+      transition: color 0.15s;
+      font-style: italic;
+    }
+    .case-cite:hover { color: #0A3255; }
+
+    /* Consequence toggle */
+    .consequence-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.6875rem;
+      color: #E96955;
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(233,105,85,0.08);
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .consequence-toggle:hover { background: rgba(233,105,85,0.15); }
+    .consequence-detail {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #E96955;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      color: #7f1d1d;
+      line-height: 1.6;
+    }
+    .consequence-detail.open { display: block; }
+
+    /* Negotiation awareness badges */
+    .nego-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: help;
+      position: relative;
+    }
+    .nego-badge.challenge { background: rgba(233,105,85,0.1); color: #B91C1C; }
+    .nego-badge.standard { background: rgba(181,225,225,0.3); color: #0A3255; }
+    .nego-badge .nego-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      background: #0A3255;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.6875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      width: max-content;
+      max-width: 280px;
+      z-index: 150;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .nego-badge:hover .nego-tip { display: block; }
+
+    /* Jurisdiction flag */
+    .juris-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: rgba(255,214,92,0.2);
+      color: #92400e;
+      cursor: help;
+      position: relative;
+    }
+    .juris-flag .juris-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      background: #0A3255;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.6875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      width: max-content;
+      max-width: 260px;
+      z-index: 150;
+    }
+    .juris-flag:hover .juris-tip { display: block; }
+
+    /* Diff view */
+    .diff-add { background: rgba(181,225,225,0.3); text-decoration: none; }
+    .diff-del { background: rgba(233,105,85,0.15); text-decoration: line-through; color: #9ca3af; }
+
     /* Animations */
     .fade-in { animation: fadeIn 0.3s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
@@ -715,6 +872,97 @@ const REFERENCES = {
 };
 
 // ============================================================
+// INTERACTIVE LEGAL TERMS — hover/click definitions
+// ============================================================
+const LEGAL_TERMS = {
+  'hereby assigns': { label: 'Assignment Language', def: 'Creates an immediate, automatic transfer of ownership by operation of law — no separate document needed. Under Stanford v. Roche (2011), this is the only language that guarantees the employer owns the invention from the moment of creation.', ref: 'stanford_v_roche' },
+  'agrees to assign': { label: 'Assignment Language', def: 'Only a contractual promise to assign in the future. Title remains with the inventor until a separate assignment document is executed. If the employee leaves without signing, the employer must sue for breach of contract.', ref: 'stanford_v_roche' },
+  'material contact': { label: 'Non-Solicitation Scope', def: 'Limits the restriction to customers the employee personally worked with — not the employer\'s entire client base. Courts require this tailoring for enforceability. BDO Seidman v. Hirshberg (NY 1999) established this as the NY standard.', ref: 'bdo_seidman' },
+  'reasonable care': { label: 'Care Standard', def: 'The standard of protection the employee must exercise. "No less than reasonable care" sets a floor (pro-employer). "No greater than" sets a ceiling (pro-employee). The difference determines who bears the risk of lax security practices.' },
+  'no less than': { label: 'Care Floor', def: 'A minimum standard — the employee must exercise at least this level of care regardless of their personal practices. Protects the employer even if the employee is careless with their own information.' },
+  'no greater than': { label: 'Care Ceiling', def: 'A maximum standard — the employee\'s obligation is capped at whatever care they use for their own information. Protects the employee from claims of inadequate precautions.' },
+  'without limitation': { label: 'Overbreadth Signal', def: 'Courts read this phrase as an admission that the drafter intended the clause to be broader than its specific terms. In non-solicitation contexts, it can be grounds for voiding the entire provision rather than narrowing it.' },
+  'trade secret': { label: 'UTSA Definition', def: 'Under the Uniform Trade Secrets Act: information that (1) derives independent economic value from not being generally known and (2) is the subject of reasonable efforts to maintain secrecy. Both prongs must be met.', ref: 'utsa' },
+  'anticipated work': { label: 'Scope Language', def: 'Extends invention assignment beyond "current business" to cover emerging R&D directions. Pro-employer: prevents the argument that an invention predated a formally designated product line. Pro-employee: a blank check — the employer could claim it "anticipated" entering any field.' },
+  'prior inventions': { label: 'Employee Protection', def: 'A schedule (typically Exhibit A) listing everything the employee created before hire. Without it, the employer could claim retroactive ownership of pre-employment work — including Jordan\'s fermentation monitoring app.' },
+  'good faith': { label: 'Defense Standard', def: 'In confidentiality agreements, a good-faith defense means the employee isn\'t liable for accidental disclosure if they were genuinely trying to protect the information. Weakens employer enforcement by adding a subjective element.' },
+  'blue-pencil': { label: 'Judicial Modification', def: 'A court\'s power to narrow an overbroad restrictive covenant rather than void it entirely. Available in NY under BDO Seidman — but only where the employer shows good faith and absence of overreaching. Some states (VA, NE) follow all-or-nothing: overbroad means void.', ref: 'blue_penciling' },
+  'whistleblower immunity': { label: 'DTSA Requirement', def: 'The Defend Trade Secrets Act requires employers to notify employees that they cannot be held liable for disclosing trade secrets to government officials or in sealed court filings. Omitting this notice forfeits exemplary damages and attorney\'s fees.', ref: 'dtsa_notice' },
+  'current business': { label: 'Scope Limitation', def: 'Limits invention assignment to the employer\'s existing operations. Pro-employee: prevents claims to inventions in fields the employer hasn\'t entered. Compare "anticipated work" which extends the scope to future possibilities.' },
+  'non-solicitation': { label: 'Post-Employment Restriction', def: 'Prohibits contacting specific customers or employees after leaving. Less restrictive than a non-compete (which bars competitive employment entirely). Enforceable when limited in duration, scope, and tied to actual relationships.' },
+  'non-compete': { label: 'Post-Employment Restriction', def: 'Prohibits working for a competitor entirely — far broader than non-solicitation. Increasingly disfavored in NY and banned outright in CA. Most courts require a legitimate protectable interest and narrow tailoring.', ref: 'ny_noncompete' },
+};
+
+// Annotate clause text with interactive terms
+function annotateClauseText(text) {
+  if (!text) return '';
+  let html = escapeHtml(text);
+  // Sort terms by length (longest first) to avoid partial matches
+  const terms = Object.keys(LEGAL_TERMS).sort((a, b) => b.length - a.length);
+  for (const term of terms) {
+    const info = LEGAL_TERMS[term];
+    const regex = new RegExp(`(?<![\\w-])(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![\\w-])`, 'gi');
+    html = html.replace(regex, (match) => {
+      const refLink = info.ref ? `<br><span style="cursor:pointer;color:#B5E1E1;text-decoration:underline;" onclick="event.stopPropagation();showReference('${info.ref}')">View reference →</span>` : '';
+      return `<span class="legal-term" onclick="toggleTermTip(this)">${match}<span class="term-tip"><div class="tip-label">${info.label}</div>${info.def}${refLink}</span></span>`;
+    });
+  }
+  return html;
+}
+
+function toggleTermTip(el) {
+  document.querySelectorAll('.legal-term.show-tip').forEach(e => { if (e !== el) e.classList.remove('show-tip'); });
+  el.classList.toggle('show-tip');
+}
+
+// Close tips on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.legal-term')) {
+    document.querySelectorAll('.legal-term.show-tip').forEach(el => el.classList.remove('show-tip'));
+  }
+});
+
+// Build consequence toggle HTML
+function consequenceToggle(id, label, detail) {
+  return `<span class="consequence-toggle" onclick="document.getElementById('cq-${id}').classList.toggle('open')">⚠ ${label}</span>
+    <div class="consequence-detail" id="cq-${id}">${detail}</div>`;
+}
+
+// Build negotiation awareness badge
+function negoBadge(type, label, tip) {
+  return `<span class="nego-badge ${type}">${type === 'challenge' ? '⚔' : '✓'} ${label}<span class="nego-tip">${tip}</span></span>`;
+}
+
+// Build jurisdiction flag
+function jurisFlag(juris, tip) {
+  return `<span class="juris-flag">📍 ${juris}<span class="juris-tip">${tip}</span></span>`;
+}
+
+// Simple diff between original and edited text
+function buildDiffHtml(original, edited) {
+  if (!original || !edited || original === edited) return null;
+  const origWords = original.split(/(\s+)/);
+  const editWords = edited.split(/(\s+)/);
+  // Simple word-level diff (not full LCS, but good enough for clause edits)
+  let html = '';
+  const maxLen = Math.max(origWords.length, editWords.length);
+  let oi = 0, ei = 0;
+  while (oi < origWords.length || ei < editWords.length) {
+    if (oi < origWords.length && ei < editWords.length && origWords[oi] === editWords[ei]) {
+      html += escapeHtml(editWords[ei]);
+      oi++; ei++;
+    } else if (ei < editWords.length && (oi >= origWords.length || !origWords.includes(editWords[ei]))) {
+      html += `<span class="diff-add">${escapeHtml(editWords[ei])}</span>`;
+      ei++;
+    } else if (oi < origWords.length) {
+      html += `<span class="diff-del">${escapeHtml(origWords[oi])}</span>`;
+      oi++;
+    }
+  }
+  return html;
+}
+
+// ============================================================
 // LOGIN HANDLER
 // ============================================================
 function handleLogin() {
@@ -1314,11 +1562,18 @@ function renderPrecedents() {
                 <p class="font-ui text-xs text-gray-600 mb-3">${p.summary}</p>
                 <details class="group">
                   <summary class="font-ui text-xs text-cua-bright-blue cursor-pointer hover:underline">View full clause text</summary>
-                  <div class="clause-text text-gray-700 text-sm mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100">${p.text}</div>
+                  <div class="clause-text text-gray-700 text-sm mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100">${annotateClauseText(p.text)}</div>
+                  <p class="font-ui text-xs text-gray-400 mt-1 italic">Dotted-underlined terms are interactive — click to learn more.</p>
                 </details>
+                ${p.jurisdiction !== 'General' ? jurisFlag(p.jurisdiction, p.jurisdiction === 'CA' ? 'California law — may not apply in New York. Verify before using.' : p.jurisdiction === 'NY' ? 'New York jurisdiction — directly applicable.' : 'Check jurisdiction compatibility.') : ''}
                 ${isSel ? `<div class="feedback-box ${p.quality === 'good' ? 'feedback-good' : p.quality === 'subtle_defect' ? 'feedback-nudge' : 'feedback-warn'} mt-3">
                   <p class="font-ui text-xs text-gray-700">${p.feedback}</p>
                   ${p.quality !== 'good' ? `<p class="font-ui text-xs text-gray-500 mt-1 italic">You may continue with this selection or choose a different precedent.</p>` : ''}
+                  ${p.quality === 'overbroad' ? `<div class="mt-2">${negoBadge('challenge', 'Opposing counsel will attack', 'A competent employee-side lawyer will move to void this provision entirely, arguing it is unconscionably broad. You risk losing all protection — not just the overbroad parts.')}</div>` : ''}
+                  ${p.quality === 'bad_for_client' ? `<div class="mt-2">${negoBadge('challenge', 'Weakens your position', state.client === 'company' ? 'This precedent was designed for the receiving party. Using it to protect the disclosing party leaves critical gaps.' : 'This precedent favors the employer. It does not adequately protect your client\'s interests.')}</div>` : ''}
+                  ${p.quality === 'subtle_defect' ? `<div class="mt-2">${consequenceToggle(p.id, 'What happens if you miss this?', 'Under Stanford v. Roche (2011), "agrees to assign" means Pico Salsa does NOT automatically own Jordan\'s inventions. If Jordan leaves without signing a separate assignment document, Pico Salsa must sue for breach of contract — and may lose to a third party who obtains a present assignment from Jordan first.')}</div>` : ''}
+                  ${p.quality === 'wrong_jurisdiction' ? `<div class="mt-2">${jurisFlag(p.jurisdiction, 'This precedent is from a different jurisdiction. The legal framework may not apply in New York.')}</div>` : ''}
+                  ${p.quality === 'good' ? `<div class="mt-2">${negoBadge('standard', 'Commercially standard', 'This approach reflects prevailing market practice and is likely to survive judicial scrutiny.')}</div>` : ''}
                 </div>` : ''}
               </div>`;
             }).join('')}
@@ -1417,6 +1672,13 @@ function renderCustomize() {
             ${customPrompt.refId ? `<button onclick="showReference('${customPrompt.refId}')" class="font-ui text-xs text-cua-bright-blue hover:underline mt-1">View reference →</button>` : ''}
           </div>` : ''}
           <textarea class="draft-textarea" oninput="saveCustomization('${clauseId}', this.value)" spellcheck="false">${escapeHtml(savedText)}</textarea>
+          ${isEdited ? `<div class="mt-2 flex items-center gap-3">
+            <button onclick="document.getElementById('diff-${clauseId}').classList.toggle('open'); this.textContent = document.getElementById('diff-${clauseId}').classList.contains('open') ? 'Hide changes' : 'Show changes';" class="font-ui text-xs text-cua-bright-blue hover:underline cursor-pointer">Show changes</button>
+          </div>
+          <div class="consequence-detail" id="diff-${clauseId}">
+            <p class="font-ui text-xs font-medium text-gray-500 mb-2">Your edits vs. original:</p>
+            <div class="clause-text text-sm text-gray-700">${buildDiffHtml(prec.text, savedText) || 'No differences detected.'}</div>
+          </div>` : ''}
           ${clauseId === 'non_solicitation' ? `<div class="client-msg mt-3">
             <p class="font-ui text-sm text-amber-900"><strong>${state.client === 'company' ? 'Valentina' : 'Jordan'}:</strong> ${state.client === 'company' ? '"Two years feels like a long time — is that really standard? I don\'t want to scare off good candidates."' : '"Can you make sure I can still respond if a client from Pico Salsa reaches out to me first? I don\'t want to be rude."'}</p>
           </div>` : ''}
@@ -1516,7 +1778,7 @@ function renderAssemble() {
             : null) || '[Clause text not yet drafted]';
           return `<div>
             <p class="font-ui text-sm font-bold text-gray-800 mb-2">§ ${i + 1}. ${c ? c.label : id}</p>
-            <div class="clause-text text-gray-700 text-sm pl-4 border-l-2 border-cua-teal whitespace-pre-wrap">${escapeHtml(text)}</div>
+            <div class="clause-text text-gray-700 text-sm pl-4 border-l-2 border-cua-teal whitespace-pre-wrap">${annotateClauseText(text)}</div>
           </div>${i < clauseIds.length - 1 ? '<hr class="border-gray-100">' : ''}`;
         }).join('')}
       </div>
