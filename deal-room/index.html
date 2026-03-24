@@ -33,15 +33,61 @@
     }
   </script>
   <style>
-    body { font-family: 'Roboto', sans-serif; background: #f8f9fb; }
-    .clause-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1rem; line-height: 1.85; color: #1e293b; }
+    /* Theme variables */
+    :root {
+      --bg-body: #f8f9fb;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f0f7ff;
+      --bg-input: #ffffff;
+      --bg-topbar: #ffffff;
+      --bg-memo: #ffffff;
+      --border-card: #e5e7eb;
+      --border-input: #e2e5ea;
+      --border-topbar: #e5e7eb;
+      --text-primary: #1e293b;
+      --text-secondary: #4b5563;
+      --text-muted: #9ca3af;
+      --text-faint: #d1d5db;
+      --bg-feedback-good: #f0faf6;
+      --bg-feedback-nudge: #fffdf5;
+      --bg-feedback-warn: #fef5f3;
+      --bg-feedback-partner: #f5f9ff;
+      --bg-gray-50: #f9fafb;
+      --bg-gray-100: #f3f4f6;
+      --shadow-card: 0 4px 12px rgba(10,50,85,0.08);
+    }
+    [data-theme="dark"] {
+      --bg-body: #0f1923;
+      --bg-card: #172533;
+      --bg-card-hover: #1e3045;
+      --bg-input: #1a2d3e;
+      --bg-topbar: #131f2e;
+      --bg-memo: #1a2d3e;
+      --border-card: #243548;
+      --border-input: #2a3f52;
+      --border-topbar: #1e3045;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --text-faint: #334155;
+      --bg-feedback-good: #0d2a22;
+      --bg-feedback-nudge: #2a2410;
+      --bg-feedback-warn: #2a1515;
+      --bg-feedback-partner: #0f1f33;
+      --bg-gray-50: #172533;
+      --bg-gray-100: #1a2d3e;
+      --shadow-card: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body { font-family: 'Roboto', sans-serif; background: var(--bg-body); color: var(--text-primary); transition: background 0.3s, color 0.3s; }
+    .clause-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1rem; line-height: 1.85; color: var(--text-primary); }
     .memo-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1.05rem; line-height: 1.8; }
     .draft-textarea {
       font-family: 'Crimson Text', Georgia, serif;
       font-size: 1rem; line-height: 1.8;
       width: 100%; min-height: 180px; resize: vertical;
-      border: 2px solid #e2e5ea; border-radius: 10px;
-      padding: 18px; background: #fff; color: #1e293b;
+      border: 2px solid var(--border-input); border-radius: 10px;
+      padding: 18px; background: var(--bg-input); color: var(--text-primary);
       outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;
     }
     .draft-textarea:focus { border-color: #2459A9; box-shadow: 0 0 0 3px rgba(36,89,169,0.1); }
@@ -66,16 +112,16 @@
     .ref-panel.open { width: 360px; }
 
     /* Cards */
-    .precedent-card { border: 2px solid #e5e7eb; border-radius: 12px; padding: 18px; background: #fff; cursor: pointer; transition: all 0.2s; }
-    .precedent-card:hover { border-color: #2459A9; box-shadow: 0 4px 12px rgba(10,50,85,0.08); transform: translateY(-1px); }
-    .precedent-card.selected { border-color: #0A3255; background: #f0f7ff; box-shadow: 0 0 0 3px rgba(36,89,169,0.12); }
-    .precedent-card.bad-selected { border-color: #E96955; background: #fef2f2; box-shadow: 0 0 0 3px rgba(233,105,85,0.1); }
+    .precedent-card { border: 2px solid var(--border-card); border-radius: 12px; padding: 18px; background: var(--bg-card); cursor: pointer; transition: all 0.2s; }
+    .precedent-card:hover { border-color: #2459A9; box-shadow: var(--shadow-card); transform: translateY(-1px); }
+    .precedent-card.selected { border-color: #0A3255; background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(36,89,169,0.12); }
+    .precedent-card.bad-selected { border-color: #E96955; background: var(--bg-feedback-warn); box-shadow: 0 0 0 3px rgba(233,105,85,0.1); }
 
     .feedback-box { border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
-    .feedback-good { background: #f0faf6; border: 1px solid #B5E1E1; border-left: 4px solid #B5E1E1; }
-    .feedback-nudge { background: #fffdf5; border: 1px solid #FFD65C; border-left: 4px solid #FFD65C; }
-    .feedback-warn { background: #fef5f3; border: 1px solid #E96955; border-left: 4px solid #E96955; }
-    .feedback-partner { background: #f5f9ff; border: 1px solid #6DACDE; border-left: 4px solid #6DACDE; }
+    .feedback-good { background: var(--bg-feedback-good); border: 1px solid #B5E1E1; border-left: 4px solid #B5E1E1; }
+    .feedback-nudge { background: var(--bg-feedback-nudge); border: 1px solid #FFD65C; border-left: 4px solid #FFD65C; }
+    .feedback-warn { background: var(--bg-feedback-warn); border: 1px solid #E96955; border-left: 4px solid #E96955; }
+    .feedback-partner { background: var(--bg-feedback-partner); border: 1px solid #6DACDE; border-left: 4px solid #6DACDE; }
 
     /* Drag and drop matching */
     .match-source { padding: 8px 14px; border: 2px solid #e5e7eb; border-radius: 8px; background: #fff; cursor: grab; font-size: 0.8125rem; transition: all 0.15s; user-select: none; display: inline-block; }
@@ -322,6 +368,31 @@
     /* Section headers */
     .section-divider { height: 1px; background: linear-gradient(90deg, #e5e7eb 0%, transparent 100%); margin: 32px 0; }
 
+    /* Dark mode overrides for Tailwind utility classes — double specificity to beat Tailwind CDN */
+    html[data-theme="dark"] .bg-white, [data-theme="dark"] div.bg-white, [data-theme="dark"] aside.bg-white { background-color: var(--bg-card) !important; }
+    [data-theme="dark"] .bg-gray-50, [data-theme="dark"] .bg-gray-100 { background: var(--bg-gray-50) !important; }
+    [data-theme="dark"] .border-gray-200, [data-theme="dark"] .border-gray-100 { border-color: var(--border-card) !important; }
+    [data-theme="dark"] .text-gray-800, [data-theme="dark"] .text-gray-700, [data-theme="dark"] .text-gray-900 { color: var(--text-primary) !important; }
+    [data-theme="dark"] .text-gray-600, [data-theme="dark"] .text-gray-500 { color: var(--text-secondary) !important; }
+    [data-theme="dark"] .text-gray-400, [data-theme="dark"] .text-gray-300 { color: var(--text-muted) !important; }
+    [data-theme="dark"] .bg-blue-50 { background: rgba(36,89,169,0.1) !important; }
+    [data-theme="dark"] .bg-cua-red\/10 { background: rgba(178,31,44,0.15) !important; }
+    [data-theme="dark"] .bg-cua-bright-blue\/10 { background: rgba(36,89,169,0.15) !important; }
+    [data-theme="dark"] .hover\:bg-gray-100:hover { background: var(--bg-gray-100) !important; }
+    [data-theme="dark"] .hover\:border-gray-300:hover { border-color: var(--border-card) !important; }
+    [data-theme="dark"] .ref-panel { background: var(--bg-card) !important; border-color: var(--border-card) !important; }
+    [data-theme="dark"] .login-overlay input { background: var(--bg-input) !important; border-color: var(--border-input) !important; color: var(--text-primary) !important; }
+    [data-theme="dark"] .login-overlay .bg-gray-50 { background: rgba(255,255,255,0.05) !important; }
+    [data-theme="dark"] .modal-box { background: var(--bg-card) !important; }
+    [data-theme="dark"] .risk-context { background: rgba(36,89,169,0.1) !important; border-color: #2459A9 !important; color: var(--text-primary) !important; }
+    [data-theme="dark"] .memo-hint { background: rgba(255,214,92,0.08) !important; }
+    [data-theme="dark"] .memo-hint:hover { background: rgba(255,214,92,0.15) !important; }
+    [data-theme="dark"] .client-msg { background: rgba(255,214,92,0.08) !important; }
+    [data-theme="dark"] .match-source { background: var(--bg-card) !important; border-color: var(--border-card) !important; color: var(--text-primary) !important; }
+    [data-theme="dark"] .match-target { border-color: var(--border-card) !important; }
+    [data-theme="dark"] .match-target.filled { background: rgba(181,225,225,0.05) !important; }
+    [data-theme="dark"] details .bg-gray-50 { background: var(--bg-gray-50) !important; }
+
     /* Modal overlay */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 300;
@@ -484,7 +555,7 @@
   <main class="flex-1 min-w-0">
     <div class="top-accent"></div>
     <!-- Top bar -->
-    <div class="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between no-print">
+    <div class="px-6 py-3 flex items-center justify-between no-print" style="background:var(--bg-topbar); border-bottom:1px solid var(--border-topbar);">
       <div class="flex items-center gap-3">
         <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
@@ -495,8 +566,12 @@
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <span id="save-indicator" class="font-ui text-xs text-gray-300 transition-all duration-300" style="opacity:0;">Saved ✓</span>
-        <button onclick="toggleRefPanel()" class="p-2 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-cua-bright-blue transition-colors" title="Reference Materials">
+        <span id="save-indicator" class="font-ui text-xs transition-all duration-300" style="opacity:0; color:var(--text-muted);">Saved ✓</span>
+        <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" style="color:var(--text-muted);" title="Toggle dark mode" id="dark-mode-btn">
+          <svg id="dm-icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg id="dm-icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+        <button onclick="toggleRefPanel()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" style="color:var(--text-muted);" title="Reference Materials">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
         </button>
       </div>
@@ -1270,6 +1345,38 @@ function toggleExploreMode() {
   const btn = document.getElementById('explore-btn-text');
   if (btn) btn.textContent = state.exploreMode ? 'Disable Explore Mode' : 'Enable Explore Mode';
 }
+
+// ============================================================
+// DARK MODE
+// ============================================================
+function initTheme() {
+  // Priority: localStorage > default (dark for faculty URL param, light otherwise)
+  const saved = localStorage.getItem('pts-deal-room-theme');
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFaculty = urlParams.has('faculty') || urlParams.has('dark');
+  const theme = saved || (isFaculty ? 'dark' : 'light');
+  applyTheme(theme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('pts-deal-room-theme', theme);
+  // Update toggle icon
+  const sun = document.getElementById('dm-icon-sun');
+  const moon = document.getElementById('dm-icon-moon');
+  if (sun && moon) {
+    sun.style.display = theme === 'dark' ? 'block' : 'none';
+    moon.style.display = theme === 'dark' ? 'none' : 'block';
+  }
+}
+
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+// Initialize theme immediately (before render)
+initTheme();
 
 function manualSave() {
   saveState();
