@@ -1,0 +1,2875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deal Room — Protecting Trade Secrets</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'cua-red': '#B21F2C',
+            'cua-blue': '#0A3255',
+            'cua-bright-red': '#E82F35',
+            'cua-bright-blue': '#2459A9',
+            'cua-light-red': '#E96955',
+            'cua-light-blue': '#6DACDE',
+            'cua-yellow': '#FFD65C',
+            'cua-teal': '#B5E1E1',
+          },
+          fontFamily: {
+            'headline': ['Oswald', 'sans-serif'],
+            'body': ['Crimson Text', 'Georgia', 'serif'],
+            'ui': ['Roboto', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Theme variables */
+    :root {
+      --bg-body: #f8f9fb;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f0f7ff;
+      --bg-input: #ffffff;
+      --bg-topbar: #ffffff;
+      --bg-memo: #ffffff;
+      --border-card: #e5e7eb;
+      --border-input: #e2e5ea;
+      --border-topbar: #e5e7eb;
+      --text-primary: #1e293b;
+      --text-secondary: #4b5563;
+      --text-muted: #9ca3af;
+      --text-faint: #d1d5db;
+      --bg-feedback-good: #f0faf6;
+      --bg-feedback-nudge: #fffdf5;
+      --bg-feedback-warn: #fef5f3;
+      --bg-feedback-partner: #f5f9ff;
+      --bg-gray-50: #f9fafb;
+      --bg-gray-100: #f3f4f6;
+      --shadow-card: 0 4px 12px rgba(10,50,85,0.08);
+    }
+    [data-theme="dark"] {
+      --bg-body: #0f1923;
+      --bg-card: #172533;
+      --bg-card-hover: #1e3045;
+      --bg-input: #1a2d3e;
+      --bg-topbar: #131f2e;
+      --bg-memo: #1a2d3e;
+      --border-card: #243548;
+      --border-input: #2a3f52;
+      --border-topbar: #1e3045;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --text-faint: #334155;
+      --bg-feedback-good: #0d2a22;
+      --bg-feedback-nudge: #2a2410;
+      --bg-feedback-warn: #2a1515;
+      --bg-feedback-partner: #0f1f33;
+      --bg-gray-50: #172533;
+      --bg-gray-100: #1a2d3e;
+      --shadow-card: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    body { font-family: 'Roboto', sans-serif; background: var(--bg-body); color: var(--text-primary); transition: background 0.3s, color 0.3s; }
+    .clause-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1rem; line-height: 1.85; color: var(--text-primary); }
+    .memo-text { font-family: 'Crimson Text', Georgia, serif; font-size: 1.05rem; line-height: 1.8; }
+    .draft-textarea {
+      font-family: 'Crimson Text', Georgia, serif;
+      font-size: 1rem; line-height: 1.8;
+      width: 100%; min-height: 180px; resize: vertical;
+      border: 2px solid var(--border-input); border-radius: 10px;
+      padding: 18px; background: var(--bg-input); color: var(--text-primary);
+      outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;
+    }
+    .draft-textarea:focus { border-color: #2459A9; box-shadow: 0 0 0 3px rgba(36,89,169,0.1); }
+
+    /* Sidebar */
+    .sidebar { width: 280px; position: sticky; top: 0; height: 100vh; overflow-y: auto; transition: width 0.2s; flex-shrink: 0; }
+    .sidebar.collapsed { width: 56px; }
+    .sidebar.collapsed .sidebar-label { display: none; }
+    .sidebar.collapsed .sidebar-header-text { display: none; }
+
+    .phase-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.8125rem; border-left: 3px solid transparent; margin-bottom: 1px; }
+    .phase-item:hover { background: rgba(255,255,255,0.08); }
+    .phase-item.active { background: rgba(255,214,92,0.12); border-left-color: #FFD65C; }
+    .phase-item.completed .phase-dot { background: #B5E1E1; }
+    .phase-item.locked { opacity: 0.35; cursor: not-allowed; }
+    .phase-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.25); color: rgba(255,255,255,0.5); transition: all 0.2s; }
+    .phase-item.active .phase-dot { border-color: #FFD65C; color: #FFD65C; background: rgba(255,214,92,0.1); }
+    .phase-item.completed .phase-dot { border-color: #B5E1E1; color: #0A3255; }
+
+    /* Reference panel */
+    .ref-panel { width: 0; overflow: hidden; transition: width 0.25s; }
+    .ref-panel.open { width: 360px; }
+
+    /* Cards */
+    .precedent-card { border: 2px solid var(--border-card); border-radius: 12px; padding: 18px; background: var(--bg-card); cursor: pointer; transition: all 0.2s; }
+    .precedent-card:hover { border-color: #2459A9; box-shadow: var(--shadow-card); transform: translateY(-1px); }
+    .precedent-card.selected { border-color: #0A3255; background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(36,89,169,0.12); }
+    .precedent-card.bad-selected { border-color: #E96955; background: var(--bg-feedback-warn); box-shadow: 0 0 0 3px rgba(233,105,85,0.1); }
+
+    .feedback-box { border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
+    .feedback-good { background: var(--bg-feedback-good); border: 1px solid #B5E1E1; border-left: 4px solid #B5E1E1; }
+    .feedback-nudge { background: var(--bg-feedback-nudge); border: 1px solid #FFD65C; border-left: 4px solid #FFD65C; }
+    .feedback-warn { background: var(--bg-feedback-warn); border: 1px solid #E96955; border-left: 4px solid #E96955; }
+    .feedback-partner { background: var(--bg-feedback-partner); border: 1px solid #6DACDE; border-left: 4px solid #6DACDE; }
+
+    /* Drag and drop matching */
+    .match-source { padding: 8px 14px; border: 2px solid #e5e7eb; border-radius: 8px; background: #fff; cursor: grab; font-size: 0.8125rem; transition: all 0.15s; user-select: none; display: inline-block; }
+    .match-source:hover { border-color: #2459A9; }
+    .match-source.dragging { opacity: 0.5; }
+    .match-source.placed { opacity: 0.4; cursor: default; border-style: dashed; }
+    .match-target { min-height: 44px; border: 2px dashed #d1d5db; border-radius: 8px; padding: 8px 12px; transition: all 0.15s; }
+    .match-target.drag-over { border-color: #2459A9; background: #f0f7ff; }
+    .match-target.filled { border-style: solid; border-color: #B5E1E1; background: #f0faf8; }
+    .match-chip { display: inline-flex; align-items: center; gap: 6px; background: #0A3255; color: white; font-size: 0.75rem; padding: 4px 10px; border-radius: 6px; }
+    .match-chip .remove-match { cursor: pointer; opacity: 0.6; font-size: 14px; }
+    .match-chip .remove-match:hover { opacity: 1; }
+
+    /* Memo hints */
+    .memo-hint {
+      background: rgba(255,214,92,0.12);
+      border-bottom: 2px dotted #FFD65C;
+      cursor: help;
+      position: relative;
+      transition: background 0.15s;
+      padding: 0 1px;
+    }
+    .memo-hint:hover { background: rgba(255,214,92,0.25); }
+    .memo-hint .memo-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 0;
+      right: auto;
+      background: #0A3255;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.6;
+      width: 320px;
+      max-width: 90vw;
+      z-index: 150;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .memo-hint .memo-tip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 24px;
+      border: 7px solid transparent;
+      border-top-color: #0A3255;
+    }
+    .memo-hint.show-memo-tip .memo-tip { display: block; }
+    .memo-hint .memo-tip .tip-icon { color: #FFD65C; margin-right: 4px; }
+
+    /* Risk context card */
+    .risk-context {
+      background: #f5f9ff;
+      border: 1px solid #6DACDE;
+      border-left: 3px solid #2459A9;
+      border-radius: 0 8px 8px 0;
+      padding: 8px 12px;
+      margin-top: 6px;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #1e3a5f;
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Client pushback */
+    .client-msg { background: #fffbeb; border-left: 4px solid #FFD65C; border-radius: 0 10px 10px 0; padding: 14px 16px; }
+
+    /* Interactive legal terms */
+    .legal-term {
+      border-bottom: 1.5px dotted #2459A9;
+      cursor: help;
+      position: relative;
+      transition: background 0.15s;
+    }
+    .legal-term:hover { background: rgba(36,89,169,0.08); }
+    .legal-term .term-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0A3255;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 400;
+      line-height: 1.6;
+      width: max-content;
+      max-width: 340px;
+      z-index: 150;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .legal-term .term-tip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: #0A3255;
+    }
+    .legal-term.show-tip .term-tip { display: block; }
+    .legal-term .term-tip .tip-label {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #B5E1E1;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    /* Case citation links */
+    .case-cite {
+      color: #2459A9;
+      border-bottom: 1px solid #2459A9;
+      cursor: pointer;
+      transition: color 0.15s;
+      font-style: italic;
+    }
+    .case-cite:hover { color: #0A3255; }
+
+    /* Consequence toggle */
+    .consequence-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.6875rem;
+      color: #E96955;
+      cursor: pointer;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(233,105,85,0.08);
+      transition: background 0.15s;
+      user-select: none;
+    }
+    .consequence-toggle:hover { background: rgba(233,105,85,0.15); }
+    .consequence-detail {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #E96955;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 6px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.75rem;
+      color: #7f1d1d;
+      line-height: 1.6;
+    }
+    .consequence-detail.open { display: block; }
+
+    /* Negotiation awareness badges */
+    .nego-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: help;
+      position: relative;
+    }
+    .nego-badge.challenge { background: rgba(233,105,85,0.1); color: #B91C1C; }
+    .nego-badge.standard { background: rgba(181,225,225,0.3); color: #0A3255; }
+    .nego-badge .nego-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      background: #0A3255;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.6875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      width: max-content;
+      max-width: 280px;
+      z-index: 150;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .nego-badge:hover .nego-tip { display: block; }
+
+    /* Jurisdiction flag */
+    .juris-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      font-family: 'Roboto', sans-serif;
+      font-size: 0.625rem;
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 3px;
+      background: rgba(255,214,92,0.2);
+      color: #92400e;
+      cursor: help;
+      position: relative;
+    }
+    .juris-flag .juris-tip {
+      display: none;
+      position: absolute;
+      bottom: calc(100% + 6px);
+      left: 0;
+      background: #0A3255;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.6875rem;
+      font-weight: 400;
+      line-height: 1.5;
+      width: max-content;
+      max-width: 260px;
+      z-index: 150;
+    }
+    .juris-flag:hover .juris-tip { display: block; }
+
+    /* Diff view */
+    .diff-add { background: rgba(181,225,225,0.3); text-decoration: none; }
+    .diff-del { background: rgba(233,105,85,0.15); text-decoration: line-through; color: #9ca3af; }
+
+    /* Top bar accent */
+    .top-accent { height: 3px; background: linear-gradient(90deg, #B21F2C 0%, #E82F35 50%, #0A3255 100%); }
+
+    /* Animations */
+    .fade-in { animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Button styles */
+    .btn-primary { background: #B21F2C; color: white; font-weight: 700; padding: 12px 28px; border-radius: 10px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8125rem; border: none; cursor: pointer; }
+    .btn-primary:hover { background: #E82F35; box-shadow: 0 4px 12px rgba(178,31,44,0.25); transform: translateY(-1px); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-secondary { background: #0A3255; color: white; font-weight: 700; padding: 12px 28px; border-radius: 10px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8125rem; border: none; cursor: pointer; }
+    .btn-secondary:hover { background: #2459A9; box-shadow: 0 4px 12px rgba(10,50,85,0.2); transform: translateY(-1px); }
+    .btn-outline { background: transparent; color: #2459A9; font-weight: 700; padding: 12px 28px; border-radius: 10px; transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.8125rem; border: 2px solid #2459A9; cursor: pointer; }
+    .btn-outline:hover { background: #f0f7ff; box-shadow: 0 2px 8px rgba(36,89,169,0.1); }
+
+    /* Section headers */
+    .section-divider { height: 1px; background: linear-gradient(90deg, #e5e7eb 0%, transparent 100%); margin: 32px 0; }
+
+    /* Dark mode overrides for Tailwind utility classes — double specificity to beat Tailwind CDN */
+    html[data-theme="dark"] .bg-white, [data-theme="dark"] div.bg-white, [data-theme="dark"] aside.bg-white { background-color: var(--bg-card) !important; }
+    [data-theme="dark"] .bg-gray-50, [data-theme="dark"] .bg-gray-100 { background: var(--bg-gray-50) !important; }
+    [data-theme="dark"] .border-gray-200, [data-theme="dark"] .border-gray-100 { border-color: var(--border-card) !important; }
+    [data-theme="dark"] .text-gray-800, [data-theme="dark"] .text-gray-700, [data-theme="dark"] .text-gray-900 { color: var(--text-primary) !important; }
+    [data-theme="dark"] .text-gray-600, [data-theme="dark"] .text-gray-500 { color: var(--text-secondary) !important; }
+    [data-theme="dark"] .text-gray-400, [data-theme="dark"] .text-gray-300 { color: var(--text-muted) !important; }
+    [data-theme="dark"] .bg-blue-50 { background: rgba(36,89,169,0.1) !important; }
+    [data-theme="dark"] .bg-cua-red\/10 { background: rgba(178,31,44,0.15) !important; }
+    [data-theme="dark"] .bg-cua-bright-blue\/10 { background: rgba(36,89,169,0.15) !important; }
+    [data-theme="dark"] .hover\:bg-gray-100:hover { background: var(--bg-gray-100) !important; }
+    [data-theme="dark"] .hover\:border-gray-300:hover { border-color: var(--border-card) !important; }
+    [data-theme="dark"] .ref-panel { background: var(--bg-card) !important; border-color: var(--border-card) !important; }
+    [data-theme="dark"] .login-overlay input { background: var(--bg-input) !important; border-color: var(--border-input) !important; color: var(--text-primary) !important; }
+    [data-theme="dark"] .login-overlay .bg-gray-50 { background: rgba(255,255,255,0.05) !important; }
+    [data-theme="dark"] .modal-box { background: var(--bg-card) !important; }
+    [data-theme="dark"] .risk-context { background: rgba(36,89,169,0.1) !important; border-color: #2459A9 !important; color: var(--text-primary) !important; }
+    [data-theme="dark"] .memo-hint { background: rgba(255,214,92,0.08) !important; }
+    [data-theme="dark"] .memo-hint:hover { background: rgba(255,214,92,0.15) !important; }
+    [data-theme="dark"] .client-msg { background: rgba(255,214,92,0.08) !important; }
+    [data-theme="dark"] .match-source { background: var(--bg-card) !important; border-color: var(--border-card) !important; color: var(--text-primary) !important; }
+    [data-theme="dark"] .match-target { border-color: var(--border-card) !important; }
+    [data-theme="dark"] .match-target.filled { background: rgba(181,225,225,0.05) !important; }
+    [data-theme="dark"] details .bg-gray-50 { background: var(--bg-gray-50) !important; }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 300;
+      background: rgba(10,50,85,0.6);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(2px);
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-box {
+      background: white; border-radius: 16px; padding: 28px 32px;
+      max-width: 420px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+
+    /* Login overlay */
+    .login-overlay { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #0A3255 0%, #1a4a7a 50%, #0A3255 100%); }
+    .login-overlay input:focus { border-color: #2459A9; box-shadow: 0 0 0 3px rgba(36,89,169,0.1); outline: none; }
+
+    /* Print */
+    @media print {
+      .no-print { display: none !important; }
+      .sidebar, .ref-panel { display: none !important; }
+      body { background: white; }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; z-index: 100; transform: translateX(-100%); }
+      .sidebar.mobile-open { transform: translateX(0); }
+      .ref-panel.open { width: 100%; position: fixed; z-index: 90; right: 0; top: 0; height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div id="login-overlay" class="login-overlay" style="background: #0A3255;">
+  <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-4 fade-in">
+    <div class="text-center mb-6">
+      <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-cua-blue mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+      </div>
+      <h1 class="font-headline text-2xl text-cua-blue uppercase tracking-wide">Deal Room</h1>
+      <p class="text-sm text-gray-500 mt-1 font-ui">Protecting Trade Secrets — Internal Mitigation</p>
+    </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Your Full Name</label>
+        <input id="login-name" type="text" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none" placeholder="First and Last Name" autocomplete="name">
+      </div>
+      <div>
+        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Team / Group Name</label>
+        <input id="login-team" type="text" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none" placeholder="e.g., Team Alpha">
+      </div>
+      <div id="scenario-selector" class="hidden">
+        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Scenario</label>
+        <select id="login-scenario" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none bg-white"></select>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-3 mt-2">
+        <p class="text-xs text-gray-500 font-ui leading-relaxed">Your decisions, time spent on each phase, and final work product are recorded and submitted to your professor. Take your time and make thoughtful choices.</p>
+      </div>
+      <button id="login-btn" onclick="handleLogin()" class="w-full btn-primary font-ui py-3.5">Enter the Deal Room</button>
+      <p id="login-error" class="text-xs text-cua-bright-red font-ui hidden text-center">Please enter both your name and team name.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESET CONFIRMATION MODAL -->
+<div id="reset-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-box">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-cua-light-red/10 flex items-center justify-center flex-shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#E96955" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      </div>
+      <div>
+        <h3 class="font-headline text-lg text-cua-blue uppercase tracking-wide">Start Over?</h3>
+      </div>
+    </div>
+    <p class="font-ui text-sm text-gray-600 mb-2">This will <strong>permanently erase</strong> all of your work:</p>
+    <ul class="font-ui text-sm text-gray-500 mb-4 ml-4 list-disc space-y-1">
+      <li>Your client selection and risk assessment</li>
+      <li>All precedent selections and customizations</li>
+      <li>Your reflections and client responses</li>
+      <li>Your progress through all 7 phases</li>
+    </ul>
+    <p class="font-ui text-xs text-cua-red font-medium mb-5">This cannot be undone. If you want to keep your work, click Cancel and use "Save Progress" first.</p>
+    <div class="flex gap-3">
+      <button onclick="closeResetModal()" class="flex-1 btn-outline font-ui py-2.5 text-xs">Cancel — Keep My Work</button>
+      <button onclick="executeReset()" class="flex-1 font-ui py-2.5 text-xs rounded-lg font-bold uppercase tracking-wider" style="background:#E96955; color:white; border:none; cursor:pointer;">Yes, Erase Everything</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHELL -->
+<div id="app" class="flex min-h-screen" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar bg-cua-blue flex flex-col no-print">
+    <div class="p-4 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-cua-red flex items-center justify-center flex-shrink-0">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
+        </div>
+        <div class="sidebar-header-text">
+          <p class="font-headline text-white text-sm uppercase tracking-wider leading-tight">Deal Room</p>
+          <p id="sidebar-chapter" class="text-white/50 text-xs font-ui">PTS Chapter 4</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Student info -->
+    <div class="px-4 py-3 border-b border-white/10 sidebar-label">
+      <p id="sidebar-name" class="text-white/90 text-xs font-ui font-medium truncate"></p>
+      <p id="sidebar-team" class="text-white/50 text-xs font-ui truncate"></p>
+    </div>
+
+    <!-- Phase nav -->
+    <nav class="flex-1 py-3 px-2 space-y-1" id="phase-nav"></nav>
+
+    <!-- Progress bar -->
+    <div class="px-4 py-3 border-t border-white/10 sidebar-label">
+      <div class="flex items-center justify-between mb-1.5">
+        <p class="text-white/40 text-xs font-ui font-medium uppercase tracking-wider">Progress</p>
+        <p id="progress-pct" class="text-cua-yellow text-xs font-ui font-bold">0%</p>
+      </div>
+      <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+        <div id="progress-fill" class="h-full bg-cua-teal rounded-full transition-all duration-500" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Decision log -->
+    <div class="px-4 py-3 border-t border-white/10 sidebar-label">
+      <p class="text-white/40 text-xs font-ui font-medium uppercase tracking-wider mb-2">Decision Log</p>
+      <div id="decision-log" class="text-white/60 text-xs font-ui space-y-1"></div>
+    </div>
+
+    <!-- Save & Reset -->
+    <div class="px-4 py-3 border-t border-white/10 sidebar-label space-y-2">
+      <button onclick="manualSave()" class="w-full text-xs font-ui font-medium py-2 px-3 rounded-lg border border-white/20 text-white/60 hover:text-white hover:border-cua-teal hover:bg-white/5 transition-colors flex items-center justify-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>
+        Save Progress
+      </button>
+      <button onclick="confirmReset()" class="w-full text-xs font-ui font-medium py-2 px-3 rounded-lg border border-cua-light-red/30 text-cua-light-red/60 hover:text-cua-light-red hover:border-cua-light-red/50 hover:bg-cua-light-red/5 transition-colors flex items-center justify-center gap-1.5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Start Over
+      </button>
+    </div>
+
+    <!-- Explore mode toggle -->
+    <div class="px-4 py-2 border-t border-white/10 sidebar-label">
+      <div id="explore-toggle" class="hidden">
+        <button onclick="toggleExploreMode()" class="w-full text-xs font-ui font-medium py-2 px-3 rounded-lg border border-white/20 text-white/60 hover:text-white hover:border-white/40 transition-colors">
+          <span id="explore-btn-text">Enable Explore Mode</span>
+        </button>
+        <p class="text-white/30 text-xs font-ui mt-1">Revisit phases freely. Not submitted.</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="flex-1 min-w-0">
+    <div class="top-accent"></div>
+    <!-- Top bar -->
+    <div class="px-6 py-3 flex items-center justify-between no-print" style="background:var(--bg-topbar); border-bottom:1px solid var(--border-topbar);">
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSidebar()" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        </button>
+        <div>
+          <p id="topbar-phase" class="font-ui text-sm font-medium text-gray-800"></p>
+          <p id="topbar-step" class="font-ui text-xs text-gray-400"></p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="save-indicator" class="font-ui text-xs transition-all duration-300" style="opacity:0; color:var(--text-muted);">Saved ✓</span>
+        <button onclick="generateDocx()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" style="color:var(--text-muted);" title="Export work product (.docx)" id="export-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+        <button onclick="toggleDarkMode()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" style="color:var(--text-muted);" title="Toggle dark mode" id="dark-mode-btn">
+          <svg id="dm-icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg id="dm-icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+        </button>
+        <button onclick="toggleRefPanel()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors" style="color:var(--text-muted);" title="Reference Materials">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Content area -->
+    <div class="p-6 md:p-8 max-w-4xl mx-auto" id="workspace"></div>
+  </main>
+
+  <!-- REFERENCE PANEL -->
+  <aside id="ref-panel" class="ref-panel bg-white border-l border-gray-200 no-print">
+    <div class="p-4 border-b border-gray-200 bg-cua-blue">
+      <div class="flex items-center justify-between">
+        <p class="font-ui text-sm font-medium text-white">Reference Materials</p>
+        <button onclick="toggleRefPanel()" class="text-white/60 hover:text-white">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <div id="ref-content" class="p-4 overflow-y-auto" style="max-height: calc(100vh - 60px);"></div>
+  </aside>
+</div>
+
+<script>
+// ============================================================
+// CONSTANTS & STATE
+// ============================================================
+const STORAGE_KEY = 'pts-deal-room-state';
+
+const PHASES = [
+  { id: 'intake', label: 'The Engagement', num: 1 },
+  { id: 'strategy', label: 'Document Strategy', num: 2 },
+  { id: 'architecture', label: 'Agreement Architecture', num: 3 },
+  { id: 'precedents', label: 'Precedent Library', num: 4 },
+  { id: 'customize', label: 'Customization', num: 5 },
+  { id: 'assemble', label: 'Assembly & Review', num: 6 },
+  { id: 'review', label: 'Senior Partner Review', num: 7 }
+];
+
+function defaultState() {
+  return {
+    student: { name: '', team: '' },
+    scenarioId: ACTIVE_SCENARIO,
+    client: null, // 'company' or 'employee'
+    currentPhase: 'intake',
+    exploreMode: false,
+    completed: {},       // { intake: true, strategy: true, ... }
+    timestamps: {},      // { intake_start: epoch, intake_end: epoch, ... }
+    decisions: {
+      risks: [],
+      documentType: null,
+      clauses: [],       // selected clause types for TOC
+      precedents: {},    // { ci: 'prec_id', assignment: 'prec_id', ... }
+      riskProvisionMatches: {}, // { risk_id: [provision_id, ...], ... }
+      assignedClauses: [],  // clauses this student is responsible for (subset of clauses[])
+      customizations: {},// { ci: 'edited text', ... }
+      reflections: {},
+      clientResponses: {},
+      consistencyFixed: false,
+      dtsaCaught: null   // 'phase3' | 'phase6' | 'missed'
+    },
+    log: []              // { time, action, detail }
+  };
+}
+
+var state = defaultState();
+
+function loadState() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return defaultState();
+    const parsed = JSON.parse(saved);
+    const def = defaultState();
+    // Merge with defaults
+    return { ...def, ...parsed, decisions: { ...def.decisions, ...(parsed.decisions || {}) } };
+  } catch { return defaultState(); }
+}
+
+var _saveFlashTimeout;
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {}
+  // Flash save indicator
+  const el = document.getElementById('save-indicator');
+  if (el) {
+    el.style.opacity = '1';
+    el.textContent = 'Saved ✓';
+    el.style.color = '#B5E1E1';
+    clearTimeout(_saveFlashTimeout);
+    _saveFlashTimeout = setTimeout(() => { el.style.opacity = '0'; }, 2000);
+  }
+}
+
+function logAction(action, detail) {
+  state.log.push({ time: Date.now(), action, detail: detail || '' });
+  saveState();
+}
+
+// ============================================================
+// SCENARIO FRAMEWORK
+// ============================================================
+// Each scenario is a self-contained data package with all the
+// content needed for a complete Deal Room exercise. The framework
+// supports multiple scenarios but defaults to 'pico_salsa' for
+// the current academic year.
+//
+// To add a new scenario for a future semester:
+// 1. Create a new object in SCENARIOS with a unique key
+// 2. Include all required fields (see pico_salsa for the template)
+// 3. Set ACTIVE_SCENARIO to the new key, or add a selector UI
+//
+// Required fields per scenario:
+//   id, title, subtitle, factPattern, risks, docStrategies,
+//   clauseTypes, precedents, references, legalTerms,
+//   riskProvisionMap, customizationPrompts
+// ============================================================
+
+var ACTIVE_SCENARIO = 'pico_salsa'; // Change this to switch scenarios
+var SCENARIOS = {};
+
+// ============================================================
+// SCENARIO: PICO SALSA (Default — Academic Year 2026-2027)
+// ============================================================
+// Clause text drawn from:
+//   Oranburg, Protecting Trade Secrets §§ 4.2.2–4.2.4 (1st ed. 2026)
+//   LexisNexis, Confidentiality Agreement with Employee (Form)
+// ============================================================
+
+SCENARIOS.pico_salsa = {
+  id: 'pico_salsa',
+  title: 'Pico Salsa Employment Agreement',
+  subtitle: 'Internal Mitigation — Departing Employee',
+  chapter: 'PTS Chapter 4',
+};
+
+// Scenario data is defined as module-level constants below,
+// then attached to the scenario object at the end of the data section.
+
+const FACT_PATTERN = {
+  company: {
+    client: 'Pico Salsa, LLC',
+    contact: 'Valentina Rivera, Co-Founder & Chief Culinary Officer',
+    jurisdiction: 'New York',
+    entity: 'New York limited liability company',
+    memo: `<strong>FROM:</strong> Valentina Rivera, Co-Founder & CCO, Pico Salsa, LLC<br>
+<strong>TO:</strong> Outside Counsel<br>
+<strong>RE:</strong> Departing Employee — Urgent<br>
+<strong>DATE:</strong> [Today]<br><br>
+Jordan Webb, our lead R&D technician, just gave two weeks' notice. <span class="memo-hint" data-hint="A departing employee joining a direct competitor is the classic trigger for trade secret and non-solicitation concerns." data-risks="trade_secret,customer_poach">He's going to RivalCraft Foods — they're entering the premium fermented salsa market.</span><br><br>
+Jordan has been with us for three years. <span class="memo-hint" data-hint="When an employee helps develop a proprietary process, two questions arise: (1) who owns the IP, and (2) how do you keep it secret after they leave?" data-risks="trade_secret,ip_ownership">He was instrumental in developing our proprietary <strong>low-pressure fermentation process</strong></span> — a sub-atmospheric pressure technique that allows beneficial yeasts to thrive at lower temperatures while retaining the volatile flavor compounds that define our product. This is the crown jewel. Without it, we're just another salsa company.<br><br>
+<span class="memo-hint" data-hint="An employee who personally manages key accounts has relationships that walk out the door with them. This is a non-solicitation issue." data-risks="customer_poach">Jordan also knows our customer pricing, our supplier relationships, and he personally manages two of our three key retail accounts.</span><br><br>
+I pulled the employment agreement Jordan signed when we hired him. Frankly, I'm not sure it's any good — <span class="memo-hint" data-hint="An agreement 'adapted from a template found online' is a red flag. It likely lacks critical provisions — including any required by federal law." data-risks="dtsa_compliance">I adapted a template I found online.</span> I need you to tell me: <strong>what do we need to protect ourselves going forward with the next hire?</strong><br><br>
+<span class="memo-hint" data-hint="'We can't stop Jordan from leaving' — the client is telling you a non-compete is off the table. Listen to your client." data-risks="noncompete">We can't stop Jordan from leaving.</span> But we need to make sure the next person who sits in that chair signs something that actually works.`,
+  },
+  employee: {
+    client: 'Jordan Webb',
+    contact: 'Jordan Webb',
+    jurisdiction: 'New York',
+    memo: `<strong>FROM:</strong> Jordan Webb<br>
+<strong>TO:</strong> Counsel<br>
+<strong>RE:</strong> New Employment — Need Agreement Reviewed<br>
+<strong>DATE:</strong> [Today]<br><br>
+I just accepted a position with RivalCraft Foods as their Head of Fermentation R&D. I start in two weeks.<br><br>
+<span class="memo-hint" data-hint="Jordan's fermentation expertise predates Pico Salsa. An overbroad confidentiality definition could claim his general career knowledge as the employer's property." data-risks="general_knowledge,mobility">I've been at Pico Salsa for three years. Before that, I did graduate work in fermentation science at Cornell and worked at two other food companies. I have general expertise in fermentation that I developed over my whole career — not just at Pico Salsa.</span><br><br>
+Pico Salsa does have a specific technique — a <strong>low-pressure fermentation process</strong> that I helped refine. I understand I can't take their specific proprietary methods. <span class="memo-hint" data-hint="'I need to be able to work in my field' — this is the mobility concern. Overbroad restrictions could effectively bar Jordan from his profession." data-risks="mobility,scope_limits">But I need to be able to work in my field.</span><br><br>
+<span class="memo-hint" data-hint="A personal project developed on own time, own equipment, before joining the employer — this is an invention assignment issue. Without a carve-out, the employer could claim it." data-risks="personal_ip,prior_inventions">I've also been developing a <strong>home fermentation monitoring app</strong> on my own time, on my own laptop, using my own money. It has nothing to do with salsa. I started it before I joined Pico Salsa.</span><br><br>
+RivalCraft is sending me an employment agreement. I need you to review it and tell me what's reasonable and what's overreach. <span class="memo-hint" data-hint="'Some restrictions are normal' — Jordan accepts that some covenants are reasonable. The question is where the line is. Watch for disguised non-competes." data-risks="scope_limits,noncompete_block">I know some restrictions are normal, but I don't want to sign something that prevents me from doing my job or takes ownership of my personal projects.</span><br><br>
+<strong>What should I watch out for, and what should I push back on?</strong>`,
+  }
+};
+
+// ============================================================
+// RISKS DATA
+// ============================================================
+const RISKS = {
+  company: [
+    { id: 'trade_secret', label: 'Trade secret misappropriation (fermentation process)', correct: true,
+      context: 'Good eye. The memo says Jordan "was instrumental in developing" the fermentation process and is joining a direct competitor entering the same market.',
+      explanation: 'The low-pressure fermentation process is Pico Salsa\'s core competitive advantage. If Jordan shares it with RivalCraft, the company loses its market position permanently.',
+      memoRef: 'Re-read paragraph 2: "He was instrumental in developing our proprietary low-pressure fermentation process... This is the crown jewel."' },
+    { id: 'customer_poach', label: 'Customer and supplier solicitation', correct: true,
+      context: 'Correct. The memo says Jordan "personally manages two of our three key retail accounts" — those relationships are at risk.',
+      explanation: 'Jordan personally manages two of three key retail accounts. Without restriction, he can redirect those relationships to RivalCraft the day he starts.',
+      memoRef: 'Re-read paragraph 3: "Jordan also knows our customer pricing... and he personally manages two of our three key retail accounts."' },
+    { id: 'ip_ownership', label: 'Ownership of inventions developed during employment', correct: true,
+      context: 'Right. Jordan helped develop the process — but does Pico Salsa actually own the IP? That depends on the assignment language.',
+      explanation: 'Any process improvements or innovations Jordan developed at Pico Salsa need clear assignment to the company — especially under Stanford v. Roche.',
+      memoRef: 'Re-read paragraph 2: "He was instrumental in developing our proprietary low-pressure fermentation process." Who owns what Jordan developed?' },
+    { id: 'team_poach', label: 'Employee recruitment / team raiding', correct: true,
+      context: 'Yes — Jordan knows the R&D team and could recruit them to RivalCraft. This is a common non-solicitation concern.',
+      explanation: 'Jordan knows the R&D team and could recruit Pico Salsa\'s best people to RivalCraft.',
+      memoRef: 'The memo doesn\'t state this explicitly, but Jordan\'s role as lead R&D technician implies close relationships with the team.' },
+    { id: 'dtsa_compliance', label: 'Federal statutory compliance (DTSA notice requirement)', correct: true,
+      context: 'Sharp catch. The memo says Valentina "adapted a template found online" — an online template from before 2016 would be missing the required DTSA notice.',
+      explanation: 'The Defend Trade Secrets Act requires a whistleblower immunity notice in every employment agreement entered into or updated after May 11, 2016. Missing it forfeits exemplary damages.',
+      memoRef: 'Re-read paragraph 4: "I adapted a template I found online." When was that template written? Does it include post-2016 federal requirements?' },
+    { id: 'noncompete', label: 'Preventing Jordan from working at RivalCraft entirely', correct: false,
+      context: 'Careful — your own client told you this isn\'t the goal. Read the memo again.',
+      explanation: 'Valentina said "we can\'t stop Jordan from leaving." A non-compete would attempt exactly that — and New York has increasingly restricted non-compete enforceability. The goal is protecting specific assets, not blocking employment.',
+      memoRef: 'Re-read the final paragraph: "We can\'t stop Jordan from leaving." The client is telling you a non-compete is off the table.' },
+    { id: 'defamation', label: 'Defamation or disparagement risk', correct: false,
+      context: 'Nothing in the memo suggests Jordan would disparage Pico Salsa. This isn\'t wrong to consider, but it\'s not what the client is asking about.',
+      explanation: 'There\'s no indication Jordan would disparage Pico Salsa. Including a non-disparagement clause isn\'t wrong, but it\'s not an immediate legal risk identified in the intake memo.',
+      memoRef: 'Review the entire memo — is there any fact suggesting disparagement is a concern here?' },
+  ],
+  employee: [
+    { id: 'mobility', label: 'Professional mobility — ability to work in fermentation field', correct: true,
+      context: 'Right. Jordan\'s memo makes clear that fermentation is his entire career — not just his time at Pico Salsa.',
+      explanation: 'Jordan\'s entire career is in fermentation science. Overbroad restrictions could effectively bar him from his profession.',
+      memoRef: 'Re-read paragraph 2: "I have general expertise in fermentation that I developed over my whole career — not just at Pico Salsa."' },
+    { id: 'general_knowledge', label: 'Right to use general knowledge, skills, and experience', correct: true,
+      context: 'Good. Jordan has pre-existing expertise from Cornell and two prior employers. A broad CI definition could trap knowledge he brought to the job.',
+      explanation: 'Jordan\'s fermentation expertise predates Pico Salsa. A broad CI definition could claim his general know-how as confidential, trapping knowledge he brought to the job.',
+      memoRef: 'Re-read paragraph 2: "I did graduate work in fermentation science at Cornell and worked at two other food companies."' },
+    { id: 'personal_ip', label: 'Ownership of personal projects (fermentation monitoring app)', correct: true,
+      context: 'Exactly. Jordan\'s app was built on his own time, own laptop, own money, before Pico Salsa. But a broad invention assignment clause could claim it.',
+      explanation: 'Jordan\'s app was developed on his own time, with his own resources, before Pico Salsa. An overbroad invention assignment could capture it.',
+      memoRef: 'Re-read paragraph 4: "I\'ve also been developing a home fermentation monitoring app on my own time, on my own laptop, using my own money."' },
+    { id: 'prior_inventions', label: 'Protection of prior inventions and pre-employment work', correct: true,
+      context: 'Yes — everything Jordan created before hire needs to be explicitly carved out. The app is the obvious example, but there may be more.',
+      explanation: 'Anything Jordan created before joining Pico Salsa must be carved out. Without a prior inventions schedule, the employer could claim retroactive ownership.',
+      memoRef: 'Re-read paragraph 4: "I started it before I joined Pico Salsa." — What else did Jordan create before hire?' },
+    { id: 'scope_limits', label: 'Reasonable scope and duration of any restrictions', correct: true,
+      context: 'Correct. Jordan accepts "some restrictions are normal" but wants them reasonable. Duration, geography, and activity scope all matter.',
+      explanation: 'Courts require post-employment restrictions to be reasonable in duration, geographic scope, and activity scope. Jordan should push for the narrowest enforceable terms.',
+      memoRef: 'Re-read paragraph 5: "I know some restrictions are normal, but I don\'t want to sign something that prevents me from doing my job."' },
+    { id: 'noncompete_block', label: 'Ensuring no hidden non-compete provisions', correct: true,
+      context: 'Smart. Non-solicitation clauses sometimes hide non-compete language ("do business with any competitor"). Jordan needs to spot and remove these.',
+      explanation: 'Non-solicitation clauses sometimes contain disguised non-compete language ("do business with any competitor"). Jordan needs to identify and remove these.',
+      memoRef: 'This isn\'t stated directly in the memo — it\'s a drafting issue you\'ll need to watch for when reviewing the actual agreement language.' },
+    { id: 'salary', label: 'Negotiating a higher salary at RivalCraft', correct: false,
+      context: 'That\'s a business negotiation issue, not a legal risk from the employment agreement. Focus on what Jordan asked you about.',
+      explanation: 'Salary negotiation is important but it\'s not a legal risk arising from the employment agreement. The question is about the restrictive covenants.',
+      memoRef: 'Re-read the final line: "What should I watch out for, and what should I push back on?" — Jordan is asking about the agreement terms, not compensation.' },
+  ]
+};
+
+// ============================================================
+// DOCUMENT STRATEGY DATA
+// ============================================================
+const DOC_STRATEGIES = {
+  company: [
+    { id: 'employment_agreement', label: 'Employment Agreement with Integrated Restrictive Covenants', correct: true, feedback: 'Correct. A single employment agreement with confidentiality, invention assignment, non-solicitation, and DTSA provisions is the standard approach for a new hire. It consolidates all protections in one enforceable document.' },
+    { id: 'standalone_nda', label: 'Standalone Nondisclosure Agreement (NDA)', correct: false, feedback: 'An NDA covers confidentiality but not invention assignment or non-solicitation. Valentina needs all three. A standalone NDA leaves critical gaps — use an integrated employment agreement instead.' },
+    { id: 'separation_agreement', label: 'Separation/Transition Agreement with Jordan', correct: false, feedback: 'Valentina said the goal is to protect "the next person who sits in that chair." A separation agreement with Jordan is a different engagement — it addresses the departing employee, not the incoming one.' },
+    { id: 'cease_desist', label: 'Cease and Desist Letter to RivalCraft Foods', correct: false, feedback: 'There\'s no evidence of misappropriation yet. A cease and desist is premature and could damage Pico Salsa\'s business relationships. The immediate need is a protective agreement for future hires.' },
+  ],
+  employee: [
+    { id: 'review_redline', label: 'Review and Redline the Proposed Employment Agreement', correct: true, feedback: 'Correct. Jordan is receiving an employment agreement from RivalCraft. Your job is to review it, identify overreach, and negotiate reasonable terms — not to draft a new document from scratch.' },
+    { id: 'counter_agreement', label: 'Draft an Entirely New Counter-Agreement', correct: false, feedback: 'Drafting a complete counter-agreement is aggressive and unusual for an employee joining a new company. The standard approach is to redline the employer\'s draft — pushing back on specific provisions while accepting the overall framework.' },
+    { id: 'decline_sign', label: 'Advise Jordan to Refuse to Sign Any Restrictive Covenants', correct: false, feedback: 'Refusing to sign any restrictions is unrealistic. Most employers — especially those with trade secrets — require some form of confidentiality and invention assignment. The goal is to ensure the terms are reasonable, not to avoid them entirely.' },
+    { id: 'negotiate_oral', label: 'Negotiate Verbal Assurances Instead of Written Terms', correct: false, feedback: 'Verbal assurances are unenforceable and unreliable. If RivalCraft\'s agreement contains overreach, it needs to be fixed in writing before Jordan signs.' },
+  ]
+};
+
+// ============================================================
+// CLAUSE ARCHITECTURE DATA
+// ============================================================
+const CLAUSE_TYPES = {
+  company: [
+    { id: 'ci_definition', label: 'Confidential Information Definition', required: true, section: '1' },
+    { id: 'ci_obligations', label: 'Confidentiality Obligations & Care Standard', required: true, section: '2' },
+    { id: 'invention_assignment', label: 'Invention Assignment', required: true, section: '3' },
+    { id: 'non_solicitation', label: 'Non-Solicitation of Customers & Employees', required: true, section: '4' },
+    { id: 'dtsa_notice', label: 'DTSA § 1833(b) Immunity Notice', required: true, section: '5', trap: true },
+    { id: 'return_materials', label: 'Return of Materials Upon Termination', required: false, section: '6' },
+    { id: 'remedies', label: 'Remedies (Injunctive Relief)', required: false, section: '7' },
+    // Distractors
+    { id: 'noncompete', label: 'Non-Competition Clause', required: false, distractor: true, feedback: 'Valentina explicitly said she can\'t stop Jordan from leaving. A non-compete attempts to restrict competitive employment entirely — that\'s broader than what\'s needed and increasingly disfavored in New York. Non-solicitation of specific customers is the targeted tool.' },
+    { id: 'forum_selection', label: 'Forum Selection / Choice of Law', required: false, neutral: true },
+    { id: 'liquidated_damages', label: 'Liquidated Damages Clause', required: false, neutral: true },
+  ],
+  employee: [
+    { id: 'ci_definition', label: 'Confidential Information Definition', required: true, section: '1' },
+    { id: 'ci_exclusions', label: 'General Knowledge & Skills Exclusion', required: true, section: '2' },
+    { id: 'invention_assignment', label: 'Invention Assignment', required: true, section: '3' },
+    { id: 'prior_inventions', label: 'Prior Inventions Schedule (Exhibit A)', required: true, section: '4' },
+    { id: 'non_solicitation', label: 'Non-Solicitation', required: true, section: '5' },
+    { id: 'dtsa_notice', label: 'DTSA § 1833(b) Immunity Notice', required: true, section: '6', trap: true },
+    { id: 'personal_time', label: 'Personal Time Carve-Out', required: false, section: '7' },
+    { id: 'noncompete_removal', label: 'Non-Compete Provisions', required: false, section: '8' },
+    // Distractors
+    { id: 'indemnification', label: 'Indemnification by Employer', required: false, distractor: true, feedback: 'Indemnification clauses are common in officer/director agreements but unusual in a standard employment agreement for an R&D technician. This adds complexity without addressing Jordan\'s core concerns.' },
+    { id: 'golden_parachute', label: 'Severance / Golden Parachute', required: false, neutral: true },
+  ]
+};
+
+// ============================================================
+// PRECEDENT LIBRARY DATA
+// ============================================================
+const PRECEDENTS = {
+  ci_definition: {
+    company: [
+      {
+        id: 'ci_broad_contextual',
+        label: 'Broad Contextual Standard',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (1st ed. 2026)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'No marking required. Covers all nonpublic information the recipient knows or should know is confidential. Pro-disclosing party.',
+        text: `"Confidential Information" means all nonpublic information disclosed by Company, directly or indirectly, in written, oral, electronic, visual, or any other form, that Employee knows or reasonably should know is confidential based on the nature of the information or the circumstances surrounding its disclosure. Confidential Information includes, without limitation, technical data, trade secrets, know-how, product designs, marketing plans, business models, financial data, internal policies, customer and supplier information, employee data, pricing strategies, and any analysis, compilations, or summaries derived from such information.`,
+        feedback: 'Strong choice for the company. The contextual standard captures oral disclosures — critical for a food production environment where techniques are demonstrated, not documented. No marking requirement means Valentina doesn\'t have to label every conversation.'
+      },
+      {
+        id: 'ci_marking_required',
+        label: 'Marking-Required Standard',
+        source: 'LexisNexis, Confidentiality Agreement with Employee (Receiving Party Form)',
+        jurisdiction: 'General',
+        date: '2019',
+        quality: 'bad_for_client',
+        summary: 'Requires written marking at time of disclosure. Oral disclosures must be confirmed in writing within 10 business days.',
+        text: `"Confidential Information" means only such information that is marked in writing as "Confidential" at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter. Confidential Information shall not include information that (a) was known to Employee without restriction before disclosure; (b) becomes publicly available through no fault of Employee; (c) is lawfully obtained from a third party; or (d) is independently developed by Employee.`,
+        feedback: 'Problematic for Pico Salsa. This is a receiving-party template — it was designed for a company receiving information from a vendor, not an employer protecting its own secrets. The marking requirement means that every time Valentina demonstrates a fermentation technique in the kitchen, someone would need to follow up with a written "this was confidential" letter within 10 business days. That will never happen consistently.'
+      },
+      {
+        id: 'ci_software_license',
+        label: 'Technology Information Standard',
+        source: 'Silicon Valley SaaS Template Library',
+        jurisdiction: 'CA',
+        date: '2022',
+        quality: 'wrong_type',
+        summary: 'Covers source code, algorithms, APIs, and technical specifications. Includes broad IP assignment.',
+        text: `"Confidential Information" means all source code, object code, algorithms, APIs, technical specifications, architecture documents, development tools, and related materials, whether or not designated as confidential, together with all trade secrets, business plans, customer data, pricing models, and marketing strategies disclosed by the Disclosing Party.`,
+        feedback: 'Wrong transaction type. This was written for a software company protecting source code and APIs. Pico Salsa doesn\'t have source code — it has a fermentation process, recipes, customer relationships, and supplier terms. Using this precedent would leave the actual crown jewel (the low-pressure technique) arguably outside the definition, because it\'s not "source code, algorithms, or APIs."'
+      },
+      {
+        id: 'ci_overbroad',
+        label: 'Comprehensive Catch-All Standard',
+        source: 'Mid-Market M&A Template (Redacted)',
+        jurisdiction: 'NY',
+        date: '2020',
+        quality: 'overbroad',
+        summary: 'Covers "any and all information" disclosed in any form, with no exclusions. Maximum breadth.',
+        text: `"Confidential Information" means any and all information, in whatever form, tangible or intangible, disclosed by Company to Employee or to which Employee obtains access during the course of employment, including without limitation all business, financial, technical, operational, personnel, strategic, and commercial information, and all notes, analyses, compilations, studies, interpretations, or other documents prepared by Employee that contain or reflect such information. No exclusions or exceptions shall apply.`,
+        feedback: 'Dangerously overbroad. "Any and all information" with "no exclusions" means the employee\'s lunch order is confidential. A New York court would likely narrow this — but the litigation to get there is expensive. Worse, the absence of standard exclusions (prior knowledge, public information, independent development) signals aggressive overreach that sophisticated opposing counsel will use against you.'
+      }
+    ],
+    employee: [
+      {
+        id: 'ci_narrow_marked',
+        label: 'Narrow Marking-Required Standard',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (Receiving Party Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Requires written marking. Broad exclusions including general knowledge and skills. Short term.',
+        text: `"Confidential Information" means only such information that is marked in writing as "Confidential" at the time of disclosure, or, if disclosed orally, designated as confidential in writing within ten (10) business days thereafter. Confidential Information shall not include information that (a) was known to Employee without restriction before disclosure; (b) becomes publicly available through no fault of Employee; (c) is lawfully obtained from a third party without a duty of confidentiality; (d) is independently developed by Employee without reference to Confidential Information; or (e) constitutes general knowledge, skills, and experience acquired by Employee during the course of employment.`,
+        feedback: 'Strong choice for Jordan. The marking requirement forces Pico Salsa to be specific about what\'s confidential — no retroactive claims. The general knowledge exclusion (clause e) is the most important protection: it ensures Jordan can use the professional skills he\'s developed over his career, not just at Pico Salsa.'
+      },
+      {
+        id: 'ci_broad_no_exclusion',
+        label: 'Broad Standard Without Knowledge Exclusion',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Contextual standard with standard exclusions but no general knowledge carve-out.',
+        text: `"Confidential Information" means all nonpublic information disclosed by Company that the Employee knows or should know is confidential. Confidential Information shall not include information that (a) was known to Employee before disclosure; (b) becomes publicly available; (c) is obtained from a third party; or (d) is independently developed by Employee.`,
+        feedback: 'Missing the critical protection. This has standard exclusions but no general knowledge/skills carve-out. Jordan\'s fermentation expertise — techniques he learned in graduate school and at previous employers — could be claimed as Pico Salsa\'s confidential information under this definition. That would effectively prevent him from working in his field.'
+      },
+      {
+        id: 'ci_pre_dtsa',
+        label: 'Comprehensive Pre-2016 Template',
+        source: 'Major Law Firm Precedent Bank (Redacted)',
+        jurisdiction: 'NY',
+        date: '2014',
+        quality: 'outdated',
+        summary: 'Well-drafted with good exclusions. Predates the DTSA — no immunity notice provisions.',
+        text: `"Confidential Information" means information disclosed by Company that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and the circumstances of disclosure. Excludes: (a) publicly available information; (b) independently developed information; (c) information received from a third party without restriction; (d) information known to Employee prior to disclosure. Employee shall use reasonable care to protect Confidential Information.`,
+        feedback: 'Good substantive terms, but it\'s from 2014 — before the Defend Trade Secrets Act (2016). Any agreement based on this precedent will be missing the § 1833(b) immunity notice. That\'s a problem for the employer (who loses exemplary damages), but it\'s also worth noting as counsel: using outdated precedent is a malpractice risk.'
+      }
+    ]
+  },
+  ci_obligations: {
+    company: [
+      {
+        id: 'ci_ob_floor',
+        label: 'Floor Standard — "No Less Than Reasonable Care"',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (1st ed. 2026)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Sets a minimum care floor independent of the employee\'s own practices. Pro-disclosing party.',
+        text: `Employee shall protect Confidential Information with the same degree of care used to protect Company's own confidential information, but in no event less than a reasonable degree of care. Employee shall not be liable for disclosures resulting from legal compulsion or court order, provided Employee gives Company prompt written notice.`,
+        feedback: 'Strong choice. The floor standard ("no less than") means Jordan must exercise at least reasonable care regardless of how casually he treats his own information. This prevents the argument that sloppy personal security habits set the contractual baseline.'
+      },
+      {
+        id: 'ci_ob_ceiling',
+        label: 'Ceiling Standard — "No Greater Than Own Care"',
+        source: 'LexisNexis, Confidentiality Agreement with Employee (Receiving Party Form)',
+        jurisdiction: 'General',
+        date: '2019',
+        quality: 'bad_for_client',
+        summary: 'Caps the employee\'s obligation at whatever care they use for their own information. Pro-receiving party.',
+        text: `Employee shall protect Confidential Information using reasonable care, but no greater than the care Employee uses to protect their own information of similar sensitivity. Employee shall not be liable for accidental disclosure so long as Employee acted in good faith.`,
+        feedback: 'Problematic for Pico Salsa. "No greater than" caps Jordan\'s obligation at his personal standard. If Jordan is careless with his own files, that becomes the contractual ceiling for protecting the fermentation process. The good-faith defense for "accidental disclosure" further weakens enforcement.'
+      }
+    ],
+    employee: [
+      {
+        id: 'ci_ob_ceiling_emp',
+        label: 'Ceiling Standard — Caps Obligation at Own Practices',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (Receiving Party Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: '"No greater than" caps Jordan\'s duty at his own standard. Good-faith defense for accidental disclosure.',
+        text: `Employee shall protect Confidential Information using reasonable care, but no greater than the care Employee uses to protect their own information of similar sensitivity. Employee shall not be liable for accidental disclosure so long as Employee acted in good faith.`,
+        feedback: 'Good for Jordan. The ceiling standard means Pico Salsa can\'t demand extraordinary precautions. The good-faith accidental disclosure defense provides realistic protection.'
+      },
+      {
+        id: 'ci_ob_floor_emp',
+        label: 'Floor Standard — "No Less Than Reasonable Care"',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Sets a minimum care floor. Employer can argue any lapse falls below "reasonable." Pro-employer.',
+        text: `Employee shall protect Confidential Information with at least a reasonable degree of care. Employee shall implement appropriate safeguards to prevent unauthorized disclosure, including but not limited to secure storage, access controls, and encryption where practicable.`,
+        feedback: 'Risky for Jordan. "At least a reasonable degree of care" is an open-ended floor — Pico Salsa can always argue Jordan should have done more. The "including but not limited to" list creates specific duties Jordan might inadvertently breach.'
+      }
+    ]
+  },
+  invention_assignment: {
+    company: [
+      {
+        id: 'ia_hereby_assigns',
+        label: '"Hereby Assigns" — Immediate Transfer',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.4 (1st ed. 2026)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: '"Hereby assigns" creates automatic transfer at creation. Covers anticipated work. Pro-employer.',
+        text: `Employee hereby assigns to Company all right, title, and interest in and to any invention, discovery, improvement, process, or development (collectively, "Inventions") conceived or reduced to practice by Employee, alone or with others, during the term of employment, that relates to Company's business, operations, research, or anticipated work. Employee agrees to execute all documents necessary to confirm such ownership. This obligation survives termination.`,
+        feedback: 'Strong choice. "Hereby assigns" is the critical language — under Stanford v. Roche (2011), it creates an automatic transfer by operation of law the moment an invention is conceived. No countersignature needed. "Anticipated work" closes the scope gap for emerging R&D.'
+      },
+      {
+        id: 'ia_agrees_to_assign',
+        label: '"Agrees to Assign" — Promise to Transfer',
+        source: 'Standard Employment Template (Generic)',
+        jurisdiction: 'General',
+        date: '2020',
+        quality: 'subtle_defect',
+        summary: '"Agrees to assign" — creates only a contractual obligation, not automatic transfer. Common mistake.',
+        text: `Employee agrees to assign to Company any invention, discovery, improvement, or development conceived or developed during the course of employment that results from work performed for Company or uses Company's time, equipment, or proprietary information. This assignment shall not apply to inventions developed on Employee's own time that do not relate to Company's current business. Employee agrees to execute all documents necessary to confirm assignment.`,
+        feedback: 'Dangerous two-word error. "Agrees to assign" is only a contractual promise — title stays with Jordan until he separately executes an assignment instrument. If he leaves without signing, Pico Salsa must sue for breach of contract to obtain ownership. Stanford v. Roche (2011) makes this distinction dispositive. Change "agrees to assign" to "hereby assigns."'
+      },
+      {
+        id: 'ia_california',
+        label: 'California-Style with Statutory Carve-Out',
+        source: 'West Coast Technology Company Template',
+        jurisdiction: 'CA',
+        date: '2023',
+        quality: 'wrong_jurisdiction',
+        summary: 'Includes California Labor Code § 2870 carve-out. Strong employee protections built in.',
+        text: `Employee hereby assigns to Company all Inventions conceived during employment that relate to Company's business. Pursuant to California Labor Code § 2870, this assignment does not apply to inventions developed entirely on Employee's own time without using Company equipment, supplies, or trade secret information, unless the invention relates to Company's business or actual or demonstrably anticipated research or development.`,
+        feedback: 'Wrong jurisdiction. California Labor Code § 2870 does not apply in New York. Including a California statutory carve-out in a New York employment agreement is confusing at best and could create interpretive problems. Use New York-appropriate language.'
+      }
+    ],
+    employee: [
+      {
+        id: 'ia_agrees_prior_excluded',
+        label: '"Agrees to Assign" with Prior Inventions Schedule',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.4 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: '"Agrees to assign" (not automatic). Prior inventions carved out. Personal time protected. Scope limited to current business.',
+        text: `Employee agrees to assign to Company any Invention conceived during employment that (a) results from work performed for Company, or (b) uses Company's time, equipment, or proprietary information, and (c) relates to Company's current business or operations. This assignment shall not apply to: (i) inventions listed on Exhibit A (Prior Inventions); or (ii) inventions developed entirely on Employee's own time, without use of Company resources, that do not relate to Company's current business. Employee agrees to execute documents reasonably necessary to confirm assignment.`,
+        feedback: 'Strong choice for Jordan. "Agrees to assign" preserves negotiating leverage (title doesn\'t transfer automatically). Prior inventions schedule protects the fermentation monitoring app. "Current business" prevents scope creep into fields Pico Salsa hasn\'t entered. The personal-time carve-out is robust.'
+      },
+      {
+        id: 'ia_hereby_broad',
+        label: '"Hereby Assigns" — Maximum Employer Scope',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: '"Hereby assigns" with broad scope covering anticipated work. No prior inventions schedule.',
+        text: `Employee hereby assigns to Company all right, title, and interest in any Invention conceived during employment that relates to Company's business, operations, research, or anticipated work, whether or not developed during working hours or using Company equipment. This obligation survives termination.`,
+        feedback: 'This is the employer\'s dream clause — and Jordan\'s nightmare. "Hereby assigns" means automatic transfer. "Anticipated work" means any field Pico Salsa might someday enter. No prior inventions carve-out means Jordan\'s personal fermentation app could be claimed. No personal-time exception. Advise Jordan to reject this entirely.'
+      }
+    ]
+  },
+  non_solicitation: {
+    company: [
+      {
+        id: 'ns_material_contact',
+        label: 'Material Contact + 2-Year Standard',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.3 (1st ed. 2026)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Two-year restriction. Limited to customers with material contact in prior 12 months. Enforceable.',
+        text: `For a period of two (2) years following termination, Employee shall not solicit any customer or prospective customer of Company with whom Employee had material contact during the twelve (12) months preceding termination, for the purpose of offering competing products or services. Employee shall not solicit any employee or contractor of Company to terminate their relationship with Company.`,
+        feedback: 'Well-calibrated. Two years is the duration courts consistently enforce. "Material contact" + 12-month lookback precisely tailors the restriction to relationships Jordan actually developed. Lasership v. Watson (2009) upheld exactly this formulation.'
+      },
+      {
+        id: 'ns_three_year_broad',
+        label: 'Three-Year Broad Restriction',
+        source: 'Aggressive Litigation Firm Template',
+        jurisdiction: 'NY',
+        date: '2018',
+        quality: 'overbroad',
+        summary: 'Three-year restriction. Covers all persons "known to" employee. Includes disguised non-compete language.',
+        text: `For a period of three (3) years following termination for any reason, Employee shall not directly or indirectly solicit, contact, or encourage any person or entity known to Employee to terminate or reduce their relationship with Company or to do business with any competitor of Company. This restriction applies to all customers, suppliers, employees, contractors, and any other individuals Employee became aware of during employment, without limitation.`,
+        feedback: 'Three problems. First, three years is too long for a mid-level technician — courts rarely enforce this duration. Second, "any person known to Employee" covers the entire customer list, including people Jordan never met. Third, "do business with any competitor" is a disguised non-compete. A court could void this entirely rather than rewrite it.'
+      },
+      {
+        id: 'ns_five_year',
+        label: 'Five-Year Comprehensive Restriction',
+        source: 'Financial Services Template (Adapted)',
+        jurisdiction: 'NY',
+        date: '2017',
+        quality: 'unenforceable',
+        summary: 'Five-year restriction. Global scope. Covers all business relationships. Liquidated damages.',
+        text: `For a period of five (5) years following termination, Employee shall not, anywhere in the world, directly or indirectly solicit or transact business with any customer, prospective customer, supplier, vendor, or business partner of Company, or recruit any employee of Company. Violation shall result in liquidated damages equal to two times Employee's final annual salary.`,
+        feedback: 'Unenforceable. Five years is excessive for any employee, let alone a mid-level technician. "Anywhere in the world" has no geographic nexus to Pico Salsa\'s actual market. The liquidated damages clause would likely be struck as a penalty rather than a reasonable estimate of harm. A court would void this entirely — leaving Pico Salsa with zero protection.'
+      }
+    ],
+    employee: [
+      {
+        id: 'ns_one_year_inbound',
+        label: 'One-Year with Inbound Exception',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.3 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'One-year restriction. Material contact only. Inbound contact exception. No disguised non-compete.',
+        text: `For a period of one (1) year following termination, Employee shall not directly solicit any customer of Company with whom Employee had material contact during the twelve (12) months preceding termination, for the purpose of diverting business to a direct competitor. This restriction shall not apply to contacts initiated by the customer without solicitation by Employee. This Section shall not prohibit Employee from accepting employment with any entity.`,
+        feedback: 'Excellent for Jordan. One year is the employee-side target. The inbound exception means Jordan isn\'t liable if a customer calls him first. The final sentence explicitly preserves his right to work at RivalCraft — preventing any argument that this is a disguised non-compete.'
+      },
+      {
+        id: 'ns_two_year_no_exception',
+        label: 'Two-Year Standard Without Exceptions',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Two-year restriction. Material contact scope. No inbound contact exception.',
+        text: `For two (2) years following termination, Employee shall not solicit any customer with whom Employee had material contact in the prior twelve months. Employee shall not recruit Company employees during the same period.`,
+        feedback: 'Acceptable but suboptimal. Two years is the employer\'s preferred duration — Jordan should push for one year. More importantly, there\'s no inbound contact exception. If a customer calls Jordan unprompted, he\'d technically be in violation by responding. That\'s unreasonable and negotiable.'
+      }
+    ]
+  },
+  ci_exclusions: {
+    employee: [
+      {
+        id: 'ci_ex_broad',
+        label: 'Broad Five-Part Exclusion with General Knowledge',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.2 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Standard exclusions plus general knowledge/skills carve-out. The strongest employee protection.',
+        text: `Confidential Information shall not include information that: (a) was known to Employee without restriction before disclosure; (b) becomes publicly available through no fault of Employee; (c) is lawfully obtained from a third party without a duty of confidentiality; (d) is independently developed by Employee without reference to Confidential Information; or (e) constitutes general knowledge, skills, and experience acquired by Employee during the course of employment.`,
+        feedback: 'Excellent choice. Clause (e) — the general knowledge exclusion — is the single most important protection for Jordan. It ensures his fermentation expertise, developed over his entire career, cannot be claimed as Pico Salsa\'s property.'
+      },
+      {
+        id: 'ci_ex_narrow',
+        label: 'Standard Four-Part Exclusion (No Knowledge Carve-Out)',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Standard exclusions only. Missing the general knowledge/skills protection.',
+        text: `Confidential Information shall not include information that: (a) was publicly available at the time of disclosure; (b) was known to Employee prior to disclosure; (c) was received from a third party without restriction; or (d) was independently developed by Employee.`,
+        feedback: 'Missing the critical protection. Without a general knowledge/skills exclusion, Pico Salsa could argue that fermentation techniques Jordan learned on the job — even techniques he already knew — are confidential. This would effectively bar him from his field.'
+      }
+    ]
+  },
+  prior_inventions: {
+    employee: [
+      {
+        id: 'pi_exhibit',
+        label: 'Prior Inventions Schedule with Exhibit Reference',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.4 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Carves out all pre-employment inventions via a scheduled exhibit. Standard practice.',
+        text: `The assignment obligations in this Agreement shall not apply to any invention, discovery, or work of authorship listed on Exhibit A (Prior Inventions), which Employee represents and warrants were conceived, developed, or reduced to practice prior to the date of Employee's employment with Company. Employee shall identify all Prior Inventions on Exhibit A at the time of executing this Agreement.`,
+        feedback: 'Standard and effective. The Exhibit A reference creates a clear, documented record of Jordan\'s pre-employment work — including the fermentation monitoring app. The representation and warranty language protects both parties.'
+      },
+      {
+        id: 'pi_blanket',
+        label: 'Blanket Pre-Employment Carve-Out (No Exhibit)',
+        source: 'Simplified Employment Template',
+        jurisdiction: 'General',
+        date: '2020',
+        quality: 'subtle_defect',
+        summary: 'Excludes pre-employment work but without a scheduled list. Harder to enforce.',
+        text: `This assignment shall not apply to inventions conceived or developed by Employee before the commencement of employment with Company.`,
+        feedback: 'The right idea but weak execution. Without a specific exhibit listing Jordan\'s prior inventions, the burden of proving something was "conceived before employment" falls entirely on Jordan. A scheduled list created at hire is much stronger evidence.'
+      }
+    ]
+  },
+  personal_time: {
+    employee: [
+      {
+        id: 'pt_robust',
+        label: 'Robust Personal Time Carve-Out',
+        source: 'Oranburg, Protecting Trade Secrets § 4.2.4 (Employee Template)',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Excludes inventions on own time, own resources, unrelated to company business. Mirrors Cal. Lab. Code § 2870 principles.',
+        text: `The assignment obligations in this Agreement shall not apply to any invention developed entirely on Employee's own time, without use of Company equipment, supplies, facilities, or Confidential Information, that does not relate to Company's current business or operations and does not result from any work performed by Employee for Company.`,
+        feedback: 'Strong protection for Jordan\'s personal projects. The fermentation monitoring app — built on his own time, own laptop, own money, unrelated to salsa — is clearly carved out. This mirrors the principles of California Lab. Code § 2870, applied by analogy even in New York.'
+      },
+      {
+        id: 'pt_weak',
+        label: 'Narrow Personal Time Exception',
+        source: 'Standard Employment Template (Employer-Favoring)',
+        jurisdiction: 'General',
+        date: '2019',
+        quality: 'bad_for_client',
+        summary: 'Personal time carve-out only applies to inventions completely unrelated to ANY company interest.',
+        text: `Employee's obligations under this Section shall not apply to inventions developed entirely on Employee's own time that have no relation whatsoever to Company's business, products, services, or research, whether current or anticipated.`,
+        feedback: 'Dangerously narrow for Jordan. The "anticipated" research language and "no relation whatsoever" standard mean Pico Salsa could argue that any fermentation-related side project — including Jordan\'s app — has some relation to their business. The threshold is too high.'
+      }
+    ]
+  },
+  noncompete_removal: {
+    employee: [
+      {
+        id: 'ncr_explicit',
+        label: 'Explicit Employment Freedom Clause',
+        source: 'Employee-Side Practice Template',
+        jurisdiction: 'General',
+        date: '2026',
+        quality: 'good',
+        summary: 'Affirmatively states that nothing in the agreement restricts competitive employment.',
+        text: `Nothing in this Agreement shall be construed as a non-competition agreement or as restricting Employee's right to accept employment with, or provide services to, any entity, including a direct competitor of Company. Employee's obligations under this Agreement are limited to the specific restrictions on solicitation and the protection of Confidential Information set forth herein.`,
+        feedback: 'Excellent protective language. This eliminates any argument that the non-solicitation clause is a disguised non-compete. It affirmatively preserves Jordan\'s right to work at RivalCraft.'
+      }
+    ]
+  },
+  dtsa_notice: {
+    company: [
+      {
+        id: 'dtsa_full',
+        label: 'Complete DTSA § 1833(b) Immunity Notice',
+        source: '18 U.S.C. § 1833(b)(1)–(2); Defend Trade Secrets Act (2016)',
+        jurisdiction: 'Federal',
+        date: '2016',
+        quality: 'good',
+        summary: 'Required statutory language. Must be included in every employment agreement entered into or updated after May 11, 2016.',
+        text: `Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.`,
+        feedback: 'This is the required language. It must appear verbatim (or substantially similar) in every employment agreement. Omitting it forfeits your right to exemplary damages and attorney\'s fees under 18 U.S.C. § 1833(b)(3)(B) — even for willful misappropriation.'
+      }
+    ],
+    employee: [
+      {
+        id: 'dtsa_full_emp',
+        label: 'Complete DTSA § 1833(b) Immunity Notice',
+        source: '18 U.S.C. § 1833(b)(1)–(2); Defend Trade Secrets Act (2016)',
+        jurisdiction: 'Federal',
+        date: '2016',
+        quality: 'good',
+        summary: 'Required statutory language protecting whistleblower immunity. Benefits the employee.',
+        text: `Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.`,
+        feedback: 'This notice actually protects Jordan — it guarantees whistleblower immunity. If Jordan discovers trade secret misuse or other legal violations, he can report them without liability. Ensure this is included in any agreement Jordan signs.'
+      }
+    ]
+  }
+};
+
+// ============================================================
+// REFERENCE MATERIALS
+// ============================================================
+const REFERENCES = {
+  stanford_v_roche: {
+    title: 'Stanford v. Roche, 563 U.S. 776 (2011)',
+    type: 'Case Summary',
+    text: 'The Supreme Court held that "agrees to assign" and "hereby assigns" have fundamentally different legal effects. "Agrees to assign" creates only a contractual obligation to assign in the future — title remains with the inventor until a separate assignment instrument is executed. "Hereby assigns" operates as a present transfer by operation of law, vesting title in the employer at the moment of invention. This distinction determined ownership of billions of dollars in HIV research patents.'
+  },
+  bdo_seidman: {
+    title: 'BDO Seidman v. Hirshberg, 93 N.Y.2d 382 (1999)',
+    type: 'Case Summary — New York',
+    text: 'The New York Court of Appeals\' leading case on restrictive covenant enforceability. The court held that a non-solicitation clause must be (1) no greater than required to protect the employer\'s legitimate interest, (2) not impose undue hardship on the employee, and (3) not injure the public. The court limited the restriction to clients the employee had personally served, rejecting the employer\'s attempt to cover its entire client base. This case established that New York courts will blue-pencil overbroad covenants — but only where the employer demonstrates good faith and absence of overreaching.'
+  },
+  lasership_v_watson: {
+    title: 'Lasership v. Watson, 79 Va. Cir. 205 (2009)',
+    type: 'Case Summary — Virginia',
+    text: 'A Virginia Circuit Court upheld a non-solicitation clause that was "limited in both scope and duration and clearly connected to the protection of trade secrets and customer goodwill." Key factors: two-year duration (reasonable), restriction limited to customers with whom the employee had "material contact" during the final 12 months (precisely tailored), and no disguised non-compete language. Note: Virginia follows the all-or-nothing rule (no blue-penciling), so this case illustrates the importance of precision in drafting.'
+  },
+  dtsa_notice: {
+    title: '18 U.S.C. § 1833(b) — DTSA Immunity Notice Requirement',
+    type: 'Statutory Excerpt',
+    text: 'The Defend Trade Secrets Act (2016) requires that every employment contract or agreement "governing the use of a trade secret or other confidential information" include a notice of immunity for whistleblower disclosures. If the employer fails to include this notice, 18 U.S.C. § 1833(b)(3)(B) provides that the employer "may not be awarded" exemplary damages or attorney\'s fees in any DTSA action — even for willful and malicious misappropriation.'
+  },
+  wellspan_v_bayliss: {
+    title: 'WellSpan Health v. Bayliss (Pa. 2005)',
+    type: 'Case Summary',
+    text: 'The court struck down a non-solicitation clause that covered customers the employee had never personally worked with. The restriction must be tied to the employee\'s actual relationships, not the employer\'s entire customer base. "Material contact" is the standard — the employee must have had direct, substantive interaction with the customer.'
+  },
+  ny_noncompete: {
+    title: 'New York Non-Compete Landscape (2024-2026)',
+    type: 'Practice Note',
+    text: 'New York has increasingly disfavored non-compete agreements. While the state has not enacted an outright ban (a 2023 bill was vetoed), courts apply heightened scrutiny. Non-solicitation clauses remain enforceable when properly tailored. Key factors: reasonable duration (typically 1-2 years), scope limited to the employee\'s actual relationships, and a legitimate protectable interest (trade secrets, customer goodwill).'
+  },
+  utsa: {
+    title: 'Uniform Trade Secrets Act — Definition of Trade Secret',
+    type: 'Statutory Framework',
+    text: 'Under the UTSA (adopted by 48 states), a "trade secret" is information that (1) derives independent economic value from not being generally known and (2) is the subject of reasonable efforts to maintain secrecy. The confidential information definition in an NDA should align with this statutory framework. Information that doesn\'t meet both prongs isn\'t a trade secret — even if the NDA calls it one.'
+  },
+  cal_lab_code_2870: {
+    title: 'California Labor Code § 2870 — Invention Assignment Limits',
+    type: 'Statutory Excerpt',
+    text: 'California restricts employer claims on employee inventions. Section 2870 provides that an employer cannot require assignment of inventions developed entirely on the employee\'s own time, without use of employer resources, unless the invention relates to the employer\'s current or demonstrably anticipated business. Similar statutes exist in Delaware, Illinois, Minnesota, North Carolina, and Washington. New York has no equivalent statute, but courts may apply unconscionability to overreaching assignment clauses.'
+  },
+  nclosures_v_block: {
+    title: 'nClosures Inc. v. Block & Co. (7th Cir. 2014)',
+    type: 'Case Summary',
+    text: 'The Seventh Circuit addressed what constitutes "reasonable efforts" to maintain trade secret protection. The court emphasized that employers must take affirmative steps — including confidentiality agreements, access controls, and employee training — to maintain trade secret status. Simply labeling information "confidential" without structural protections may be insufficient.'
+  },
+  blue_penciling: {
+    title: 'Blue-Penciling Doctrine — Judicial Modification of Overbroad Covenants',
+    type: 'Practice Note',
+    text: 'Many jurisdictions (including New York) permit courts to "blue-pencil" overbroad restrictive covenants — narrowing their scope rather than voiding them entirely. However, some states (including Virginia and Nebraska) follow the "all-or-nothing" rule: if a covenant is overbroad, it is void in its entirety. This distinction affects drafting strategy: in blue-pencil states, employers face less pressure to be precise (courts will fix it); in all-or-nothing states, precision is essential. Employee-side counsel should argue for strict enforcement regardless of jurisdiction.'
+  },
+  patent_v_trade_secret: {
+    title: 'Patent vs. Trade Secret — Choosing a Protection Strategy',
+    type: 'Practice Framework',
+    text: 'Patents and trade secrets are alternative — and sometimes incompatible — forms of IP protection. A patent grants a 20-year monopoly but requires public disclosure of the invention; once published, anyone can read the patent and design around it. A trade secret lasts indefinitely but only while the information remains secret; once disclosed (by reverse engineering, independent discovery, or breach), protection is lost. Key factors in the choice: (1) Can the innovation be reverse-engineered? If yes, patent is usually better — trade secret protection won\'t survive a competitor buying your product. (2) Is the innovation a process invisible to outsiders? If yes, trade secret may be superior — Coca-Cola\'s formula has been protected for 130+ years without a patent. (3) Duration: patents expire in 20 years; trade secrets can last forever. (4) Cost: patents are expensive ($15K–$50K+); trade secret protection requires organizational discipline but no filing fees. Pico Salsa\'s fermentation process is a classic trade secret candidate: it\'s a manufacturing process invisible to consumers, difficult to reverse-engineer from the final product, and the company\'s competitive advantage depends on secrecy rather than a time-limited monopoly.'
+  },
+  party_definitions: {
+    title: 'Defining the Parties — Precision in Contract Drafting',
+    type: 'Drafting Note',
+    text: 'Every agreement should clearly define the parties in its preamble. For employment agreements, key questions include: (1) Is the employer the parent company, a subsidiary, or an LLC? (Pico Salsa, LLC is a limited liability company — obligations run to the LLC, not to Valentina personally.) (2) Is the employee signing as an individual or through a loan-out entity? (Jordan Webb is signing individually.) (3) Who are the "Affiliates"? Many agreements extend obligations to "the Company and its affiliates" — this can dramatically expand scope. (4) Successors and assigns: does the agreement survive an acquisition? If Pico Salsa is bought by a larger food company, do the restrictive covenants transfer? New York courts generally enforce assignment of restrictive covenants incident to a sale of business, but the employee may argue changed circumstances. Precise party definitions prevent disputes about who can enforce — and who is bound by — the agreement\'s terms.'
+  }
+};
+
+// ============================================================
+// INTERACTIVE LEGAL TERMS — hover/click definitions
+// ============================================================
+const LEGAL_TERMS = {
+  'hereby assigns': { label: 'Assignment Language', def: 'Creates an immediate, automatic transfer of ownership by operation of law — no separate document needed. Under Stanford v. Roche (2011), this is the only language that guarantees the employer owns the invention from the moment of creation.', ref: 'stanford_v_roche' },
+  'agrees to assign': { label: 'Assignment Language', def: 'Only a contractual promise to assign in the future. Title remains with the inventor until a separate assignment document is executed. If the employee leaves without signing, the employer must sue for breach of contract.', ref: 'stanford_v_roche' },
+  'material contact': { label: 'Non-Solicitation Scope', def: 'Limits the restriction to customers the employee personally worked with — not the employer\'s entire client base. Courts require this tailoring for enforceability. BDO Seidman v. Hirshberg (NY 1999) established this as the NY standard.', ref: 'bdo_seidman' },
+  'reasonable care': { label: 'Care Standard', def: 'The standard of protection the employee must exercise. "No less than reasonable care" sets a floor (pro-employer). "No greater than" sets a ceiling (pro-employee). The difference determines who bears the risk of lax security practices.' },
+  'no less than': { label: 'Care Floor', def: 'A minimum standard — the employee must exercise at least this level of care regardless of their personal practices. Protects the employer even if the employee is careless with their own information.' },
+  'no greater than': { label: 'Care Ceiling', def: 'A maximum standard — the employee\'s obligation is capped at whatever care they use for their own information. Protects the employee from claims of inadequate precautions.' },
+  'without limitation': { label: 'Overbreadth Signal', def: 'Courts read this phrase as an admission that the drafter intended the clause to be broader than its specific terms. In non-solicitation contexts, it can be grounds for voiding the entire provision rather than narrowing it.' },
+  'trade secret': { label: 'UTSA Definition', def: 'Under the Uniform Trade Secrets Act: information that (1) derives independent economic value from not being generally known and (2) is the subject of reasonable efforts to maintain secrecy. Both prongs must be met.', ref: 'utsa' },
+  'anticipated work': { label: 'Scope Language', def: 'Extends invention assignment beyond "current business" to cover emerging R&D directions. Pro-employer: prevents the argument that an invention predated a formally designated product line. Pro-employee: a blank check — the employer could claim it "anticipated" entering any field.' },
+  'prior inventions': { label: 'Employee Protection', def: 'A schedule (typically Exhibit A) listing everything the employee created before hire. Without it, the employer could claim retroactive ownership of pre-employment work — including Jordan\'s fermentation monitoring app.' },
+  'good faith': { label: 'Defense Standard', def: 'In confidentiality agreements, a good-faith defense means the employee isn\'t liable for accidental disclosure if they were genuinely trying to protect the information. Weakens employer enforcement by adding a subjective element.' },
+  'blue-pencil': { label: 'Judicial Modification', def: 'A court\'s power to narrow an overbroad restrictive covenant rather than void it entirely. Available in NY under BDO Seidman — but only where the employer shows good faith and absence of overreaching. Some states (VA, NE) follow all-or-nothing: overbroad means void.', ref: 'blue_penciling' },
+  'whistleblower immunity': { label: 'DTSA Requirement', def: 'The Defend Trade Secrets Act requires employers to notify employees that they cannot be held liable for disclosing trade secrets to government officials or in sealed court filings. Omitting this notice forfeits exemplary damages and attorney\'s fees.', ref: 'dtsa_notice' },
+  'current business': { label: 'Scope Limitation', def: 'Limits invention assignment to the employer\'s existing operations. Pro-employee: prevents claims to inventions in fields the employer hasn\'t entered. Compare "anticipated work" which extends the scope to future possibilities.' },
+  'non-solicitation': { label: 'Post-Employment Restriction', def: 'Prohibits contacting specific customers or employees after leaving. Less restrictive than a non-compete (which bars competitive employment entirely). Enforceable when limited in duration, scope, and tied to actual relationships.' },
+  'non-compete': { label: 'Post-Employment Restriction', def: 'Prohibits working for a competitor entirely — far broader than non-solicitation. Increasingly disfavored in NY and banned outright in CA. Most courts require a legitimate protectable interest and narrow tailoring.', ref: 'ny_noncompete' },
+  'patent': { label: 'IP Protection', def: 'A 20-year government-granted monopoly in exchange for public disclosure of the invention. Requires novelty, non-obviousness, and utility. Unlike trade secrets, patents protect against independent discovery — but expire and require full disclosure.', ref: 'patent_v_trade_secret' },
+  'trade secret protection': { label: 'IP Protection', def: 'Protection that lasts indefinitely but requires active secrecy measures. Lost if information becomes generally known through any means (including reverse engineering). No registration required, but the owner must show "reasonable efforts" to maintain secrecy.', ref: 'patent_v_trade_secret' },
+  'Pico Salsa, LLC': { label: 'Party Definition', def: 'A limited liability company (LLC). Obligations run to the entity, not to its founders personally. When drafting, define the "Company" precisely — does it include affiliates, subsidiaries, or successors?', ref: 'party_definitions' },
+  'Jordan Webb': { label: 'Party Definition', def: 'The individual employee. Employment agreements bind Jordan personally — not through an entity. Restrictive covenants follow Jordan to any future employer. Consider: does the agreement survive termination? What triggers survive indefinitely vs. expire?', ref: 'party_definitions' },
+  'affiliates': { label: 'Scope Expansion', def: 'Including "affiliates" in a confidentiality or non-solicitation clause can dramatically expand its reach beyond the named employer. For the company, it provides broader protection. For the employee, it may create obligations to entities Jordan has never worked with.' },
+  'successors and assigns': { label: 'Contract Survival', def: 'Determines whether the agreement survives a sale or merger. If Pico Salsa is acquired, do Jordan\'s restrictions transfer to the new owner? NY courts generally enforce assignment incident to a business sale, but employees may challenge changed circumstances.' },
+};
+
+// Annotate clause text with interactive terms
+function annotateClauseText(text) {
+  if (!text) return '';
+  let html = escapeHtml(text);
+  // Sort terms by length (longest first) to avoid partial matches
+  const terms = Object.keys(LEGAL_TERMS).sort((a, b) => b.length - a.length);
+  for (const term of terms) {
+    const info = LEGAL_TERMS[term];
+    const regex = new RegExp(`(?<![\\w-])(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![\\w-])`, 'gi');
+    html = html.replace(regex, (match) => {
+      const refLink = info.ref ? `<br><span style="cursor:pointer;color:#B5E1E1;text-decoration:underline;" onclick="event.stopPropagation();showReference('${info.ref}')">View reference →</span>` : '';
+      return `<span class="legal-term" onclick="toggleTermTip(this)">${match}<span class="term-tip"><div class="tip-label">${info.label}</div>${info.def}${refLink}</span></span>`;
+    });
+  }
+  return html;
+}
+
+function toggleTermTip(el) {
+  document.querySelectorAll('.legal-term.show-tip').forEach(e => { if (e !== el) e.classList.remove('show-tip'); });
+  el.classList.toggle('show-tip');
+}
+
+// Close tips on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.legal-term')) {
+    document.querySelectorAll('.legal-term.show-tip').forEach(el => el.classList.remove('show-tip'));
+  }
+  if (!e.target.closest('.memo-hint')) {
+    document.querySelectorAll('.memo-hint.show-memo-tip').forEach(el => el.classList.remove('show-memo-tip'));
+  }
+});
+
+// Memo hint click handler (delegated — works on dynamically rendered content)
+document.addEventListener('click', function(e) {
+  const hint = e.target.closest('.memo-hint');
+  if (!hint) return;
+  e.stopPropagation();
+  // Close other tips
+  document.querySelectorAll('.memo-hint.show-memo-tip').forEach(el => { if (el !== hint) el.classList.remove('show-memo-tip'); });
+  // Toggle this tip — create tooltip if it doesn't exist
+  if (!hint.querySelector('.memo-tip')) {
+    const tipText = hint.dataset.hint || '';
+    const tipEl = document.createElement('span');
+    tipEl.className = 'memo-tip';
+    tipEl.innerHTML = `<span class="tip-icon">💡</span> ${tipText}`;
+    hint.appendChild(tipEl);
+  }
+  hint.classList.toggle('show-memo-tip');
+});
+
+// Build consequence toggle HTML
+function consequenceToggle(id, label, detail) {
+  return `<span class="consequence-toggle" onclick="document.getElementById('cq-${id}').classList.toggle('open')">⚠ ${label}</span>
+    <div class="consequence-detail" id="cq-${id}">${detail}</div>`;
+}
+
+// Build negotiation awareness badge
+function negoBadge(type, label, tip) {
+  return `<span class="nego-badge ${type}">${type === 'challenge' ? '⚔' : '✓'} ${label}<span class="nego-tip">${tip}</span></span>`;
+}
+
+// Build jurisdiction flag
+function jurisFlag(juris, tip) {
+  return `<span class="juris-flag">📍 ${juris}<span class="juris-tip">${tip}</span></span>`;
+}
+
+// Simple diff between original and edited text
+function buildDiffHtml(original, edited) {
+  if (!original || !edited || original === edited) return null;
+  const origWords = original.split(/(\s+)/);
+  const editWords = edited.split(/(\s+)/);
+  // Simple word-level diff (not full LCS, but good enough for clause edits)
+  let html = '';
+  const maxLen = Math.max(origWords.length, editWords.length);
+  let oi = 0, ei = 0;
+  while (oi < origWords.length || ei < editWords.length) {
+    if (oi < origWords.length && ei < editWords.length && origWords[oi] === editWords[ei]) {
+      html += escapeHtml(editWords[ei]);
+      oi++; ei++;
+    } else if (ei < editWords.length && (oi >= origWords.length || !origWords.includes(editWords[ei]))) {
+      html += `<span class="diff-add">${escapeHtml(editWords[ei])}</span>`;
+      ei++;
+    } else if (oi < origWords.length) {
+      html += `<span class="diff-del">${escapeHtml(origWords[oi])}</span>`;
+      oi++;
+    }
+  }
+  return html;
+}
+
+// ============================================================
+// LOGIN HANDLER
+// ============================================================
+function handleLogin() {
+  const name = document.getElementById('login-name').value.trim();
+  const team = document.getElementById('login-team').value.trim();
+  if (!name || !team) {
+    document.getElementById('login-error').classList.remove('hidden');
+    return;
+  }
+  state.student.name = name;
+  state.student.team = team;
+  // Set scenario from selector (if multiple exist) or default
+  const scenarioSelect = document.getElementById('login-scenario');
+  if (scenarioSelect && scenarioSelect.value) state.scenarioId = scenarioSelect.value;
+  state.timestamps.session_start = Date.now();
+  logAction('login', `${name} (${team}) scenario:${state.scenarioId}`);
+  saveState();
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('app').style.display = 'flex';
+  document.getElementById('sidebar-name').textContent = name;
+  document.getElementById('sidebar-team').textContent = team;
+  render();
+}
+
+// (Timer removed — engagement quality measured through written justifications, not time)
+
+// ============================================================
+// UI TOGGLES
+// ============================================================
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('mobile-open');
+}
+
+function toggleRefPanel() {
+  document.getElementById('ref-panel').classList.toggle('open');
+}
+
+function showReference(refId) {
+  const ref = REFERENCES[refId];
+  if (!ref) return;
+  const panel = document.getElementById('ref-panel');
+  const content = document.getElementById('ref-content');
+  content.innerHTML = `<div class="fade-in">
+    <span class="inline-block text-xs font-ui font-medium text-cua-bright-blue bg-blue-50 px-2 py-0.5 rounded mb-2">${ref.type}</span>
+    <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-3">${ref.title}</h3>
+    <div class="memo-text text-gray-700 text-sm leading-relaxed">${ref.text}</div>
+  </div>`;
+  if (!panel.classList.contains('open')) panel.classList.add('open');
+}
+
+function toggleExploreMode() {
+  state.exploreMode = !state.exploreMode;
+  saveState();
+  renderNav();
+  const btn = document.getElementById('explore-btn-text');
+  if (btn) btn.textContent = state.exploreMode ? 'Disable Explore Mode' : 'Enable Explore Mode';
+}
+
+// ============================================================
+// DARK MODE
+// ============================================================
+function initTheme() {
+  // Priority: localStorage > default (dark for faculty URL param, light otherwise)
+  const saved = localStorage.getItem('pts-deal-room-theme');
+  const urlParams = new URLSearchParams(window.location.search);
+  const isFaculty = urlParams.has('faculty') || urlParams.has('dark');
+  const theme = saved || (isFaculty ? 'dark' : 'light');
+  applyTheme(theme);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('pts-deal-room-theme', theme);
+  // Update toggle icon
+  const sun = document.getElementById('dm-icon-sun');
+  const moon = document.getElementById('dm-icon-moon');
+  if (sun && moon) {
+    sun.style.display = theme === 'dark' ? 'block' : 'none';
+    moon.style.display = theme === 'dark' ? 'none' : 'block';
+  }
+}
+
+function toggleDarkMode() {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+// Initialize theme immediately (before render)
+initTheme();
+
+function manualSave() {
+  saveState();
+  const el = document.getElementById('save-indicator');
+  if (el) {
+    el.style.opacity = '1';
+    el.textContent = 'Progress Saved ✓';
+    el.style.color = '#B5E1E1';
+    clearTimeout(_saveFlashTimeout);
+    _saveFlashTimeout = setTimeout(() => { el.style.opacity = '0'; }, 3000);
+  }
+  logAction('manual_save', 'Phase: ' + state.currentPhase);
+}
+
+function confirmReset() {
+  document.getElementById('reset-modal').style.display = 'flex';
+}
+
+function closeResetModal() {
+  document.getElementById('reset-modal').style.display = 'none';
+}
+
+function executeReset() {
+  logAction('reset_all', 'Student initiated full reset');
+  localStorage.removeItem(STORAGE_KEY);
+  closeResetModal();
+  window.location.reload();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function renderNav() {
+  const nav = document.getElementById('phase-nav');
+  nav.innerHTML = PHASES.map(p => {
+    const isActive = state.currentPhase === p.id;
+    const isCompleted = state.completed[p.id];
+    const idx = PHASES.findIndex(x => x.id === p.id);
+    const curIdx = PHASES.findIndex(x => x.id === state.currentPhase);
+    const isLocked = !state.exploreMode && !isCompleted && idx > curIdx && !(idx === curIdx);
+    const cls = isActive ? 'active' : isCompleted ? 'completed' : isLocked ? 'locked' : '';
+    const dot = isCompleted ? `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>` : p.num;
+    const onclick = (isLocked && !state.exploreMode) ? '' : `goToPhase('${p.id}')`;
+    return `<div class="phase-item ${cls}" onclick="${onclick}">
+      <div class="phase-dot">${dot}</div>
+      <span class="sidebar-label font-ui text-white/80">${p.label}</span>
+    </div>`;
+  }).join('');
+
+  // Decision log
+  const log = document.getElementById('decision-log');
+  const entries = [];
+  if (state.client) entries.push(`Client: ${state.client === 'company' ? 'Pico Salsa' : 'Jordan Webb'}`);
+  if (state.decisions.documentType) entries.push(`Doc: ${state.decisions.documentType === 'employment_agreement' || state.decisions.documentType === 'review_redline' ? 'Employment Agmt' : state.decisions.documentType}`);
+  if (state.decisions.clauses.length) entries.push(`Clauses: ${state.decisions.clauses.length} selected`);
+  const precCount = Object.keys(state.decisions.precedents).length;
+  if (precCount) entries.push(`Precedents: ${precCount} chosen`);
+  log.innerHTML = entries.map(e => `<p>${e}</p>`).join('');
+
+  // Update progress bar
+  const completedCount = PHASES.filter(p => state.completed[p.id]).length;
+  const pct = Math.round((completedCount / PHASES.length) * 100);
+  const pctEl = document.getElementById('progress-pct');
+  const fillEl = document.getElementById('progress-fill');
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (fillEl) fillEl.style.width = pct + '%';
+}
+
+function goToPhase(id) {
+  const idx = PHASES.findIndex(x => x.id === id);
+  const curIdx = PHASES.findIndex(x => x.id === state.currentPhase);
+  if (!state.exploreMode && !state.completed[id] && idx > curIdx && idx !== curIdx) return;
+  state.currentPhase = id;
+  if (!state.timestamps[id + '_start']) state.timestamps[id + '_start'] = Date.now();
+  saveState();
+  render();
+}
+
+function completePhase(id) {
+  state.completed[id] = true;
+  state.timestamps[id + '_end'] = Date.now();
+  saveState();
+}
+
+function revisePhase(phaseId) {
+  // Reset the phase so student can redo their selection
+  state.completed[phaseId] = false;
+  if (phaseId === 'intake') {
+    state.decisions.risks = [];
+    state.decisions.reflections.riskJustification = '';
+  } else if (phaseId === 'strategy') {
+    state.decisions.documentType = null;
+  } else if (phaseId === 'architecture') {
+    state.decisions.riskProvisionMatches = {};
+    state.decisions.clauses = [];
+    state.decisions.assignedClauses = [];
+    delete state.decisions._tempAssign;
+  }
+  logAction('revised_phase', phaseId);
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBackToPhase(phaseId) {
+  // Navigate back to a specific phase (e.g., from assembly back to architecture to fix DTSA)
+  state.currentPhase = phaseId;
+  state.completed[phaseId] = false;
+  // Reset phase-specific state so student can redo
+  if (phaseId === 'architecture') {
+    state.decisions.riskProvisionMatches = {};
+    state.decisions.clauses = [];
+  }
+  logAction('went_back_to', phaseId);
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextPhase() {
+  const idx = PHASES.findIndex(x => x.id === state.currentPhase);
+  completePhase(state.currentPhase);
+  if (idx < PHASES.length - 1) {
+    state.currentPhase = PHASES[idx + 1].id;
+    state.timestamps[PHASES[idx + 1].id + '_start'] = Date.now();
+  }
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// MAIN RENDER
+// ============================================================
+function render() {
+  renderNav();
+  const ws = document.getElementById('workspace');
+  const phase = state.currentPhase;
+
+  // Update topbar
+  const p = PHASES.find(x => x.id === phase);
+  document.getElementById('topbar-phase').textContent = p ? p.label : '';
+  document.getElementById('topbar-step').textContent = p ? `Phase ${p.num} of 7` : '';
+
+  // Show explore toggle after completion
+  if (state.completed.review) {
+    document.getElementById('explore-toggle').classList.remove('hidden');
+  }
+
+  switch (phase) {
+    case 'intake': ws.innerHTML = renderIntake(); break;
+    case 'strategy': ws.innerHTML = renderStrategy(); break;
+    case 'architecture': ws.innerHTML = renderArchitecture(); break;
+    case 'precedents': ws.innerHTML = renderPrecedents(); break;
+    case 'customize': ws.innerHTML = renderCustomize(); break;
+    case 'assemble': ws.innerHTML = renderAssemble(); break;
+    case 'review': ws.innerHTML = renderReview(); break;
+    default: ws.innerHTML = '<p class="text-gray-400 font-ui">Phase not found.</p>';
+  }
+}
+
+// ============================================================
+// PHASE 1: INTAKE
+// ============================================================
+function renderIntake() {
+  if (!state.client) {
+    return `<div class="fade-in max-w-2xl mx-auto">
+      <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">The Engagement</h2>
+      <p class="font-ui text-sm text-gray-500 mb-8">You've just received a call. Choose your client.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="border-2 border-gray-200 rounded-xl p-6 bg-white cursor-pointer hover:border-cua-red hover:shadow-lg transition-all" onclick="selectClient('company')">
+          <div class="w-12 h-12 rounded-xl bg-cua-red/10 flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#B21F2C" stroke-width="2" viewBox="0 0 24 24"><path d="M6 22V4a2 2 0 012-2h8a2 2 0 012 2v18z"/><path d="M6 12H4a2 2 0 00-2 2v6a2 2 0 002 2h2"/><path d="M18 9h2a2 2 0 012 2v9a2 2 0 01-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+          </div>
+          <h3 class="font-headline text-lg text-cua-blue uppercase tracking-wide mb-1">Pico Salsa, LLC</h3>
+          <p class="font-ui text-sm text-gray-600">Represent the company. Protect trade secrets, customer relationships, and intellectual property from a departing employee.</p>
+          <p class="font-ui text-xs text-cua-red font-medium mt-3 uppercase tracking-wider">Company Track</p>
+        </div>
+        <div class="border-2 border-gray-200 rounded-xl p-6 bg-white cursor-pointer hover:border-cua-bright-blue hover:shadow-lg transition-all" onclick="selectClient('employee')">
+          <div class="w-12 h-12 rounded-xl bg-cua-bright-blue/10 flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="#2459A9" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h3 class="font-headline text-lg text-cua-blue uppercase tracking-wide mb-1">Jordan Webb</h3>
+          <p class="font-ui text-sm text-gray-600">Represent the employee. Protect professional mobility, personal projects, and the right to work in your field.</p>
+          <p class="font-ui text-xs text-cua-bright-blue font-medium mt-3 uppercase tracking-wider">Employee Track</p>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Client selected — show intake memo and risk identification
+  const fp = FACT_PATTERN[state.client];
+  const risks = RISKS[state.client];
+  const selected = state.decisions.risks || [];
+  const submitted = selected.length > 0 && state.completed.intake;
+
+  let riskHtml = '';
+  if (!submitted) {
+    const selCount = selected.length;
+    riskHtml = `<div class="mt-8">
+      <h3 class="font-headline text-lg text-cua-blue uppercase tracking-wide mb-1">Identify the Legal Risks</h3>
+      <p class="font-ui text-sm text-gray-500 mb-1">Based on the intake memo, select the <strong>three most important</strong> legal risks you need to address.</p>
+      <p class="font-ui text-xs text-gray-400 mb-4">Choose exactly 3. Then rank them and explain why your #1 priority matters most.</p>
+      <div class="space-y-2" id="risk-options">
+        ${risks.map(r => {
+          const isSelected = selected.includes(r.id);
+          const rank = isSelected ? selected.indexOf(r.id) + 1 : null;
+          const disabled = !isSelected && selCount >= 3;
+          return `<div>
+            <div class="flex items-start gap-3 p-3 rounded-lg border-2 cursor-pointer transition-all ${isSelected ? 'border-cua-bright-blue bg-blue-50' : disabled ? 'border-gray-100 bg-gray-50 opacity-50' : 'border-gray-200 bg-white hover:border-gray-300'}" onclick="${disabled ? '' : `toggleRisk('${r.id}')`}">
+              <div class="flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-ui font-bold ${isSelected ? 'bg-cua-bright-blue text-white' : 'bg-gray-200 text-gray-400'}">${rank || '—'}</div>
+              <span class="font-ui text-sm text-gray-700">${r.label}</span>
+            </div>
+            ${isSelected && r.context ? `<div class="risk-context font-ui">${r.context}</div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>
+      ${selCount === 3 ? `<div class="mt-4">
+        <p class="font-ui text-xs text-gray-500 mb-1">To reorder, click a selected risk above to deselect it, then reselect risks in your preferred priority order.</p>
+        <div class="bg-white border border-gray-200 rounded-lg p-4 mt-2">
+          <p class="font-ui text-xs font-medium text-gray-600 mb-2">Your ranking:</p>
+          ${selected.map((id, i) => {
+            const r = risks.find(x => x.id === id);
+            return `<p class="font-ui text-sm text-gray-700">${i + 1}. ${r ? r.label : id}</p>`;
+          }).join('')}
+        </div>
+        <div class="mt-4">
+          <label class="font-ui text-sm font-medium text-gray-700 block mb-2">Why is #1 — "${risks.find(x => x.id === selected[0])?.label || ''}" — your top priority for ${state.client === 'company' ? 'Pico Salsa' : 'Jordan'}?</label>
+          <textarea id="risk-justification" class="draft-textarea" style="min-height: 80px;" placeholder="Explain in 2-3 sentences why this risk matters most given the specific facts of this engagement..."
+            oninput="state.decisions.reflections.riskJustification = this.value; saveState(); updateRiskSubmitButton();">${escapeHtml(state.decisions.reflections.riskJustification || '')}</textarea>
+        </div>
+        <button id="risk-submit-btn" onclick="submitRisks()" class="mt-4 btn-primary font-ui ${!(state.decisions.reflections.riskJustification || '').trim() ? 'opacity-50 cursor-not-allowed' : ''}" ${!(state.decisions.reflections.riskJustification || '').trim() ? 'disabled' : ''}>Submit Risk Assessment</button>
+      </div>` : `<p class="font-ui text-xs text-gray-400 mt-3">${selCount}/3 selected</p>`}
+    </div>`;
+  } else {
+    // Show feedback
+    const correct = risks.filter(r => r.correct);
+    const incorrect = risks.filter(r => !r.correct);
+    const selectedCorrect = selected.filter(id => risks.find(r => r.id === id && r.correct));
+    const selectedIncorrect = selected.filter(id => risks.find(r => r.id === id && !r.correct));
+    const missedCorrect = correct.filter(r => !selected.includes(r.id));
+
+    riskHtml = `<div class="mt-8 fade-in">
+      <h3 class="font-headline text-lg text-cua-blue uppercase tracking-wide mb-4">Risk Assessment Feedback</h3>
+      <div class="space-y-3">
+        ${selectedCorrect.map(id => {
+          const r = risks.find(x => x.id === id);
+          return `<div class="feedback-box feedback-good"><p class="font-ui text-sm font-medium text-emerald-800">${r.label}</p><p class="font-ui text-xs text-emerald-700 mt-1">${r.explanation}</p></div>`;
+        }).join('')}
+        ${selectedIncorrect.map(id => {
+          const r = risks.find(x => x.id === id);
+          return `<div class="feedback-box feedback-warn"><p class="font-ui text-sm font-medium text-cua-light-red">${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p></div>`;
+        }).join('')}
+        ${missedCorrect.length ? `<div class="feedback-box feedback-nudge mb-2"><p class="font-ui text-xs text-amber-700 italic">You had three picks — you can't catch everything. Here are other risks a senior partner would flag:</p></div>` : ''}
+        ${missedCorrect.map(r => `<div class="feedback-box feedback-nudge"><p class="font-ui text-sm font-medium text-amber-800">Also important: ${r.label}</p><p class="font-ui text-xs text-gray-600 mt-1">${r.explanation}</p>${r.memoRef ? `<p class="font-ui text-xs text-cua-bright-blue mt-1.5 italic">${r.memoRef}</p>` : ''}</div>`).join('')}
+      </div>
+      <div class="mt-6 flex items-center justify-between">
+        ${(selectedIncorrect.length || missedCorrect.length) ? `<button onclick="revisePhase('intake')" class="btn-outline font-ui">← Revise My Selections</button>` : '<div></div>'}
+        <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Document Strategy →</button>
+      </div>
+    </div>`;
+  }
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">The Engagement</h2>
+    <p class="font-ui text-sm text-gray-500 mb-6">Read the client intake memo carefully. <span class="text-cua-bright-blue">Highlighted phrases</span> contain clues — click them for guidance.</p>
+    <div class="bg-white border border-gray-200 rounded-xl p-6 md:p-8 shadow-sm">
+      <div class="memo-text text-gray-700">${fp.memo}</div>
+    </div>
+    ${riskHtml}
+  </div>`;
+}
+
+function selectClient(client) {
+  state.client = client;
+  logAction('client_selected', client);
+  saveState();
+  render();
+}
+
+function toggleRisk(id) {
+  const idx = state.decisions.risks.indexOf(id);
+  if (idx >= 0) state.decisions.risks.splice(idx, 1);
+  else {
+    if (state.decisions.risks.length >= 3) return;
+    state.decisions.risks.push(id);
+  }
+  saveState();
+  render();
+}
+
+function submitRisks() {
+  if (state.decisions.risks.length !== 3) return;
+  if (!(state.decisions.reflections.riskJustification || '').trim()) return;
+  logAction('risks_submitted', state.decisions.risks.join(', '));
+  logAction('risk_justification', state.decisions.reflections.riskJustification);
+  completePhase('intake');
+  render();
+}
+
+// ============================================================
+// PHASE 2: DOCUMENT STRATEGY
+// ============================================================
+function renderStrategy() {
+  const strategies = DOC_STRATEGIES[state.client];
+  if (!strategies) return '<p class="font-ui text-gray-400">Select a client first.</p>';
+  const selected = state.decisions.documentType;
+  const submitted = selected && state.completed.strategy;
+
+  if (!submitted) {
+    return `<div class="fade-in">
+      <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Document Strategy</h2>
+      <p class="font-ui text-sm text-gray-500 mb-6">${state.client === 'company' ? 'What do you recommend Valentina prepare for the next hire?' : 'What is the right approach for Jordan?'}</p>
+      <div class="space-y-3">
+        ${strategies.map(s => `
+          <div class="precedent-card ${selected === s.id ? 'selected' : ''}" onclick="selectStrategy('${s.id}')">
+            <p class="font-ui text-sm font-medium text-gray-800">${s.label}</p>
+          </div>`).join('')}
+      </div>
+      ${selected ? `<button onclick="submitStrategy()" class="mt-6 btn-primary font-ui">Confirm Recommendation</button>` : ''}
+    </div>`;
+  }
+
+  const s = strategies.find(x => x.id === selected);
+  const feedbackCls = s.correct ? 'feedback-good' : 'feedback-warn';
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Document Strategy</h2>
+    <div class="mt-4">
+      <div class="precedent-card ${s.correct ? 'selected' : 'bad-selected'}">
+        <p class="font-ui text-sm font-medium text-gray-800">${s.label}</p>
+      </div>
+      <div class="feedback-box ${feedbackCls} mt-4">
+        <p class="font-ui text-sm text-gray-700">${s.feedback}</p>
+      </div>
+      ${!s.correct ? `<div class="client-msg mt-4">
+        <p class="font-ui text-sm text-amber-900"><strong>${state.client === 'company' ? 'Valentina' : 'Jordan'}:</strong> ${state.client === 'company' ? '"I trust your judgment, but can you walk me through why this is the right approach? I want to understand what we\'re building here."' : '"I just want to make sure I\'m not signing away my career. Walk me through what you recommend."'}</p>
+      </div>` : ''}
+    </div>
+    <div class="mt-6 flex items-center justify-between">
+      ${!s.correct ? `<button onclick="revisePhase('strategy')" class="btn-outline font-ui">← Revise My Selection</button>` : '<div></div>'}
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Agreement Architecture →</button>
+    </div>
+  </div>`;
+}
+
+function selectStrategy(id) {
+  state.decisions.documentType = id;
+  saveState();
+  render();
+}
+
+function submitStrategy() {
+  logAction('strategy_selected', state.decisions.documentType);
+  completePhase('strategy');
+  render();
+}
+
+// ============================================================
+// PHASE 3: ARCHITECTURE (RISK-TO-PROVISION MATCHING)
+// ============================================================
+
+// Mapping data: which provisions address which risks
+const RISK_PROVISION_MAP = {
+  company: {
+    trade_secret: ['ci_definition', 'ci_obligations'],
+    customer_poach: ['non_solicitation'],
+    ip_ownership: ['invention_assignment'],
+    team_poach: ['non_solicitation'],
+    dtsa_compliance: ['dtsa_notice'],
+    noncompete: [],
+    defamation: [],
+  },
+  employee: {
+    mobility: ['non_solicitation', 'noncompete_removal'],
+    general_knowledge: ['ci_exclusions', 'ci_definition'],
+    personal_ip: ['invention_assignment', 'personal_time'],
+    prior_inventions: ['prior_inventions', 'invention_assignment'],
+    scope_limits: ['non_solicitation', 'ci_definition'],
+    noncompete_block: ['noncompete_removal', 'non_solicitation'],
+    salary: [],
+  }
+};
+
+function renderArchitecture() {
+  const clauses = CLAUSE_TYPES[state.client];
+  if (!clauses) return '';
+  const submitted = state.completed.architecture;
+  const matches = state.decisions.riskProvisionMatches || {};
+  const studentRisks = state.decisions.risks || [];
+
+  if (!submitted) {
+    // Build available provisions pool (excluding already matched ones)
+    const matchedProvisions = Object.values(matches).flat();
+    const availableProvisions = clauses.filter(c => !matchedProvisions.includes(c.id));
+
+    // Check if all risks have at least one match
+    const allMatched = studentRisks.every(rId => (matches[rId] || []).length > 0);
+
+    const risks = RISKS[state.client];
+
+    return `<div class="fade-in">
+      <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Agreement Architecture</h2>
+      <p class="font-ui text-sm text-gray-500 mb-1">For each risk you identified, match the contract provision(s) that address it.</p>
+      <p class="font-ui text-xs text-gray-400 mb-6">Drag a provision from the bank below and drop it onto the matching risk. A provision can address multiple risks.</p>
+
+      <div class="mb-6">
+        <p class="font-ui text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Provision Bank</p>
+        <div class="flex flex-wrap gap-2" id="provision-bank">
+          ${clauses.map(c => {
+            const isPlaced = matchedProvisions.includes(c.id);
+            return `<div class="match-source ${isPlaced ? 'placed' : ''}" draggable="${isPlaced ? 'false' : 'true'}" data-provision="${c.id}"
+              ondragstart="event.dataTransfer.setData('text/plain', '${c.id}'); this.classList.add('dragging');"
+              ondragend="this.classList.remove('dragging');"
+              ${!isPlaced ? `onclick="pickProvision('${c.id}')"` : ''}>
+              <span class="font-ui">${c.label}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <div class="space-y-4" id="risk-targets">
+        ${studentRisks.map(rId => {
+          const r = risks.find(x => x.id === rId);
+          if (!r) return '';
+          const rMatches = matches[rId] || [];
+          return `<div class="bg-white border border-gray-200 rounded-xl p-4">
+            <p class="font-ui text-sm font-medium text-gray-800 mb-2">${r.label}</p>
+            <div class="match-target ${rMatches.length ? 'filled' : ''}"
+              data-risk="${rId}"
+              ondragover="event.preventDefault(); this.classList.add('drag-over');"
+              ondragleave="this.classList.remove('drag-over');"
+              ondrop="handleMatchDrop(event, '${rId}');"
+              onclick="handleTargetClick('${rId}');">
+              ${rMatches.length
+                ? rMatches.map(pId => {
+                    const p = clauses.find(x => x.id === pId);
+                    return `<span class="match-chip">${p ? p.label : pId}<span class="remove-match" onclick="event.stopPropagation(); removeMatch('${rId}', '${pId}')">×</span></span>`;
+                  }).join(' ')
+                : `<span class="font-ui text-xs text-gray-400">Drop a provision here, or click to assign</span>`}
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      ${allMatched ? `<button onclick="submitArchitecture()" class="mt-6 btn-primary font-ui">Submit Matching</button>` : `<p class="font-ui text-xs text-gray-400 mt-4">Match at least one provision to each risk to continue.</p>`}
+    </div>`;
+  }
+
+  // === Post-submission feedback ===
+  const risks = RISKS[state.client];
+  const correctMap = RISK_PROVISION_MAP[state.client] || {};
+
+  // Determine which clauses to include (union of all matched provisions)
+  const allMatchedProvisions = [...new Set(Object.values(matches).flat())];
+  // Also check for DTSA
+  const dtsaIncluded = allMatchedProvisions.includes('dtsa_notice');
+  if (!dtsaIncluded) state.decisions.dtsaCaught = 'missed_phase3';
+
+  // Build clause list from matches
+  state.decisions.clauses = allMatchedProvisions;
+  saveState();
+
+  // Evaluate matches
+  let feedbackItems = [];
+  studentRisks.forEach(rId => {
+    const studentProvisions = matches[rId] || [];
+    const correctProvisions = correctMap[rId] || [];
+    const r = risks.find(x => x.id === rId);
+    if (!r) return;
+
+    const correct = studentProvisions.filter(p => correctProvisions.includes(p));
+    const missed = correctProvisions.filter(p => !studentProvisions.includes(p));
+    const wrong = studentProvisions.filter(p => !correctProvisions.includes(p));
+
+    if (correct.length && !missed.length && !wrong.length) {
+      feedbackItems.push({ type: 'good', risk: r.label, text: 'Correct match.' });
+    } else {
+      if (missed.length) {
+        const missedLabels = missed.map(p => clauses.find(x => x.id === p)?.label || p).join(', ');
+        feedbackItems.push({ type: 'nudge', risk: r.label, text: `Consider also: ${missedLabels}` });
+      }
+      if (wrong.length) {
+        const wrongLabels = wrong.map(p => clauses.find(x => x.id === p)?.label || p).join(', ');
+        const wrongClauses = wrong.map(p => clauses.find(x => x.id === p)).filter(Boolean);
+        const distractorFeedback = wrongClauses.filter(c => c.distractor).map(c => c.feedback);
+        feedbackItems.push({ type: 'warn', risk: r.label, text: `${wrongLabels} may not be the best fit here.${distractorFeedback.length ? ' ' + distractorFeedback.join(' ') : ''}` });
+      }
+    }
+  });
+
+  // Check for required clauses the student missed entirely
+  const requiredMissed = clauses.filter(c => c.required && !allMatchedProvisions.includes(c.id));
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Agreement Architecture — Review</h2>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6 mt-4">
+      <h3 class="font-ui text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Your Agreement Will Include</h3>
+      <div class="space-y-1">
+        ${allMatchedProvisions.map((id, i) => {
+          const c = clauses.find(x => x.id === id);
+          return `<p class="font-ui text-sm text-gray-700">§ ${i + 1}. ${c ? c.label : id}</p>`;
+        }).join('')}
+      </div>
+    </div>
+
+    <div class="space-y-2 mt-6">
+      ${feedbackItems.map(fi => `<div class="feedback-box feedback-${fi.type}">
+        <p class="font-ui text-xs font-medium ${fi.type === 'good' ? 'text-emerald-800' : fi.type === 'nudge' ? 'text-amber-800' : 'text-cua-light-red'}">${fi.risk}</p>
+        <p class="font-ui text-xs text-gray-600 mt-0.5">${fi.text}</p>
+      </div>`).join('')}
+    </div>
+
+    ${requiredMissed.length ? `<div class="feedback-box feedback-nudge mt-4">
+      <p class="font-ui text-sm font-medium text-amber-800">Provisions you didn't match to any risk:</p>
+      ${requiredMissed.map(c => `<p class="font-ui text-xs text-gray-600 mt-1">- <strong>${c.label}</strong>${c.trap ? ' — this omission has consequences you\'ll discover later' : ''}</p>`).join('')}
+    </div>` : ''}
+
+    ${!requiredMissed.length && feedbackItems.every(f => f.type === 'good') ? `<div class="feedback-box feedback-good mt-4"><p class="font-ui text-sm text-emerald-800">Excellent. Every risk is addressed by the right provision.</p></div>` : ''}
+
+    <div class="mt-6 flex items-center justify-between">
+      ${(requiredMissed.length || feedbackItems.some(f => f.type !== 'good')) ? `<div class="flex flex-col gap-2">
+        <button onclick="revisePhase('architecture')" class="btn-outline font-ui">← Revise My Matching</button>
+        <p class="font-ui text-xs text-gray-400">Review the feedback above. You can add or reassign provisions to address the gaps, or continue with your current architecture.</p>
+      </div>` : '<div></div>'}
+      <button onclick="nextPhase()" class="btn-secondary font-ui">${(requiredMissed.length || feedbackItems.some(f => f.type !== 'good')) ? 'Continue Anyway →' : 'Continue to Precedent Library →'}</button>
+    </div>
+  </div>`;
+}
+
+// Drag-and-drop and click-to-assign helpers
+let pendingProvision = null;
+
+function pickProvision(provId) {
+  pendingProvision = provId;
+  // Highlight it visually
+  document.querySelectorAll('.match-source').forEach(el => el.style.outline = '');
+  const el = document.querySelector(`[data-provision="${provId}"]`);
+  if (el && !el.classList.contains('placed')) el.style.outline = '3px solid #2459A9';
+}
+
+function handleTargetClick(riskId) {
+  if (pendingProvision) {
+    addMatch(riskId, pendingProvision);
+    pendingProvision = null;
+  }
+}
+
+function handleMatchDrop(event, riskId) {
+  event.preventDefault();
+  event.currentTarget.classList.remove('drag-over');
+  const provId = event.dataTransfer.getData('text/plain');
+  if (provId) addMatch(riskId, provId);
+}
+
+function addMatch(riskId, provId) {
+  if (!state.decisions.riskProvisionMatches) state.decisions.riskProvisionMatches = {};
+  if (!state.decisions.riskProvisionMatches[riskId]) state.decisions.riskProvisionMatches[riskId] = [];
+  if (!state.decisions.riskProvisionMatches[riskId].includes(provId)) {
+    state.decisions.riskProvisionMatches[riskId].push(provId);
+  }
+  saveState();
+  render();
+}
+
+function removeMatch(riskId, provId) {
+  if (!state.decisions.riskProvisionMatches || !state.decisions.riskProvisionMatches[riskId]) return;
+  state.decisions.riskProvisionMatches[riskId] = state.decisions.riskProvisionMatches[riskId].filter(p => p !== provId);
+  saveState();
+  render();
+}
+
+function submitArchitecture() {
+  const matches = state.decisions.riskProvisionMatches || {};
+  const allProvisions = [...new Set(Object.values(matches).flat())];
+  state.decisions.clauses = allProvisions;
+  if (allProvisions.includes('dtsa_notice')) state.decisions.dtsaCaught = 'phase3';
+  logAction('architecture_submitted', allProvisions.join(', '));
+  completePhase('architecture');
+  render();
+}
+
+// ============================================================
+// PHASE 4: PRECEDENT LIBRARY
+// ============================================================
+function renderPrecedents() {
+  const allClauseIds = state.decisions.clauses.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
+  const assigned = state.decisions.assignedClauses || [];
+  const clauses = CLAUSE_TYPES[state.client] || [];
+
+  if (!allClauseIds.length) {
+    return `<div class="fade-in">
+      <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
+      <p class="font-ui text-sm text-gray-500 mb-4">No precedents available for your selected clauses. Continue to customization.</p>
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue</button>
+    </div>`;
+  }
+
+  // Step 1: Clause assignment (if not yet assigned)
+  if (!assigned.length) {
+    return `<div class="fade-in">
+      <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
+      <div class="feedback-box feedback-partner mb-6">
+        <p class="font-ui text-sm text-gray-800"><strong>Team Assignment.</strong> In practice, a senior partner assigns different sections of an agreement to different associates. Each person drafts their assigned sections; the team compiles the result.</p>
+        <p class="font-ui text-xs text-gray-600 mt-2">Select the clauses <strong>you</strong> will be responsible for. Your teammates will handle the rest. Choose at least 1 and up to ${Math.min(allClauseIds.length, 3)}.</p>
+      </div>
+      <div class="space-y-2">
+        ${allClauseIds.map(id => {
+          const c = clauses.find(x => x.id === id);
+          const hasPrecedents = PRECEDENTS[id] && PRECEDENTS[id][state.client] && PRECEDENTS[id][state.client].length > 0;
+          const tempAssigned = state.decisions._tempAssign || [];
+          const isChecked = tempAssigned.includes(id);
+          const atMax = tempAssigned.length >= Math.min(allClauseIds.length, 3) && !isChecked;
+          return `<label class="flex items-start gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${isChecked ? 'border-cua-bright-blue bg-blue-50' : atMax ? 'border-gray-100 bg-gray-50 opacity-50' : 'border-gray-200 bg-white hover:border-gray-300'}">
+            <input type="checkbox" class="mt-1 accent-cua-bright-blue" ${isChecked ? 'checked' : ''} ${atMax ? 'disabled' : ''} onchange="toggleClauseAssign('${id}')">
+            <div>
+              <p class="font-ui text-sm font-medium text-gray-800">${c ? c.label : id}</p>
+              ${hasPrecedents ? `<p class="font-ui text-xs text-gray-400 mt-0.5">${PRECEDENTS[id][state.client].length} precedent options available</p>` : ''}
+            </div>
+          </label>`;
+        }).join('')}
+      </div>
+      <p class="font-ui text-xs text-gray-400 mt-3">Clauses you don't select will appear as "Assigned to Teammate" in the final agreement.</p>
+      ${(state.decisions._tempAssign || []).length >= 1 ? `<div class="mt-6">
+        <button onclick="confirmClauseAssignment()" class="btn-primary font-ui">Confirm My Assignment & Open Library</button>
+      </div>` : ''}
+    </div>`;
+  }
+
+  // Step 2: Show precedents only for assigned clauses
+  const myClauseIds = assigned.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
+  const unassignedIds = allClauseIds.filter(id => !assigned.includes(id));
+  const allMySelected = myClauseIds.every(id => state.decisions.precedents[id]);
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
+    <p class="font-ui text-sm text-gray-500 mb-2">Review the available precedents for your assigned clauses and select the best option for your client.</p>
+    <div class="feedback-box feedback-partner mb-4">
+      <p class="font-ui text-xs text-gray-700"><strong>Practice reality:</strong> A firm's precedent library contains templates from many sources — some excellent, some outdated, some drafted for the <em>other side</em>. Part of your job is evaluating which precedent actually serves <strong>your</strong> client. Look at the source, jurisdiction, date, and read the clause text carefully before selecting. You'll get feedback on your choice after you pick.</p>
+    </div>
+    <div class="flex items-center justify-between mb-6">
+      <p class="font-ui text-xs text-gray-400">You are responsible for ${myClauseIds.length} of ${allClauseIds.length} clauses. ${unassignedIds.length ? `${unassignedIds.length} clause${unassignedIds.length > 1 ? 's are' : ' is'} assigned to your teammates.` : ''}</p>
+      <button onclick="reassignClauses()" class="font-ui text-xs text-cua-bright-blue hover:underline">Reassign clauses</button>
+    </div>
+
+    ${unassignedIds.length ? `<div class="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-8">
+      <p class="font-ui text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assigned to Teammates</p>
+      <div class="space-y-1">
+        ${unassignedIds.map(id => {
+          const c = clauses.find(x => x.id === id);
+          return `<p class="font-ui text-sm text-gray-400">${c ? c.label : id} — <span class="italic">pending teammate draft</span></p>`;
+        }).join('')}
+      </div>
+    </div>` : ''}
+
+    <div class="space-y-10">
+      ${myClauseIds.map(clauseId => {
+        const precs = PRECEDENTS[clauseId][state.client];
+        const selectedId = state.decisions.precedents[clauseId];
+        const clauseLabel = clauses.find(c => c.id === clauseId);
+        return `<div>
+          <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-3">${clauseLabel ? clauseLabel.label : clauseId}</h3>
+          <div class="space-y-3">
+            ${precs.map(p => {
+              const isSel = selectedId === p.id;
+              const badSel = isSel && (p.quality !== 'good');
+              return `<div class="precedent-card ${isSel ? (badSel ? 'bad-selected' : 'selected') : ''}" onclick="selectPrecedent('${clauseId}', '${p.id}')">
+                <div class="flex items-start justify-between gap-3 mb-2">
+                  <p class="font-ui text-sm font-medium text-gray-800">${p.label}</p>
+                  <div class="flex gap-1.5 flex-shrink-0">
+                    <span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">${p.jurisdiction}</span>
+                    <span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">${p.date}</span>
+                  </div>
+                </div>
+                <p class="font-ui text-xs text-gray-500 mb-2">${p.source}</p>
+                <p class="font-ui text-xs text-gray-600 mb-3">${p.summary}</p>
+                <details class="group">
+                  <summary class="font-ui text-xs text-cua-bright-blue cursor-pointer hover:underline">View full clause text</summary>
+                  <div class="clause-text text-gray-700 text-sm mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100">${annotateClauseText(p.text)}</div>
+                  <p class="font-ui text-xs text-gray-400 mt-1 italic">Dotted-underlined terms are interactive — click to learn more.</p>
+                </details>
+                ${p.jurisdiction !== 'General' ? jurisFlag(p.jurisdiction, p.jurisdiction === 'CA' ? 'California law — may not apply in New York. Verify before using.' : p.jurisdiction === 'NY' ? 'New York jurisdiction — directly applicable.' : 'Check jurisdiction compatibility.') : ''}
+                ${isSel ? `<div class="feedback-box ${p.quality === 'good' ? 'feedback-good' : p.quality === 'subtle_defect' ? 'feedback-nudge' : 'feedback-warn'} mt-3">
+                  <p class="font-ui text-xs text-gray-700">${p.feedback}</p>
+                  ${p.quality !== 'good' ? `<p class="font-ui text-xs text-gray-500 mt-1 italic">You may continue with this selection or choose a different precedent.</p>` : ''}
+                  ${p.quality === 'overbroad' ? `<div class="mt-2">${negoBadge('challenge', 'Opposing counsel will attack', 'A competent employee-side lawyer will move to void this provision entirely, arguing it is unconscionably broad.')}</div>` : ''}
+                  ${p.quality === 'bad_for_client' ? `<div class="mt-2">${negoBadge('challenge', 'Weakens your position', state.client === 'company' ? 'This precedent was designed for the receiving party.' : 'This precedent favors the employer.')}</div>` : ''}
+                  ${p.quality === 'subtle_defect' ? `<div class="mt-2">${consequenceToggle(p.id, 'What happens if you miss this?', 'Under Stanford v. Roche (2011), "agrees to assign" means Pico Salsa does NOT automatically own Jordan\'s inventions.')}</div>` : ''}
+                  ${p.quality === 'wrong_jurisdiction' ? `<div class="mt-2">${jurisFlag(p.jurisdiction, 'This precedent is from a different jurisdiction.')}</div>` : ''}
+                  ${p.quality === 'good' ? `<div class="mt-2">${negoBadge('standard', 'Commercially standard', 'This approach reflects prevailing market practice.')}</div>` : ''}
+                </div>` : ''}
+              </div>`;
+            }).join('')}
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    ${allMySelected ? `<div class="mt-8 flex justify-end">
+      <button onclick="submitPrecedents()" class="btn-primary font-ui">Confirm Selections & Continue</button>
+    </div>` : `<p class="font-ui text-xs text-gray-400 mt-6">Select a precedent for each of your assigned clauses to continue.</p>`}
+  </div>`;
+}
+
+function toggleClauseAssign(id) {
+  if (!state.decisions._tempAssign) state.decisions._tempAssign = [];
+  const idx = state.decisions._tempAssign.indexOf(id);
+  const max = Math.min(state.decisions.clauses.filter(cid => PRECEDENTS[cid] && PRECEDENTS[cid][state.client]).length, 3);
+  if (idx >= 0) state.decisions._tempAssign.splice(idx, 1);
+  else if (state.decisions._tempAssign.length < max) state.decisions._tempAssign.push(id);
+  saveState();
+  render();
+}
+
+function confirmClauseAssignment() {
+  state.decisions.assignedClauses = [...(state.decisions._tempAssign || [])];
+  delete state.decisions._tempAssign;
+  logAction('clauses_assigned', state.decisions.assignedClauses.join(', '));
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function reassignClauses() {
+  state.decisions.assignedClauses = [];
+  state.decisions._tempAssign = [];
+  // Clear precedent selections since assignments are changing
+  state.decisions.precedents = {};
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function selectPrecedent(clauseId, precId) {
+  state.decisions.precedents[clauseId] = precId;
+  logAction('precedent_selected', `${clauseId}: ${precId}`);
+  saveState();
+  render();
+}
+
+function submitPrecedents() {
+  logAction('precedents_confirmed', JSON.stringify(state.decisions.precedents));
+  nextPhase();
+}
+
+// ============================================================
+// CUSTOMIZATION PROMPTS (per clause, per client)
+// ============================================================
+const CUSTOMIZATION_PROMPTS = {
+  ci_definition: {
+    company: { prompt: 'This precedent uses a contextual standard. Is that appropriate for a food production environment where techniques are demonstrated orally? Should you add specific examples of what constitutes CI for Pico Salsa?', refId: null },
+    employee: { prompt: 'Does this definition adequately protect Jordan\'s general fermentation expertise? Consider whether the exclusions are broad enough to cover skills he developed before Pico Salsa.', refId: null }
+  },
+  ci_obligations: {
+    company: { prompt: 'The difference between a floor ("no less than") and a ceiling ("no greater than") determines who bears the risk of lax security. If Jordan keeps his own files on an unsecured laptop, which standard protects the fermentation process?', refId: null },
+    employee: { prompt: 'The care standard determines how much effort Jordan must spend protecting information. A floor standard means Pico Salsa can always argue he should have done more. A ceiling caps his obligation at his own practices. Which protects Jordan?', refId: null }
+  },
+  invention_assignment: {
+    company: { prompt: 'Check the assignment language carefully. Does it say "hereby assigns" or "agrees to assign"? Under Stanford v. Roche, this two-word difference determines whether Pico Salsa automatically owns Jordan\'s inventions — or must sue to get them.', refId: 'stanford_v_roche' },
+    employee: { prompt: 'Does this clause protect Jordan\'s fermentation monitoring app? Check for: (1) "agrees to assign" not "hereby assigns," (2) scope limited to current business, (3) prior inventions exclusion, (4) personal time carve-out.', refId: 'stanford_v_roche' }
+  },
+  non_solicitation: {
+    company: { prompt: 'Jordan manages two of three key retail accounts. Is the duration enforceable in New York? Is the scope limited to customers Jordan actually worked with? Courts void provisions that are too broad — leaving the company with nothing.', refId: 'lasership_v_watson' },
+    employee: { prompt: 'Can Jordan respond if a former client reaches out to him unprompted? Check for an inbound contact exception. Also verify there\'s no disguised non-compete ("do business with any competitor").', refId: 'lasership_v_watson' }
+  },
+  prior_inventions: {
+    company: { prompt: 'A prior inventions schedule is standard. Refusing to accept one signals bad faith and gains the company nothing in litigation.', refId: null },
+    employee: { prompt: 'Make sure Jordan\'s fermentation monitoring app is explicitly listed or covered by the carve-out. The schedule is his proof of prior ownership.', refId: null }
+  },
+  dtsa_notice: {
+    company: { prompt: 'This is required statutory language. Verify it tracks 18 U.S.C. § 1833(b)(1)-(2) exactly. Missing a word here forfeits exemplary damages.', refId: 'dtsa_notice' },
+    employee: { prompt: 'The DTSA notice actually protects employees — it guarantees whistleblower immunity. Verify the language is complete and accurate.', refId: 'dtsa_notice' }
+  },
+  ci_exclusions: {
+    employee: { prompt: 'Does clause (e) — the general knowledge exclusion — cover Jordan\'s pre-existing fermentation expertise? Consider whether "acquired during the course of employment" is broad enough, or whether you need "developed over Employee\'s career."', refId: null }
+  },
+  personal_time: {
+    employee: { prompt: 'Jordan\'s fermentation monitoring app was developed on his own time, own laptop, own money, before Pico Salsa. Does this carve-out clearly protect it? Check: (1) "entirely on own time," (2) "without use of Company resources," (3) "does not relate to current business."', refId: 'cal_lab_code_2870' }
+  },
+  noncompete_removal: {
+    employee: { prompt: 'This clause affirmatively preserves Jordan\'s right to work at RivalCraft. Is the language clear enough that no court could read the non-solicitation provisions as a disguised non-compete?', refId: 'ny_noncompete' }
+  }
+};
+
+// Attach all data to the Pico Salsa scenario
+Object.assign(SCENARIOS.pico_salsa, {
+  factPattern: FACT_PATTERN,
+  risks: RISKS,
+  docStrategies: DOC_STRATEGIES,
+  clauseTypes: CLAUSE_TYPES,
+  precedents: PRECEDENTS,
+  references: REFERENCES,
+  legalTerms: LEGAL_TERMS,
+  riskProvisionMap: RISK_PROVISION_MAP,
+  customizationPrompts: CUSTOMIZATION_PROMPTS,
+});
+
+// ============================================================
+// SCENARIO ACCESSOR
+// ============================================================
+// Returns the active scenario. All rendering code can call
+// getScenario() to access scenario-specific data. Currently
+// returns the hardcoded default; future versions can read from
+// state.scenarioId to support scenario selection.
+function getScenario() {
+  try {
+    const id = (typeof state !== 'undefined' && state && state.scenarioId) ? state.scenarioId : ACTIVE_SCENARIO;
+    return SCENARIOS[id] || SCENARIOS[ACTIVE_SCENARIO];
+  } catch(e) {
+    return SCENARIOS[ACTIVE_SCENARIO];
+  }
+}
+
+// Quick accessors for the most commonly used data.
+// These exist so we don't have to change every render function
+// right now — they return the same constants that the code
+// already references. When a second scenario is added, these
+// will be updated to read from getScenario().
+function getFactPattern() { return getScenario().factPattern; }
+function getRisks() { return getScenario().risks; }
+function getDocStrategies() { return getScenario().docStrategies; }
+function getClauseTypes() { return getScenario().clauseTypes; }
+function getPrecedents() { return getScenario().precedents; }
+function getReferences() { return getScenario().references; }
+function getLegalTerms() { return getScenario().legalTerms; }
+function getRiskProvisionMap() { return getScenario().riskProvisionMap; }
+function getCustomizationPrompts() { return getScenario().customizationPrompts; }
+
+// ============================================================
+// PHASE 5: CUSTOMIZATION
+// ============================================================
+function renderCustomize() {
+  // Only show clauses this student is assigned to (and has precedents for)
+  const assigned = state.decisions.assignedClauses || [];
+  const clauseIds = (assigned.length ? assigned : state.decisions.clauses).filter(id => state.decisions.precedents[id]);
+  const unassignedWithPrecedents = state.decisions.clauses.filter(id => state.decisions.precedents[id] && !clauseIds.includes(id));
+  const clientResponse = state.decisions.clientResponses.customize || '';
+  const hasResponse = clientResponse.trim().length > 0;
+
+  // Check if each clause has been edited (differs from original)
+  const allEdited = clauseIds.every(id => {
+    const precs = PRECEDENTS[id] && PRECEDENTS[id][state.client];
+    const precId = state.decisions.precedents[id];
+    const prec = precs ? precs.find(p => p.id === precId) : null;
+    return prec && state.decisions.customizations[id] && state.decisions.customizations[id] !== prec.text;
+  });
+
+  const canSubmit = hasResponse;
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Customization</h2>
+    <p class="font-ui text-sm text-gray-500 mb-6">Adapt each selected precedent to fit this specific engagement. Read the guided prompt for each clause, then make targeted edits.</p>
+    <div class="space-y-8">
+      ${clauseIds.map(clauseId => {
+        const precs = PRECEDENTS[clauseId] && PRECEDENTS[clauseId][state.client];
+        const precId = state.decisions.precedents[clauseId];
+        const prec = precs ? precs.find(p => p.id === precId) : null;
+        if (!prec) return '';
+        const savedText = state.decisions.customizations[clauseId] || prec.text;
+        const clauseLabel = (CLAUSE_TYPES[state.client] || []).find(c => c.id === clauseId);
+        const customPrompt = CUSTOMIZATION_PROMPTS[clauseId] && CUSTOMIZATION_PROMPTS[clauseId][state.client];
+        const isEdited = savedText !== prec.text;
+
+        return `<div class="bg-white border border-gray-200 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-1">
+            <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide">${clauseLabel ? clauseLabel.label : clauseId}</h3>
+            ${isEdited ? '<span class="text-xs font-ui font-medium text-cua-teal bg-cua-teal/10 px-2 py-0.5 rounded">Edited</span>' : '<span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">Original</span>'}
+          </div>
+          <p class="font-ui text-xs text-gray-400 mb-2">Source: ${prec.source} | ${prec.jurisdiction} | ${prec.date}</p>
+          ${customPrompt ? `<div class="feedback-box feedback-partner mb-3">
+            <p class="font-ui text-xs text-gray-700"><strong>Consider:</strong> ${customPrompt.prompt}</p>
+            ${customPrompt.refId ? `<button onclick="showReference('${customPrompt.refId}')" class="font-ui text-xs text-cua-bright-blue hover:underline mt-1">View reference →</button>` : ''}
+          </div>` : ''}
+          <textarea class="draft-textarea" oninput="saveCustomization('${clauseId}', this.value)" spellcheck="false">${escapeHtml(savedText)}</textarea>
+          ${isEdited ? `<div class="mt-2 flex items-center gap-3">
+            <button onclick="document.getElementById('diff-${clauseId}').classList.toggle('open'); this.textContent = document.getElementById('diff-${clauseId}').classList.contains('open') ? 'Hide changes' : 'Show changes';" class="font-ui text-xs text-cua-bright-blue hover:underline cursor-pointer">Show changes</button>
+          </div>
+          <div class="consequence-detail" id="diff-${clauseId}">
+            <p class="font-ui text-xs font-medium text-gray-500 mb-2">Your edits vs. original:</p>
+            <div class="clause-text text-sm text-gray-700">${buildDiffHtml(prec.text, savedText) || 'No differences detected.'}</div>
+          </div>` : ''}
+          ${clauseId === 'non_solicitation' ? `<div class="client-msg mt-3">
+            <p class="font-ui text-sm text-amber-900"><strong>${state.client === 'company' ? 'Valentina' : 'Jordan'}:</strong> ${state.client === 'company' ? '"Two years feels like a long time — is that really standard? I don\'t want to scare off good candidates."' : '"Can you make sure I can still respond if a client from Pico Salsa reaches out to me first? I don\'t want to be rude."'}</p>
+          </div>` : ''}
+          ${clauseId === 'invention_assignment' && state.client === 'company' ? `<div class="client-msg mt-3">
+            <p class="font-ui text-sm text-amber-900"><strong>Valentina:</strong> "I heard that 'agrees to assign' and 'hereby assigns' are different. Which one do we need — and what happens if we pick the wrong one?"</p>
+          </div>` : ''}
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="mt-8">
+      <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-3">Client Counseling</h3>
+      <p class="font-ui text-sm text-gray-500 mb-3">${state.client === 'company' ? 'Valentina asks: "Can you explain in plain language what this agreement does and why each part matters? I want to understand what I\'m asking the next hire to sign."' : 'Jordan asks: "Bottom line — does this agreement let me do my job at RivalCraft, keep my app, and use my skills? What should I push back on?"'}</p>
+      <textarea class="draft-textarea" style="min-height: 120px;" placeholder="Write a clear, client-friendly explanation of the agreement and your recommendations. This is a counseling skill — avoid jargon..."
+        oninput="state.decisions.clientResponses.customize = this.value; saveState(); updateSubmitButton();">${escapeHtml(clientResponse)}</textarea>
+      <p id="customize-response-hint" class="font-ui text-xs text-cua-light-red mt-1" style="${hasResponse ? 'display:none' : ''}">A client response is required before you can continue.</p>
+    </div>
+    <div class="mt-6 flex justify-end">
+      <button id="customize-submit-btn" onclick="submitCustomizations()" class="btn-primary font-ui ${!canSubmit ? 'opacity-50 cursor-not-allowed' : ''}" ${!canSubmit ? 'disabled' : ''}>Finalize & Assemble</button>
+    </div>
+  </div>`;
+}
+
+function saveCustomization(clauseId, text) {
+  state.decisions.customizations[clauseId] = text;
+  saveState();
+}
+
+function updateSubmitButton() {
+  // Update submit button state without full re-render (prevents textarea cursor loss)
+  const hasResponse = (state.decisions.clientResponses.customize || '').trim().length > 0;
+  const btn = document.querySelector('#customize-submit-btn');
+  const hint = document.querySelector('#customize-response-hint');
+  if (btn) {
+    btn.disabled = !hasResponse;
+    btn.classList.toggle('opacity-50', !hasResponse);
+    btn.classList.toggle('cursor-not-allowed', !hasResponse);
+  }
+  if (hint) hint.style.display = hasResponse ? 'none' : 'block';
+}
+
+function updateRiskSubmitButton() {
+  const hasJustification = (state.decisions.reflections.riskJustification || '').trim().length > 0;
+  const btn = document.getElementById('risk-submit-btn');
+  if (btn) {
+    btn.disabled = !hasJustification;
+    btn.classList.toggle('opacity-50', !hasJustification);
+    btn.classList.toggle('cursor-not-allowed', !hasJustification);
+  }
+}
+
+function updateFinalSubmitButton() {
+  const hasReflection = (state.decisions.reflections.final || '').trim().length > 0;
+  const btn = document.getElementById('final-submit-btn');
+  const hint = document.getElementById('final-submit-hint');
+  if (btn) {
+    btn.disabled = !hasReflection;
+    btn.classList.toggle('opacity-50', !hasReflection);
+    btn.classList.toggle('cursor-not-allowed', !hasReflection);
+  }
+  if (hint) hint.style.display = hasReflection ? 'none' : 'block';
+}
+
+function submitCustomizations() {
+  logAction('customizations_submitted', Object.keys(state.decisions.customizations).join(', '));
+  nextPhase();
+}
+
+// ============================================================
+// PHASE 6: ASSEMBLY & CONSISTENCY CHECK
+// ============================================================
+function renderAssemble() {
+  const clauseIds = state.decisions.clauses;
+  const clauses = CLAUSE_TYPES[state.client] || [];
+
+  // Consistency checks
+  const issues = [];
+  const customTexts = state.decisions.customizations;
+
+  // Check for DTSA omission
+  if (!clauseIds.includes('dtsa_notice') && state.decisions.dtsaCaught !== 'phase3') {
+    issues.push({
+      severity: 'critical',
+      title: 'Missing: DTSA § 1833(b) Immunity Notice',
+      detail: 'Your agreement does not include the federally required whistleblower immunity notice. Under 18 U.S.C. § 1833(b)(3)(B), this omission automatically forfeits your client\'s right to exemplary damages and attorney\'s fees in any DTSA action — even for willful misappropriation. This is the single most common drafting error in trade secret agreements since 2016. Go back to Agreement Architecture and add the DTSA Notice provision, or proceed knowing this gap exists.',
+      ref: 'dtsa_notice'
+    });
+    if (!state.decisions.dtsaCaught || state.decisions.dtsaCaught === 'missed_phase3') {
+      state.decisions.dtsaCaught = 'phase6';
+      saveState();
+    }
+  }
+
+  // Check for "agrees to assign" vs "hereby assigns" if company track
+  if (state.client === 'company' && customTexts.invention_assignment) {
+    const t = customTexts.invention_assignment.toLowerCase();
+    if (/agrees to assign/.test(t) && !/hereby assigns/.test(t)) {
+      issues.push({
+        severity: 'warning',
+        title: 'Invention Assignment: "Agrees to Assign" Language',
+        detail: 'Your clause uses "agrees to assign" rather than "hereby assigns." Under Stanford v. Roche (2011), this creates only a promise to assign — not an automatic transfer. Title remains with the employee until a separate assignment document is executed.',
+        ref: 'stanford_v_roche'
+      });
+    }
+  }
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Assembly & Review</h2>
+    <p class="font-ui text-sm text-gray-500 mb-6">Your agreement has been assembled. Review the consistency check results.</p>
+
+    ${issues.length ? `<div class="space-y-3 mb-8">
+      <h3 class="font-headline text-base text-cua-red uppercase tracking-wide">Issues Found</h3>
+      ${issues.map(iss => `<div class="feedback-box ${iss.severity === 'critical' ? 'feedback-warn' : 'feedback-nudge'}">
+        <p class="font-ui text-sm font-medium ${iss.severity === 'critical' ? 'text-cua-red' : 'text-amber-800'}">${iss.title}</p>
+        <p class="font-ui text-xs text-gray-600 mt-1">${iss.detail}</p>
+        <div class="flex gap-3 mt-2">
+          ${iss.ref ? `<button onclick="showReference('${iss.ref}')" class="font-ui text-xs text-cua-bright-blue hover:underline">View reference →</button>` : ''}
+          ${iss.severity === 'critical' ? `<button onclick="goBackToPhase('architecture')" class="font-ui text-xs text-cua-red hover:underline font-medium">← Go back and fix this</button>` : ''}
+        </div>
+      </div>`).join('')}
+    </div>` : `<div class="feedback-box feedback-good mb-8">
+      <p class="font-ui text-sm text-emerald-800 font-medium">No critical issues detected. Your agreement is internally consistent.</p>
+    </div>`}
+
+    <div class="bg-white border border-gray-200 rounded-xl shadow-md" id="assembled-agreement" style="box-shadow: 0 4px 24px rgba(10,50,85,0.08);">
+      <div class="border-b border-gray-200 px-6 md:px-10 py-8 text-center" style="background: linear-gradient(180deg, #fafbfc 0%, #fff 100%);">
+        <div class="w-12 h-0.5 bg-cua-red mx-auto mb-4"></div>
+        <p class="font-ui text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-3">Draft Agreement</p>
+        <h3 class="font-headline text-2xl text-cua-blue uppercase tracking-wide">Pico Salsa, LLC</h3>
+        <p class="font-body text-base text-gray-500 mt-2 italic">Employee Confidentiality and Assignment Agreement</p>
+        <div class="w-12 h-0.5 bg-cua-blue mx-auto mt-4"></div>
+      </div>
+      <div class="px-6 md:px-10 py-8 space-y-6">
+        ${clauseIds.map((id, i) => {
+          const c = clauses.find(x => x.id === id);
+          const assigned = state.decisions.assignedClauses || [];
+          const isMyClause = !assigned.length || assigned.includes(id);
+          const text = customTexts[id] || (PRECEDENTS[id] && PRECEDENTS[id][state.client] && state.decisions.precedents[id]
+            ? PRECEDENTS[id][state.client].find(p => p.id === state.decisions.precedents[id])?.text
+            : null) || (isMyClause ? '[Clause text not yet drafted]' : null);
+          return `<div>
+            <div class="flex items-center gap-2 mb-2">
+              <p class="font-ui text-sm font-bold text-gray-800">§ ${i + 1}. ${c ? c.label : id}</p>
+              ${!isMyClause ? '<span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">Teammate</span>' : ''}
+            </div>
+            ${isMyClause
+              ? `<div class="clause-text text-gray-700 text-sm pl-4 border-l-2 border-cua-teal whitespace-pre-wrap">${annotateClauseText(text)}</div>`
+              : `<div class="pl-4 border-l-2 border-dashed border-gray-300 py-3"><p class="font-ui text-sm text-gray-400 italic">This section will be drafted by a teammate and compiled into the final agreement.</p></div>`}
+          </div>${i < clauseIds.length - 1 ? '<hr class="border-gray-100">' : ''}`;
+        }).join('')}
+      </div>
+    </div>
+    <div class="mt-6 flex justify-end">
+      <button onclick="nextPhase()" class="btn-secondary font-ui">Continue to Senior Partner Review</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// PHASE 7: SENIOR PARTNER REVIEW
+// ============================================================
+function renderReview() {
+  const dtsaResult = state.decisions.dtsaCaught;
+  const precChoices = state.decisions.precedents;
+  const client = state.client;
+
+  // Assess precedent quality
+  const precAssessments = [];
+  Object.entries(precChoices).forEach(([clauseId, precId]) => {
+    const precs = PRECEDENTS[clauseId] && PRECEDENTS[clauseId][client];
+    if (!precs) return;
+    const p = precs.find(x => x.id === precId);
+    if (!p) return;
+    precAssessments.push({ clauseId, quality: p.quality, label: p.label });
+  });
+
+  const goodChoices = precAssessments.filter(a => a.quality === 'good');
+  const badChoices = precAssessments.filter(a => a.quality !== 'good');
+
+  // Generate completion code
+  const codeBase = `${state.student.name}-${state.client}-${Date.now()}`;
+  const code = 'CUA-' + btoa(codeBase).substring(0, 8).toUpperCase();
+
+  return `<div class="fade-in">
+    <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Senior Partner Review</h2>
+    <p class="font-ui text-sm text-gray-500 mb-6">A senior partner has reviewed your assembled agreement.</p>
+
+    <div class="bg-white border border-gray-200 rounded-xl p-6 md:p-8 shadow-sm">
+      <div class="memo-text text-gray-700 space-y-4">
+        <p><strong>TO:</strong> ${state.student.name}<br><strong>FROM:</strong> Senior Partner<br><strong>RE:</strong> Review of ${client === 'company' ? 'Pico Salsa Employment Agreement' : 'Jordan Webb — Employment Agreement Review'}<br><strong>DATE:</strong> [Today]</p>
+
+        <p>I've reviewed your draft. Here are my comments.</p>
+
+        ${goodChoices.length ? `<p><strong>Strengths:</strong></p><ul class="list-disc pl-5 space-y-1">
+          ${goodChoices.map(c => `<li class="text-sm">Good instinct on the ${c.label.toLowerCase()}. This is well-suited to our client's needs and the New York legal landscape.</li>`).join('')}
+        </ul>` : ''}
+
+        ${badChoices.length ? `<p><strong>Issues to address:</strong></p><ul class="list-disc pl-5 space-y-1">
+          ${badChoices.map(c => `<li class="text-sm">${c.label}: Review the feedback on this selection. ${c.quality === 'wrong_jurisdiction' ? 'Check the jurisdiction — this precedent may not apply in New York.' : c.quality === 'overbroad' ? 'This is overbroad and may not survive judicial scrutiny.' : c.quality === 'outdated' ? 'Check the date on this precedent — the law may have changed.' : c.quality === 'subtle_defect' ? 'There\'s a subtle but critical drafting defect here. Review Stanford v. Roche.' : 'This may not serve our client\'s interests as well as alternatives.'}</li>`).join('')}
+        </ul>` : ''}
+
+        ${dtsaResult === 'phase6' || dtsaResult === 'missed_phase3' ? `<p><strong>Critical oversight:</strong> You missed the DTSA § 1833(b) immunity notice in the architecture phase. This is a $0-cost provision that, if omitted, permanently forfeits exemplary damages and attorney's fees. Every employment agreement signed after May 2016 must include it. This is the kind of mistake that generates malpractice claims.</p>` : dtsaResult === 'phase3' ? `<p><strong>Good catch</strong> on including the DTSA notice from the start. Many associates miss this.</p>` : ''}
+
+        <p>Overall: ${goodChoices.length >= badChoices.length ? 'Solid work. With the adjustments noted above, this is ready for client review.' : 'The foundation is there, but several selections need reconsideration before this goes to the client. Review my notes and revise.'}</p>
+      </div>
+    </div>
+
+    <div class="mt-8 bg-white border border-gray-200 rounded-xl p-6">
+      <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-3">Final Reflection</h3>
+      <p class="font-ui text-sm text-gray-600 mb-3">If you had another hour with this agreement, what would you change and why?</p>
+      <textarea class="draft-textarea" style="min-height: 100px;" placeholder="Reflect on your choices, what you learned, and what you'd do differently..." oninput="state.decisions.reflections.final = this.value; saveState(); updateFinalSubmitButton();">${escapeHtml(state.decisions.reflections.final || '')}</textarea>
+    </div>
+
+    <div class="mt-8 bg-cua-blue/5 border border-cua-blue/20 rounded-xl p-6">
+      <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-2">Completion</h3>
+      <p class="font-ui text-sm text-gray-600 mb-1">Completion Code: <strong class="font-mono text-cua-blue">${code}</strong></p>
+      <p class="font-ui text-xs text-gray-400 mb-4">Save this code. Your professor may ask for it.</p>
+      <div class="flex flex-wrap gap-3">
+        <button onclick="generateDocx()" class="btn-primary font-ui">Download Work Product (.docx)</button>
+        <button onclick="window.print()" class="btn-secondary font-ui">Print Agreement</button>
+        <button onclick="copyAgreement()" class="btn-outline font-ui">Copy Text</button>
+      </div>
+    </div>
+
+    ${!state.completed.review ? `<div class="mt-6 flex justify-end" id="final-submit-area">
+      <button id="final-submit-btn" onclick="completePhase('review'); logAction('completed', '${code}'); render();" class="btn-primary font-ui ${!(state.decisions.reflections.final || '').trim() ? 'opacity-50 cursor-not-allowed' : ''}" ${!(state.decisions.reflections.final || '').trim() ? 'disabled' : ''}>Submit & Complete</button>
+      <p id="final-submit-hint" class="font-ui text-xs text-gray-400 ml-4 self-center" style="${(state.decisions.reflections.final || '').trim() ? 'display:none' : ''}">Write a final reflection to submit.</p>
+    </div>` : `<div class="mt-6 feedback-box feedback-good"><p class="font-ui text-sm text-emerald-800 font-medium">Exercise complete. You may now enable Explore Mode in the sidebar to revisit any phase.</p></div>`}
+  </div>`;
+}
+
+// ============================================================
+// HELPERS
+// ============================================================
+function escapeHtml(str) {
+  return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function copyAgreement() {
+  const el = document.getElementById('assembled-agreement');
+  if (!el) return;
+  navigator.clipboard.writeText(el.innerText).then(() => alert('Copied.')).catch(() => alert('Copy failed.'));
+}
+
+// ============================================================
+// DOCX EXPORT
+// ============================================================
+async function generateDocx() {
+  if (!window.docx || !window.saveAs) { alert('Document library loading. Try again in a moment.'); return; }
+  const { Document, Paragraph, TextRun, Header, Footer, PageNumber, AlignmentType, Packer, BorderStyle } = docx;
+  const TNR = 'Times New Roman';
+
+  function heading(text, level) {
+    return new Paragraph({ children: [new TextRun({ text, font: TNR, bold: true, size: level === 1 ? 28 : level === 2 ? 24 : 22 })], spacing: { before: level === 1 ? 400 : 240, after: 120 } });
+  }
+  function bodyP(text, opts = {}) {
+    return new Paragraph({ children: [new TextRun({ text, font: TNR, size: 24, ...opts })], spacing: { after: 120, line: 276 }, indent: opts.indent ? { left: 720 } : undefined });
+  }
+  function clauseP(text) {
+    return new Paragraph({ children: [new TextRun({ text, font: TNR, size: 22 })], spacing: { after: 80, line: 360 }, indent: { left: 720 } });
+  }
+  function labelP(label, value) {
+    return new Paragraph({ children: [
+      new TextRun({ text: label + ': ', font: TNR, bold: true, size: 24 }),
+      new TextRun({ text: value, font: TNR, size: 24 })
+    ], spacing: { after: 80 } });
+  }
+  function separator() {
+    return new Paragraph({ children: [new TextRun({ text: '', font: TNR, size: 12 })], spacing: { before: 120, after: 120 },
+      border: { bottom: { style: BorderStyle.SINGLE, size: 1, color: 'CCCCCC' } } });
+  }
+
+  const children = [];
+  const clientLabel = state.client === 'company' ? 'Pico Salsa, LLC (Company)' : 'Jordan Webb (Employee)';
+  const risks = RISKS[state.client] || [];
+  const clauses = CLAUSE_TYPES[state.client] || [];
+  const strategies = DOC_STRATEGIES[state.client] || [];
+
+  // ── Title Block ──
+  children.push(new Paragraph({ children: [new TextRun({ text: 'DEAL ROOM — STUDENT WORK PRODUCT', font: TNR, bold: true, size: 32 })], alignment: AlignmentType.CENTER, spacing: { after: 40 } }));
+  children.push(new Paragraph({ children: [new TextRun({ text: 'Protecting Trade Secrets — Internal Mitigation', font: TNR, italics: true, size: 22, color: '666666' })], alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
+
+  children.push(labelP('Student', state.student.name));
+  children.push(labelP('Team', state.student.team));
+  children.push(labelP('Client', clientLabel));
+  children.push(labelP('Track', state.client === 'company' ? 'Company (Drafting Protective Agreement)' : 'Employee (Reviewing & Redlining Agreement)'));
+  children.push(labelP('Scenario', getScenario().title));
+  children.push(labelP('Date', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })));
+  children.push(labelP('Time Spent', getTimeSpent()));
+  children.push(labelP('Phases Completed', PHASES.filter(p => state.completed[p.id]).length + ' of ' + PHASES.length));
+  if (state.decisions.dtsaCaught) {
+    const dtsaLabel = state.decisions.dtsaCaught === 'phase3' ? 'Caught in Architecture (Phase 3)' : state.decisions.dtsaCaught === 'phase6' ? 'Caught in Assembly (Phase 6)' : 'Missed entirely';
+    children.push(labelP('DTSA Notice Issue', dtsaLabel));
+  }
+
+  children.push(separator());
+
+  // ── Phase 1: Risk Assessment ──
+  children.push(heading('I. Risk Assessment', 1));
+  if (state.decisions.risks.length) {
+    children.push(bodyP('Identified risks (ranked by priority):'));
+    state.decisions.risks.forEach((rId, i) => {
+      const r = risks.find(x => x.id === rId);
+      const isCorrect = r && r.correct;
+      children.push(bodyP(`${i + 1}. ${r ? r.label : rId}${isCorrect ? '' : ' [incorrect]'}`, { indent: true }));
+    });
+  }
+  if (state.decisions.reflections.riskJustification) {
+    children.push(bodyP(''));
+    children.push(bodyP('Justification for #1 priority:', { bold: true }));
+    children.push(bodyP(state.decisions.reflections.riskJustification, { indent: true }));
+  }
+
+  children.push(separator());
+
+  // ── Phase 2: Document Strategy ──
+  children.push(heading('II. Document Strategy', 1));
+  if (state.decisions.documentType) {
+    const strat = strategies.find(s => s.id === state.decisions.documentType);
+    children.push(bodyP(`Selected: ${strat ? strat.label : state.decisions.documentType}`));
+    if (strat) children.push(bodyP(`${strat.correct ? '[Correct]' : '[Incorrect]'} ${strat.feedback}`, { italics: true, color: '666666' }));
+  }
+
+  children.push(separator());
+
+  // ── Phase 3: Agreement Architecture ──
+  children.push(heading('III. Agreement Architecture', 1));
+  if (state.decisions.riskProvisionMatches) {
+    children.push(bodyP('Risk-to-provision matching:'));
+    Object.entries(state.decisions.riskProvisionMatches).forEach(([rId, provIds]) => {
+      const r = risks.find(x => x.id === rId);
+      const provLabels = provIds.map(pId => { const c = clauses.find(x => x.id === pId); return c ? c.label : pId; });
+      children.push(bodyP(`${r ? r.label : rId} → ${provLabels.join(', ')}`, { indent: true }));
+    });
+  }
+  children.push(bodyP(''));
+  children.push(bodyP('Clauses included in agreement:'));
+  state.decisions.clauses.forEach((id, i) => {
+    const c = clauses.find(x => x.id === id);
+    const assigned = state.decisions.assignedClauses || [];
+    const isMine = !assigned.length || assigned.includes(id);
+    children.push(bodyP(`§ ${i + 1}. ${c ? c.label : id}${isMine ? '' : ' [Assigned to teammate]'}`, { indent: true }));
+  });
+
+  children.push(separator());
+
+  // ── Phase 4: Precedent Selection ──
+  children.push(heading('IV. Precedent Selection', 1));
+  Object.entries(state.decisions.precedents).forEach(([clauseId, precId]) => {
+    const c = clauses.find(x => x.id === clauseId);
+    const precs = PRECEDENTS[clauseId] && PRECEDENTS[clauseId][state.client];
+    const p = precs ? precs.find(x => x.id === precId) : null;
+    children.push(heading(c ? c.label : clauseId, 3));
+    if (p) {
+      children.push(bodyP(`Selected: ${p.label} (${p.source}, ${p.jurisdiction}, ${p.date})`));
+      children.push(bodyP(`Quality: ${p.quality === 'good' ? 'Good' : p.quality === 'subtle_defect' ? 'Subtle defect' : p.quality === 'bad_for_client' ? 'Bad for client' : p.quality === 'overbroad' ? 'Overbroad' : p.quality === 'wrong_jurisdiction' ? 'Wrong jurisdiction' : p.quality}`, { italics: true, color: p.quality === 'good' ? '006633' : 'CC3300' }));
+    }
+  });
+
+  children.push(separator());
+
+  // ── Phase 5: Customized Clause Text (the main work product) ──
+  children.push(heading('V. Customized Agreement Text', 1));
+  children.push(new Paragraph({ children: [new TextRun({ text: '[This is the student\'s primary work product — the customized agreement clauses.]', font: TNR, italics: true, size: 20, color: '999999' })], spacing: { after: 200 } }));
+
+  state.decisions.clauses.forEach((id, i) => {
+    const c = clauses.find(x => x.id === id);
+    const assigned = state.decisions.assignedClauses || [];
+    const isMine = !assigned.length || assigned.includes(id);
+    children.push(heading(`§ ${i + 1}. ${c ? c.label : id}`, 2));
+
+    if (!isMine) {
+      children.push(bodyP('[Assigned to teammate — not drafted by this student]', { italics: true, color: '999999' }));
+      return;
+    }
+
+    const customized = state.decisions.customizations[id];
+    const precId = state.decisions.precedents[id];
+    const precs = PRECEDENTS[id] && PRECEDENTS[id][state.client];
+    const origPrec = precs ? precs.find(p => p.id === precId) : null;
+    const text = customized || (origPrec ? origPrec.text : '[Not drafted]');
+
+    text.split('\n').filter(l => l.trim()).forEach(line => children.push(clauseP(line)));
+
+    if (customized && origPrec && customized !== origPrec.text) {
+      children.push(bodyP('[Edited from original precedent]', { italics: true, size: 20, color: '2459A9' }));
+    } else if (origPrec && (!customized || customized === origPrec.text)) {
+      children.push(bodyP('[Original precedent — not customized]', { italics: true, size: 20, color: 'CC6600' }));
+    }
+  });
+
+  children.push(separator());
+
+  // ── Phase 5b: Client Counseling ──
+  if (state.decisions.clientResponses.customize) {
+    children.push(heading('VI. Client Counseling Response', 1));
+    children.push(bodyP(state.client === 'company'
+      ? 'Client question: "Can you explain in plain language what this agreement does and why each part matters?"'
+      : 'Client question: "Bottom line — does this agreement let me do my job, keep my app, and use my skills? What should I push back on?"',
+      { italics: true, color: '666666' }));
+    children.push(bodyP(''));
+    state.decisions.clientResponses.customize.split('\n').filter(l => l.trim()).forEach(line => children.push(bodyP(line)));
+  }
+
+  children.push(separator());
+
+  // ── Phase 7: Reflection ──
+  if (state.decisions.reflections.final) {
+    children.push(heading('VII. Final Reflection', 1));
+    state.decisions.reflections.final.split('\n').filter(l => l.trim()).forEach(line => children.push(bodyP(line)));
+  }
+
+  // ── Decision Log / Metadata ──
+  children.push(separator());
+  children.push(heading('Appendix: Decision Log', 1));
+  children.push(new Paragraph({ children: [new TextRun({ text: '[Timestamped record of student decisions for instructor review]', font: TNR, italics: true, size: 20, color: '999999' })], spacing: { after: 120 } }));
+  if (state.actionLog && state.actionLog.length) {
+    state.actionLog.forEach(entry => {
+      const time = new Date(entry.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      children.push(bodyP(`${time} — ${entry.type}: ${entry.detail || ''}`, { size: 20, color: '666666' }));
+    });
+  }
+
+  const doc = new Document({
+    sections: [{
+      headers: { default: new Header({ children: [new Paragraph({ children: [
+        new TextRun({ text: `Deal Room — ${state.student.name} — ${clientLabel}`, font: 'Roboto', size: 16, color: '666666' })
+      ] })] }) },
+      footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [
+        new TextRun({ text: 'CUA Columbus School of Law — Protecting Trade Secrets  |  Page ', font: 'Roboto', size: 16, color: '999999' }),
+        new TextRun({ children: [PageNumber.CURRENT], font: 'Roboto', size: 16, color: '999999' })
+      ] })] }) },
+      children
+    }]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  saveAs(blob, `deal-room-${state.student.name.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().slice(0, 10)}.docx`);
+}
+
+function getTimeSpent() {
+  if (!state.timestamps.session_start) return 'N/A';
+  const elapsed = Math.floor((Date.now() - state.timestamps.session_start) / 60000);
+  return `${elapsed} minutes`;
+}
+
+// ============================================================
+// BOOT
+// ============================================================
+(function boot() {
+  state = loadState();
+
+  // Populate scenario selector (only show if >1 scenario exists)
+  const scenarioKeys = Object.keys(SCENARIOS);
+  if (scenarioKeys.length > 1) {
+    const sel = document.getElementById('scenario-selector');
+    const select = document.getElementById('login-scenario');
+    if (sel && select) {
+      sel.classList.remove('hidden');
+      select.innerHTML = scenarioKeys.map(k =>
+        `<option value="${k}" ${k === ACTIVE_SCENARIO ? 'selected' : ''}>${SCENARIOS[k].title}</option>`
+      ).join('');
+    }
+  }
+
+  if (state.student.name) {
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    document.getElementById('sidebar-name').textContent = state.student.name;
+    document.getElementById('sidebar-team').textContent = state.student.team;
+    render();
+  }
+})();
+</script>
+</body>
+</html>
