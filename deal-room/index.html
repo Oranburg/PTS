@@ -435,7 +435,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 7V5a4 4 0 00-8 0v2"/></svg>
       </div>
       <h1 class="font-headline text-2xl text-cua-blue uppercase tracking-wide">Deal Room</h1>
-      <p class="text-sm text-gray-500 mt-1 font-ui">Protecting Trade Secrets — Internal Mitigation</p>
+      <p class="text-sm text-gray-500 mt-1 font-ui">Protecting Trade Secrets — Internal Risk Mitigation via Contracts</p>
     </div>
     <div class="space-y-4">
       <div>
@@ -2445,7 +2445,7 @@ function renderPrecedents() {
     <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
     <p class="font-ui text-sm text-gray-500 mb-2">Read each precedent carefully and select the one that best serves your client. Then explain your reasoning.</p>
     <div class="feedback-box feedback-partner mb-4">
-      <p class="font-ui text-xs text-gray-700"><strong>Practice reality:</strong> A firm's precedent library contains templates from many sources — some excellent, some outdated, some drafted for the <em>other side</em>. Read the actual clause language carefully. Pay attention to the source, jurisdiction, and date. Your selections will be reviewed by the senior partner after you submit your complete work product.</p>
+      <p class="font-ui text-xs text-gray-700"><strong>Practice reality:</strong> A firm's precedent library contains templates from many sources — some excellent, some outdated, some drafted for the <em>other side</em>. Your selections will be reviewed by the senior partner after you submit your complete work product.</p>
     </div>
     <div class="flex items-center justify-between mb-6">
       <p class="font-ui text-xs text-gray-400">You are responsible for ${myClauseIds.length} of ${allClauseIds.length} clauses. ${unassignedIds.length ? `${unassignedIds.length} clause${unassignedIds.length > 1 ? 's are' : ' is'} assigned to your teammates.` : ''}</p>
@@ -3023,7 +3023,7 @@ async function generateDocx() {
 
   // ── Title Block ──
   children.push(new Paragraph({ children: [new TextRun({ text: 'DEAL ROOM — STUDENT WORK PRODUCT', font: TNR, bold: true, size: 32 })], alignment: AlignmentType.CENTER, spacing: { after: 40 } }));
-  children.push(new Paragraph({ children: [new TextRun({ text: 'Protecting Trade Secrets — Internal Mitigation', font: TNR, italics: true, size: 22, color: '666666' })], alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
+  children.push(new Paragraph({ children: [new TextRun({ text: 'Protecting Trade Secrets — Internal Risk Mitigation via Contracts', font: TNR, italics: true, size: 22, color: '666666' })], alignment: AlignmentType.CENTER, spacing: { after: 200 } }));
 
   children.push(labelP('Student', state.student.name));
   children.push(labelP('Team', state.student.team));
