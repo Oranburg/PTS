@@ -1630,14 +1630,22 @@ function annotateClauseText(text) {
   let html = escapeHtml(text);
   // Sort terms by length (longest first) to avoid partial matches
   const terms = Object.keys(LEGAL_TERMS).sort((a, b) => b.length - a.length);
+  // Use placeholder tokens so subsequent passes don't annotate inside tooltip content
+  const placeholders = [];
   for (const term of terms) {
     const info = LEGAL_TERMS[term];
     const regex = new RegExp(`(?<![\\w-])(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})(?![\\w-])`, 'gi');
     html = html.replace(regex, (match) => {
       const refLink = info.ref ? `<br><span style="cursor:pointer;color:#B5E1E1;text-decoration:underline;" onclick="event.stopPropagation();showReference('${info.ref}')">View reference →</span>` : '';
-      return `<span class="legal-term" onclick="toggleTermTip(this)">${match}<span class="term-tip"><div class="tip-label">${info.label}</div>${info.def}${refLink}</span></span>`;
+      const token = `\x00TERM${placeholders.length}\x00`;
+      placeholders.push(`<span class="legal-term" onclick="toggleTermTip(this)">${match}<span class="term-tip"><div class="tip-label">${info.label}</div>${info.def}${refLink}</span></span>`);
+      return token;
     });
   }
+  // Restore placeholders
+  placeholders.forEach((markup, i) => {
+    html = html.replace(`\x00TERM${i}\x00`, markup);
+  });
   return html;
 }
 
