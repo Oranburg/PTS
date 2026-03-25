@@ -628,6 +628,7 @@ function defaultState() {
       documentType: null,
       clauses: [],       // selected clause types for TOC
       precedents: {},    // { ci: 'prec_id', assignment: 'prec_id', ... }
+      precedentReflections: {}, // { clauseId: 'why I chose this for my client', ... }
       riskProvisionMatches: {}, // { risk_id: [provision_id, ...], ... }
       assignedClauses: [],  // clauses this student is responsible for (subset of clauses[])
       customizations: {},// { ci: 'edited text', ... }
@@ -945,6 +946,17 @@ const PRECEDENTS = {
         summary: 'Well-drafted with good exclusions. Predates the DTSA — no immunity notice provisions.',
         text: `"Confidential Information" means information disclosed by Company that is designated as confidential or that reasonably should be understood to be confidential given the nature of the information and the circumstances of disclosure. Excludes: (a) publicly available information; (b) independently developed information; (c) information received from a third party without restriction; (d) information known to Employee prior to disclosure. Employee shall use reasonable care to protect Confidential Information.`,
         feedback: 'Good substantive terms, but it\'s from 2014 — before the Defend Trade Secrets Act (2016). Any agreement based on this precedent will be missing the § 1833(b) immunity notice. That\'s a problem for the employer (who loses exemplary damages), but it\'s also worth noting as counsel: using outdated precedent is a malpractice risk.'
+      },
+      {
+        id: 'ci_emp_vague',
+        label: 'Expansive Universal Definition',
+        source: 'Startup Employment Pack (Online Template)',
+        jurisdiction: 'General',
+        date: '2022',
+        quality: 'overbroad',
+        summary: 'Extremely broad definition covering "any information of any kind." No marking requirement. Standard exclusions.',
+        text: `"Confidential Information" means any information of any kind, in any form, that is disclosed by Company or to which Employee gains access during employment, including but not limited to information about products, services, operations, finances, technology, personnel, suppliers, customers, and business strategies. Confidential Information shall not include information that (a) is publicly available; (b) was known to Employee prior to disclosure; (c) was independently developed; or (d) was obtained from a third party.`,
+        feedback: 'This looks employee-friendly because such an absurdly broad definition ("any information of any kind") invites a vagueness challenge. But that\'s a trap — most courts will blue-pencil (narrow) vague definitions rather than void them, and the litigation to get there is expensive for Jordan. A court could rewrite this to mean whatever it finds reasonable, which is worse than negotiating precise language upfront.'
       }
     ]
   },
@@ -971,6 +983,28 @@ const PRECEDENTS = {
         summary: 'Caps the employee\'s obligation at whatever care they use for their own information. Pro-receiving party.',
         text: `Employee shall protect Confidential Information using reasonable care, but no greater than the care Employee uses to protect their own information of similar sensitivity. Employee shall not be liable for accidental disclosure so long as Employee acted in good faith.`,
         feedback: 'Problematic for Pico Salsa. "No greater than" caps Jordan\'s obligation at his personal standard. If Jordan is careless with his own files, that becomes the contractual ceiling for protecting the fermentation process. The good-faith defense for "accidental disclosure" further weakens enforcement.'
+      },
+      {
+        id: 'ci_ob_strict',
+        label: 'Absolute Protection — Strict Liability Standard',
+        source: 'Aggressive Litigation Firm Template',
+        jurisdiction: 'NY',
+        date: '2018',
+        quality: 'overbroad',
+        summary: 'Employee is strictly liable for any disclosure, regardless of intent or circumstances. No exceptions.',
+        text: `Employee shall be strictly liable for any unauthorized disclosure of Confidential Information, regardless of the circumstances, intent, or degree of care exercised. Employee assumes all risk of disclosure and waives any defense of reasonable care, impossibility, or force majeure with respect to the protection of Confidential Information.`,
+        feedback: 'Overbroad to the point of unenforceability. Strict liability with waiver of all defenses — including force majeure — means Jordan would be liable if Pico Salsa\'s own servers were hacked, or if a court ordered disclosure. No New York court would enforce a waiver of legally compelled disclosure. This invites a challenge to the entire obligations section.'
+      },
+      {
+        id: 'ci_ob_california',
+        label: 'California "Reasonable Measures" Standard',
+        source: 'Bay Area Employment Template Library',
+        jurisdiction: 'CA',
+        date: '2023',
+        quality: 'wrong_jurisdiction',
+        summary: 'References California Civil Code and CUTSA-specific standards. Includes whistleblower carve-out per Cal. Gov. Code § 12964.5.',
+        text: `Employee shall take commercially reasonable measures to protect Confidential Information, consistent with the California Uniform Trade Secrets Act (Cal. Civ. Code § 3426 et seq.) and any applicable California regulations. Employee acknowledges that disclosures protected under California Government Code § 12964.5 or other California whistleblower statutes shall not constitute a breach of this Agreement.`,
+        feedback: 'Wrong jurisdiction. The references to California Civil Code, CUTSA, and Cal. Gov. Code § 12964.5 do not apply in New York. Using California-specific statutory references in a New York employment agreement creates interpretive confusion and provides no additional protection for Pico Salsa.'
       }
     ],
     employee: [
@@ -995,6 +1029,28 @@ const PRECEDENTS = {
         summary: 'Sets a minimum care floor. Employer can argue any lapse falls below "reasonable." Pro-employer.',
         text: `Employee shall protect Confidential Information with at least a reasonable degree of care. Employee shall implement appropriate safeguards to prevent unauthorized disclosure, including but not limited to secure storage, access controls, and encryption where practicable.`,
         feedback: 'Risky for Jordan. "At least a reasonable degree of care" is an open-ended floor — Pico Salsa can always argue Jordan should have done more. The "including but not limited to" list creates specific duties Jordan might inadvertently breach.'
+      },
+      {
+        id: 'ci_ob_best_efforts',
+        label: '"Best Efforts" Protection Standard',
+        source: 'Mid-Market Employment Template (2012 Edition)',
+        jurisdiction: 'General',
+        date: '2012',
+        quality: 'outdated',
+        summary: 'Requires "best efforts" to protect confidential information. Pre-DTSA language.',
+        text: `Employee shall use best efforts to protect the confidentiality of all Confidential Information. Employee shall not disclose Confidential Information to any third party except as authorized in writing by Company. Employee acknowledges that monetary damages may be insufficient remedy for breach and that Company shall be entitled to equitable relief.`,
+        feedback: 'Outdated and risky. "Best efforts" is the highest contractual standard — far more demanding than "reasonable care." Courts have interpreted "best efforts" to require the promisor to do everything in their power, regardless of cost or inconvenience. This is a 2012 template that doesn\'t account for modern data security expectations or DTSA immunity provisions. Jordan should push for a "reasonable care" or "commercially reasonable" standard instead.'
+      },
+      {
+        id: 'ci_ob_waiver',
+        label: '"Commercially Reasonable" with Liability Waiver',
+        source: 'Venture-Backed Startup Template',
+        jurisdiction: 'General',
+        date: '2023',
+        quality: 'subtle_defect',
+        summary: 'Commercially reasonable standard with mutual limitation of liability. Looks balanced.',
+        text: `Employee shall use commercially reasonable efforts to protect Confidential Information. In no event shall either party be liable for any indirect, incidental, consequential, or punitive damages arising from or related to any breach of this confidentiality obligation, regardless of whether such damages were foreseeable.`,
+        feedback: 'Subtle trap. The "commercially reasonable" standard looks good for Jordan, but the consequential damages waiver swallows the protection. If Pico Salsa improperly discloses Jordan\'s personal information (or if Jordan needs to sue for breach), neither party can recover consequential damages. This limitation was designed for a B2B vendor agreement, not an employment relationship — it strips Jordan of meaningful remedies.'
       }
     ]
   },
@@ -1032,6 +1088,17 @@ const PRECEDENTS = {
         summary: 'Includes California Labor Code § 2870 carve-out. Strong employee protections built in.',
         text: `Employee hereby assigns to Company all Inventions conceived during employment that relate to Company's business. Pursuant to California Labor Code § 2870, this assignment does not apply to inventions developed entirely on Employee's own time without using Company equipment, supplies, or trade secret information, unless the invention relates to Company's business or actual or demonstrably anticipated research or development.`,
         feedback: 'Wrong jurisdiction. California Labor Code § 2870 does not apply in New York. Including a California statutory carve-out in a New York employment agreement is confusing at best and could create interpretive problems. Use New York-appropriate language.'
+      },
+      {
+        id: 'ia_will_assign',
+        label: '"Will Assign" — Ambiguous Transfer Language',
+        source: 'General Corporate Counsel Template (Pre-2011)',
+        jurisdiction: 'General',
+        date: '2009',
+        quality: 'subtle_defect',
+        summary: '"Will assign" — ambiguous language predating Stanford v. Roche. Could be read as either present or future assignment.',
+        text: `Employee will assign to Company all right, title, and interest in any Invention conceived, developed, or reduced to practice during employment that relates to Company's business or anticipated business activities. Employee will execute all documents necessary to perfect Company's ownership. This obligation will survive termination of employment.`,
+        feedback: 'Ambiguous and outdated. "Will assign" predates Stanford v. Roche (2011), which drew a bright line between "hereby assigns" (automatic present transfer) and "agrees to assign" (future promise). "Will assign" is genuinely ambiguous — courts have split on whether it\'s a present or future assignment. Post-Stanford, competent counsel uses "hereby assigns" to eliminate doubt. Using 2009 precedent for a 2026 agreement is a malpractice risk.'
       }
     ],
     employee: [
@@ -1056,6 +1123,28 @@ const PRECEDENTS = {
         summary: '"Hereby assigns" with broad scope covering anticipated work. No prior inventions schedule.',
         text: `Employee hereby assigns to Company all right, title, and interest in any Invention conceived during employment that relates to Company's business, operations, research, or anticipated work, whether or not developed during working hours or using Company equipment. This obligation survives termination.`,
         feedback: 'This is the employer\'s dream clause — and Jordan\'s nightmare. "Hereby assigns" means automatic transfer. "Anticipated work" means any field Pico Salsa might someday enter. No prior inventions carve-out means Jordan\'s personal fermentation app could be claimed. No personal-time exception. Advise Jordan to reject this entirely.'
+      },
+      {
+        id: 'ia_california_emp',
+        label: 'California Labor Code § 2870 Carve-Out',
+        source: 'West Coast Technology Company Template (Employee Version)',
+        jurisdiction: 'CA',
+        date: '2023',
+        quality: 'wrong_jurisdiction',
+        summary: 'Includes California statutory protections for employee inventions. Strong protections — if you\'re in California.',
+        text: `Employee agrees to assign to Company all Inventions conceived during employment that relate to Company's business. Pursuant to California Labor Code § 2870, this assignment shall not apply to any invention that Employee develops entirely on Employee's own time without using Company's equipment, supplies, facilities, or trade secret information, unless the invention relates to Company's business or actual or demonstrably anticipated research. Employee shall disclose all Inventions per California Labor Code § 2872.`,
+        feedback: 'Wrong jurisdiction. California Labor Code § 2870 and § 2872 do not apply in New York — they are California-specific employee protections. If this language appeared in Jordan\'s agreement, a court might treat the statutory references as surplusage (meaningless), leaving Jordan without the protections he thinks he has. Use New York-appropriate language, such as contractual carve-outs that achieve similar results without relying on California statutes.'
+      },
+      {
+        id: 'ia_all_inventions',
+        label: '"All Inventions" — Universal Assignment',
+        source: 'Aggressive IP Firm Template',
+        jurisdiction: 'NY',
+        date: '2020',
+        quality: 'overbroad',
+        summary: 'Assigns ALL inventions to the employer, whether or not related to company business. Maximum scope.',
+        text: `Employee hereby assigns to Company all inventions, discoveries, improvements, works of authorship, and ideas, whether or not patentable, conceived or developed by Employee during the term of employment, whether or not related to Company's business, whether developed during or outside of working hours, and whether or not using Company resources. Employee acknowledges that all such work product is and shall be the sole property of Company.`,
+        feedback: 'This looks tempting for an employee seeking to challenge it — an assignment so broad it covers inventions "whether or not related to Company\'s business" seems obviously unconscionable. But the strategy of picking an overreaching clause and hoping a court voids it is risky. A New York court might narrow it rather than void it entirely, or might enforce it for inventions that ARE related to Pico Salsa\'s business (like the fermentation app). Better to negotiate clear carve-outs than gamble on judicial reform.'
       }
     ]
   },
@@ -1093,6 +1182,17 @@ const PRECEDENTS = {
         summary: 'Five-year restriction. Global scope. Covers all business relationships. Liquidated damages.',
         text: `For a period of five (5) years following termination, Employee shall not, anywhere in the world, directly or indirectly solicit or transact business with any customer, prospective customer, supplier, vendor, or business partner of Company, or recruit any employee of Company. Violation shall result in liquidated damages equal to two times Employee's final annual salary.`,
         feedback: 'Unenforceable. Five years is excessive for any employee, let alone a mid-level technician. "Anywhere in the world" has no geographic nexus to Pico Salsa\'s actual market. The liquidated damages clause would likely be struck as a penalty rather than a reasonable estimate of harm. A court would void this entirely — leaving Pico Salsa with zero protection.'
+      },
+      {
+        id: 'ns_linkedin_defect',
+        label: 'Two-Year Standard with Digital Solicitation Clause',
+        source: 'Updated Employment Template (Social Media Addendum)',
+        jurisdiction: 'NY',
+        date: '2024',
+        quality: 'subtle_defect',
+        summary: 'Two-year restriction with "material contact" scope. Includes digital solicitation provision covering social media connections.',
+        text: `For a period of two (2) years following termination, Employee shall not solicit any customer or prospective customer with whom Employee had material contact during the twelve (12) months preceding termination. For purposes of this Section, "solicit" includes any direct or indirect communication, including but not limited to email, telephone, text message, social media connection or message, LinkedIn connection request or InMail, or any other digital or electronic outreach, whether initiated by Employee or accepted by Employee in response to an automated platform notification.`,
+        feedback: 'Subtle but critical defect. The definition of "solicit" extends to "accepted by Employee in response to an automated platform notification." LinkedIn sends automated connection suggestions — if Jordan\'s former customer appears in his feed and he accepts a suggested connection, that\'s technically "solicitation" under this clause. The core terms (2-year, material contact) are sound, but the digital solicitation expansion makes it practically unworkable and arguably overbroad.'
       }
     ],
     employee: [
@@ -1117,6 +1217,28 @@ const PRECEDENTS = {
         summary: 'Two-year restriction. Material contact scope. No inbound contact exception.',
         text: `For two (2) years following termination, Employee shall not solicit any customer with whom Employee had material contact in the prior twelve months. Employee shall not recruit Company employees during the same period.`,
         feedback: 'Acceptable but suboptimal. Two years is the employer\'s preferred duration — Jordan should push for one year. More importantly, there\'s no inbound contact exception. If a customer calls Jordan unprompted, he\'d technically be in violation by responding. That\'s unreasonable and negotiable.'
+      },
+      {
+        id: 'ns_pre_bdo',
+        label: 'Pre-BDO Seidman Non-Solicitation Template',
+        source: 'Legacy Employment Agreement Archive',
+        jurisdiction: 'NY',
+        date: '1996',
+        quality: 'outdated',
+        summary: 'Two-year non-solicitation predating BDO Seidman v. Hirshberg (1999). Covers "all clients of Company."',
+        text: `For two (2) years following termination, Employee shall not, directly or indirectly, solicit or attempt to divert business from any client of Company. Employee acknowledges that Company's client relationships constitute protectable goodwill.`,
+        feedback: 'Outdated. This predates BDO Seidman v. Hirshberg (N.Y. 1999), which established that non-solicitation clauses must be limited to customers the employee personally served. "Any client of Company" — without a material contact requirement — is precisely the overbreadth the Court of Appeals rejected. While this template might have been acceptable in 1996, post-BDO courts will narrow or void it. Using 25-year-old precedent for a current agreement is malpractice-level negligence.'
+      },
+      {
+        id: 'ns_california',
+        label: 'California "Narrow Exception" Template',
+        source: 'Silicon Valley Employment Practice Group',
+        jurisdiction: 'CA',
+        date: '2024',
+        quality: 'wrong_jurisdiction',
+        summary: 'References Cal. Bus. & Prof. Code § 16600. Designed for California\'s restrictive covenant ban with narrow trade secret exception.',
+        text: `Consistent with California Business and Professions Code § 16600, this Agreement does not restrict Employee's right to engage in any lawful profession, trade, or business. However, Employee shall not use or disclose Company's trade secrets (as defined under the California Uniform Trade Secrets Act) to solicit Company's customers for a period of one (1) year following termination.`,
+        feedback: 'Wrong jurisdiction. California Business and Professions Code § 16600 voids virtually all non-compete and non-solicitation agreements — California courts are far more employee-friendly than New York. This template is designed for California\'s unique legal regime. Using it in New York would give Jordan less protection than a properly negotiated New York non-solicitation, and the statutory references have no legal effect outside California.'
       }
     ]
   },
@@ -1143,6 +1265,28 @@ const PRECEDENTS = {
         summary: 'Standard exclusions only. Missing the general knowledge/skills protection.',
         text: `Confidential Information shall not include information that: (a) was publicly available at the time of disclosure; (b) was known to Employee prior to disclosure; (c) was received from a third party without restriction; or (d) was independently developed by Employee.`,
         feedback: 'Missing the critical protection. Without a general knowledge/skills exclusion, Pico Salsa could argue that fermentation techniques Jordan learned on the job — even techniques he already knew — are confidential. This would effectively bar him from his field.'
+      },
+      {
+        id: 'ci_ex_pre_dtsa',
+        label: 'Comprehensive Exclusions (Pre-2016 Template)',
+        source: 'Major Law Firm Precedent Bank (Redacted)',
+        jurisdiction: 'NY',
+        date: '2014',
+        quality: 'outdated',
+        summary: 'Five-part exclusion including general knowledge. Predates DTSA whistleblower protections.',
+        text: `Confidential Information shall not include: (a) information publicly available through no fault of Employee; (b) information known to Employee before employment; (c) information received from third parties without restriction; (d) information independently developed by Employee; or (e) general knowledge, skills, and experience. Employee's obligations shall not restrict Employee from making disclosures required by law or court order, provided Employee gives Company reasonable advance notice.`,
+        feedback: 'Strong substantive exclusions, but it\'s from 2014 — before the DTSA (2016). The "disclosures required by law" provision is inadequate compared to the specific DTSA § 1833(b) immunity notice. Modern practice requires a reference to the specific federal whistleblower immunity. Using pre-DTSA precedent signals outdated practice.'
+      },
+      {
+        id: 'ci_ex_no_fault',
+        label: 'Four-Part Exclusion with "Publicly Available" Gap',
+        source: 'Simplified Employment Template',
+        jurisdiction: 'General',
+        date: '2020',
+        quality: 'subtle_defect',
+        summary: 'Standard exclusions including general knowledge. "Publicly available" exclusion missing "no fault" qualifier.',
+        text: `Confidential Information shall not include information that: (a) is or becomes publicly available; (b) was known to Employee before employment; (c) is received from a third party; (d) is independently developed by Employee; or (e) constitutes general knowledge, skills, and experience acquired during employment.`,
+        feedback: 'Subtle but critical defect. Exclusion (a) says "is or becomes publicly available" without the standard qualifier "through no fault of Employee." This means if Jordan deliberately leaked confidential information to the public, he could then claim it\'s excluded because it\'s "publicly available." No competent employer would accept this language, and a court might read the missing qualifier as intentional — undermining Jordan\'s credibility if the agreement is ever litigated.'
       }
     ]
   },
@@ -1169,6 +1313,28 @@ const PRECEDENTS = {
         summary: 'Excludes pre-employment work but without a scheduled list. Harder to enforce.',
         text: `This assignment shall not apply to inventions conceived or developed by Employee before the commencement of employment with Company.`,
         feedback: 'The right idea but weak execution. Without a specific exhibit listing Jordan\'s prior inventions, the burden of proving something was "conceived before employment" falls entirely on Jordan. A scheduled list created at hire is much stronger evidence.'
+      },
+      {
+        id: 'pi_california',
+        label: 'California Mandatory Disclosure Under Lab. Code § 2872',
+        source: 'West Coast Technology Company Template',
+        jurisdiction: 'CA',
+        date: '2023',
+        quality: 'wrong_jurisdiction',
+        summary: 'References California Labor Code § 2872 mandatory prior inventions disclosure. Includes statutory notice.',
+        text: `Pursuant to California Labor Code § 2872, Company shall provide Employee with written notice of the provisions of California Labor Code § 2870 and § 2871. Employee shall disclose all prior inventions on Exhibit A. If Employee fails to list an invention on Exhibit A, Employee represents that no such prior inventions exist.`,
+        feedback: 'Wrong jurisdiction. California Labor Code §§ 2870–2872 do not apply in New York. The mandatory disclosure framework, statutory notice requirements, and the legal consequences of non-disclosure are all California-specific. In New York, prior inventions protection must be achieved through contractual negotiation, not statutory compliance. Using California forms in New York provides no legal protection.'
+      },
+      {
+        id: 'pi_detailed_disclosure',
+        label: 'Detailed Disclosure with Company Evaluation Right',
+        source: 'Aggressive IP Firm Template',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Requires detailed technical disclosure of all prior inventions sufficient for Company to evaluate potential conflicts.',
+        text: `Employee shall disclose on Exhibit A all prior inventions in sufficient detail for Company to evaluate whether such inventions relate to Company's business, including (a) a complete technical description, (b) the current stage of development, (c) any third-party rights or licenses, and (d) Employee's plans for continued development. Company reserves the right to determine whether any prior invention conflicts with Employee's obligations under this Agreement.`,
+        feedback: 'Dangerous for Jordan. The "sufficient detail for Company to evaluate" requirement forces Jordan to reveal his fermentation monitoring app\'s technical specifications, development stage, and future plans — to the very company that might want to claim it. Worse, "Company reserves the right to determine" conflicts gives Pico Salsa unilateral power to declare Jordan\'s app a conflict. This turns a protective provision into an information-extraction tool.'
       }
     ]
   },
@@ -1195,6 +1361,28 @@ const PRECEDENTS = {
         summary: 'Personal time carve-out only applies to inventions completely unrelated to ANY company interest.',
         text: `Employee's obligations under this Section shall not apply to inventions developed entirely on Employee's own time that have no relation whatsoever to Company's business, products, services, or research, whether current or anticipated.`,
         feedback: 'Dangerously narrow for Jordan. The "anticipated" research language and "no relation whatsoever" standard mean Pico Salsa could argue that any fermentation-related side project — including Jordan\'s app — has some relation to their business. The threshold is too high.'
+      },
+      {
+        id: 'pt_california',
+        label: 'California Lab. Code § 2870 Statutory Carve-Out',
+        source: 'West Coast Technology Company Template',
+        jurisdiction: 'CA',
+        date: '2023',
+        quality: 'wrong_jurisdiction',
+        summary: 'Tracks California Labor Code § 2870 statutory language. Protects personal-time inventions under California law.',
+        text: `Pursuant to California Labor Code § 2870(a), this Agreement does not require Employee to assign any invention developed entirely on Employee's own time without using Company's equipment, supplies, facilities, or trade secret information, except for those inventions that either (1) relate to Company's business or actual or demonstrably anticipated research or development, or (2) result from any work performed by Employee for Company.`,
+        feedback: 'Wrong jurisdiction. California Labor Code § 2870 provides strong employee protections — but only in California. In New York, there is no equivalent statute. Tracking California statutory language in a New York agreement creates a false sense of security. The carve-out needs to be crafted as a contractual right, not a statutory reference.'
+      },
+      {
+        id: 'pt_notice_trap',
+        label: 'Personal Time Carve-Out with Prior Notice Requirement',
+        source: 'Mid-Market Employment Template',
+        jurisdiction: 'General',
+        date: '2022',
+        quality: 'subtle_defect',
+        summary: 'Personal time exception conditioned on Employee providing prior written notice to Company before beginning work.',
+        text: `Employee's obligations under this Section shall not apply to inventions developed entirely on Employee's own time, without use of Company resources, that do not relate to Company's current business — provided that Employee gives Company written notice of the nature and scope of such personal project prior to beginning development. Failure to provide prior notice shall create a rebuttable presumption that the invention was developed using Company resources.`,
+        feedback: 'Subtle trap. The personal time carve-out looks reasonable, but it\'s conditioned on "prior written notice" before Jordan starts working on a personal project. Failure to notify triggers a "rebuttable presumption" that Company resources were used. Since Jordan has already been developing his fermentation app without notifying Pico Salsa, this provision would retroactively create a presumption that the app was built with company resources. The notice requirement converts a protection into a liability.'
       }
     ]
   },
@@ -1210,6 +1398,39 @@ const PRECEDENTS = {
         summary: 'Affirmatively states that nothing in the agreement restricts competitive employment.',
         text: `Nothing in this Agreement shall be construed as a non-competition agreement or as restricting Employee's right to accept employment with, or provide services to, any entity, including a direct competitor of Company. Employee's obligations under this Agreement are limited to the specific restrictions on solicitation and the protection of Confidential Information set forth herein.`,
         feedback: 'Excellent protective language. This eliminates any argument that the non-solicitation clause is a disguised non-compete. It affirmatively preserves Jordan\'s right to work at RivalCraft.'
+      },
+      {
+        id: 'ncr_disguised',
+        label: '"Reasonable Competitive Restraint" Clause',
+        source: 'National Employment Template Service',
+        jurisdiction: 'General',
+        date: '2021',
+        quality: 'bad_for_client',
+        summary: 'Uses softer language but effectively functions as a non-compete. Restricts "competitive activity."',
+        text: `Employee agrees to a reasonable competitive restraint during the term of employment and for a period of twelve (12) months thereafter. During the Restraint Period, Employee shall not engage in any activity that is directly competitive with Company's core business operations in the geographic area where Company conducts business.`,
+        feedback: 'This is a non-compete wearing a disguise. "Reasonable competitive restraint" and "activity directly competitive with Company\'s core business" are non-compete language, regardless of the label. If Jordan signs this, Pico Salsa could argue his employment at RivalCraft (a competing hot sauce company) violates the clause. The softer language doesn\'t change the legal effect — this restricts competitive employment.'
+      },
+      {
+        id: 'ncr_garden_leave',
+        label: 'No Non-Compete with Garden Leave Provision',
+        source: 'UK-Influenced Employment Template (Adapted)',
+        jurisdiction: 'General',
+        date: '2023',
+        quality: 'subtle_defect',
+        summary: 'States there is no non-compete, but includes a 6-month garden leave (paid notice period) during which competitive employment is restricted.',
+        text: `This Agreement is not a non-competition agreement and does not restrict Employee's right to work in any field. However, in the event of termination, Company may elect a Garden Leave Period of up to six (6) months, during which Employee shall remain on Company's payroll but shall not perform work for any competitor, customer, or prospective customer of Company. During the Garden Leave Period, Employee's access to Company facilities and systems may be suspended.`,
+        feedback: 'Subtle trap. The first sentence says "not a non-competition agreement" — but the garden leave provision is functionally identical to a six-month non-compete. During garden leave, Jordan can\'t work for RivalCraft even though he\'s on Pico Salsa\'s payroll. The "may elect" language gives the company unilateral discretion. While garden leave clauses are common in the UK, U.S. courts (especially in New York) scrutinize them as potential non-competes.'
+      },
+      {
+        id: 'ncr_outdated',
+        label: 'Standard Non-Compete Waiver (Pre-2020)',
+        source: 'Generic Employment Template',
+        jurisdiction: 'General',
+        date: '2018',
+        quality: 'outdated',
+        summary: 'Waives non-compete obligations but doesn\'t address the current regulatory environment around non-competes.',
+        text: `Employee shall not be subject to any non-competition restriction following termination. Employee acknowledges that this waiver does not relieve Employee of obligations under the Confidential Information and Non-Solicitation sections of this Agreement.`,
+        feedback: 'Adequate but outdated. This 2018 template doesn\'t reference the significant regulatory developments around non-competes (FTC rulemaking, New York legislative proposals, state-level bans). Modern practice includes affirmative employment-freedom language ("Employee\'s right to accept employment with any entity, including a direct competitor") that eliminates any ambiguity. The bare "no non-competition restriction" language is weaker than an affirmative declaration of employment rights.'
       }
     ]
   },
@@ -1225,6 +1446,39 @@ const PRECEDENTS = {
         summary: 'Required statutory language. Must be included in every employment agreement entered into or updated after May 11, 2016.',
         text: `Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.`,
         feedback: 'This is the required language. It must appear verbatim (or substantially similar) in every employment agreement. Omitting it forfeits your right to exemplary damages and attorney\'s fees under 18 U.S.C. § 1833(b)(3)(B) — even for willful misappropriation.'
+      },
+      {
+        id: 'dtsa_truncated',
+        label: 'Partial DTSA Notice (Government Officials Only)',
+        source: 'Mid-Market Employment Template',
+        jurisdiction: 'Federal',
+        date: '2018',
+        quality: 'subtle_defect',
+        summary: 'Includes subsection (1) — disclosure to government officials. Omits subsection (2) — sealed court filings.',
+        text: `Pursuant to the Defend Trade Secrets Act of 2016 (18 U.S.C. § 1833(b)), Employee is hereby notified that an individual shall not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, solely for the purpose of reporting or investigating a suspected violation of law.`,
+        feedback: 'Incomplete. This notice includes subsection (1) — the government-official reporting immunity — but omits subsection (2), which protects disclosures in sealed court filings. Courts have not definitively ruled whether a partial notice satisfies § 1833(b)(3)(A). The safer practice is to include both subsections. Omitting subsection (2) could be argued to forfeit exemplary damages, just like omitting the notice entirely.'
+      },
+      {
+        id: 'dtsa_paraphrase',
+        label: 'Paraphrased DTSA Notice',
+        source: 'Corporate Counsel Quick Template',
+        jurisdiction: 'Federal',
+        date: '2020',
+        quality: 'subtle_defect',
+        summary: 'Paraphrases the DTSA immunity provision rather than quoting or closely tracking the statutory text.',
+        text: `Employee acknowledges that federal law provides certain protections for individuals who disclose trade secrets for the purpose of reporting suspected legal violations. Employee may make such disclosures to government officials or in sealed court filings without liability under applicable trade secret laws. Employee is encouraged to consult an attorney before making any such disclosure.`,
+        feedback: 'Risky paraphrase. The statute requires that the employer "provide notice" of the immunity — courts expect language that closely tracks 18 U.S.C. § 1833(b). This version paraphrases loosely and adds an "encouraged to consult an attorney" hedge that doesn\'t appear in the statute. Whether paraphrasing satisfies the notice requirement is an open question — but the cost of quoting the statute verbatim is zero, making the paraphrase an unnecessary risk.'
+      },
+      {
+        id: 'dtsa_generic',
+        label: 'Generic Compliance Clause (No DTSA Reference)',
+        source: 'Legacy Employment Template (Pre-DTSA)',
+        jurisdiction: 'General',
+        date: '2014',
+        quality: 'outdated',
+        summary: 'Generic "comply with applicable law" clause. No specific DTSA reference. Predates the 2016 Act.',
+        text: `Employee shall comply with all applicable federal, state, and local laws governing the protection of confidential and proprietary information. Nothing in this Agreement shall be construed to prohibit Employee from reporting possible violations of law to any governmental agency or entity.`,
+        feedback: 'Insufficient. This is a pre-DTSA (2014) generic compliance clause. The generic "comply with applicable law" and "reporting violations" language does NOT satisfy the § 1833(b) notice requirement, which requires specific notification of immunity under the Defend Trade Secrets Act. Under § 1833(b)(3)(B), without the proper notice, the employer forfeits exemplary damages and attorney\'s fees — even for willful and malicious misappropriation.'
       }
     ],
     employee: [
@@ -1238,6 +1492,39 @@ const PRECEDENTS = {
         summary: 'Required statutory language protecting whistleblower immunity. Benefits the employee.',
         text: `Pursuant to 18 U.S.C. § 1833(b), Employee will not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made (1) in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, and solely for the purpose of reporting or investigating a suspected violation of law; or (2) in a complaint or other document filed in a lawsuit or other proceeding, if such filing is made under seal.`,
         feedback: 'This notice actually protects Jordan — it guarantees whistleblower immunity. If Jordan discovers trade secret misuse or other legal violations, he can report them without liability. Ensure this is included in any agreement Jordan signs.'
+      },
+      {
+        id: 'dtsa_truncated_emp',
+        label: 'Partial DTSA Notice (Government Officials Only)',
+        source: 'Mid-Market Employment Template',
+        jurisdiction: 'Federal',
+        date: '2018',
+        quality: 'subtle_defect',
+        summary: 'Covers only reporting to government officials. Omits the sealed court filing protection.',
+        text: `Pursuant to the Defend Trade Secrets Act of 2016 (18 U.S.C. § 1833(b)), Employee is hereby notified that an individual shall not be held criminally or civilly liable under any federal or state trade secret law for the disclosure of a trade secret that is made in confidence to a federal, state, or local government official, either directly or indirectly, or to an attorney, solely for the purpose of reporting or investigating a suspected violation of law.`,
+        feedback: 'Incomplete protection. This covers Jordan\'s right to report to government officials, but omits the sealed-court-filing protection of subsection (2). If Jordan needed to file a trade secret disclosure in a lawsuit (e.g., a wrongful termination claim), this partial notice might not immunize him. Jordan should insist on the complete statutory language including both subsections.'
+      },
+      {
+        id: 'dtsa_paraphrase_emp',
+        label: 'Paraphrased Whistleblower Notice',
+        source: 'Corporate Counsel Quick Template',
+        jurisdiction: 'Federal',
+        date: '2020',
+        quality: 'subtle_defect',
+        summary: 'Paraphrases the immunity provision rather than quoting the statute.',
+        text: `Employee acknowledges that federal law provides certain protections for individuals who disclose trade secrets for the purpose of reporting suspected legal violations. Employee may make such disclosures to government officials or in sealed court filings without liability under applicable trade secret laws. Employee is encouraged to consult an attorney before making any such disclosure.`,
+        feedback: 'Risky for Jordan. The paraphrased version adds "encouraged to consult an attorney" — which could create a chilling effect on whistleblowing. The statute doesn\'t require or encourage legal consultation before reporting. More importantly, whether a loose paraphrase triggers the employer\'s remedy forfeiture (which benefits Jordan if the employer sues) is an open question. Jordan should push for the verbatim statutory text.'
+      },
+      {
+        id: 'dtsa_generic_emp',
+        label: 'Generic Compliance Clause (No DTSA Reference)',
+        source: 'Legacy Employment Template (Pre-DTSA)',
+        jurisdiction: 'General',
+        date: '2014',
+        quality: 'outdated',
+        summary: 'Pre-2016 template. Generic "reporting violations" language without specific DTSA immunity reference.',
+        text: `Employee shall comply with all applicable federal, state, and local laws governing the protection of confidential and proprietary information. Nothing in this Agreement shall be construed to prohibit Employee from reporting possible violations of law to any governmental agency or entity.`,
+        feedback: 'Outdated and insufficient. This pre-2016 template doesn\'t reference the DTSA or § 1833(b) at all. The generic "reporting violations" clause provides some comfort but doesn\'t constitute the formal notice required by the statute. For Jordan, the absence of a proper DTSA notice means the employer has forfeited exemplary damages and attorney\'s fees — which is strategically useful if litigation occurs, but the missing notice also signals that the agreement wasn\'t competently drafted.'
       }
     ]
   }
@@ -2150,13 +2437,15 @@ function renderPrecedents() {
   // Step 2: Show precedents only for assigned clauses
   const myClauseIds = assigned.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
   const unassignedIds = allClauseIds.filter(id => !assigned.includes(id));
-  const allMySelected = myClauseIds.every(id => state.decisions.precedents[id]);
+  const reflections = state.decisions.precedentReflections || {};
+  const allMyReady = myClauseIds.every(id => state.decisions.precedents[id] && (reflections[id] || '').trim());
+  const clientName = state.client === 'company' ? 'Pico Salsa' : 'Jordan';
 
   return `<div class="fade-in">
     <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Precedent Library</h2>
-    <p class="font-ui text-sm text-gray-500 mb-2">Review the available precedents for your assigned clauses and select the best option for your client.</p>
+    <p class="font-ui text-sm text-gray-500 mb-2">Read each precedent carefully and select the one that best serves your client. Then explain your reasoning.</p>
     <div class="feedback-box feedback-partner mb-4">
-      <p class="font-ui text-xs text-gray-700"><strong>Practice reality:</strong> A firm's precedent library contains templates from many sources — some excellent, some outdated, some drafted for the <em>other side</em>. Part of your job is evaluating which precedent actually serves <strong>your</strong> client. Look at the source, jurisdiction, date, and read the clause text carefully before selecting. You'll get feedback on your choice after you pick.</p>
+      <p class="font-ui text-xs text-gray-700"><strong>Practice reality:</strong> A firm's precedent library contains templates from many sources — some excellent, some outdated, some drafted for the <em>other side</em>. Read the actual clause language carefully. Pay attention to the source, jurisdiction, and date. Your selections will be reviewed by the senior partner after you submit your complete work product.</p>
     </div>
     <div class="flex items-center justify-between mb-6">
       <p class="font-ui text-xs text-gray-400">You are responsible for ${myClauseIds.length} of ${allClauseIds.length} clauses. ${unassignedIds.length ? `${unassignedIds.length} clause${unassignedIds.length > 1 ? 's are' : ' is'} assigned to your teammates.` : ''}</p>
@@ -2178,46 +2467,51 @@ function renderPrecedents() {
         const precs = PRECEDENTS[clauseId][state.client];
         const selectedId = state.decisions.precedents[clauseId];
         const clauseLabel = clauses.find(c => c.id === clauseId);
+        const reflection = reflections[clauseId] || '';
         return `<div>
           <h3 class="font-headline text-base text-cua-blue uppercase tracking-wide mb-3">${clauseLabel ? clauseLabel.label : clauseId}</h3>
-          <div class="space-y-3">
+          <p class="font-ui text-xs text-gray-400 mb-3">${precs.length} precedent options — read each clause text and select the best for ${clientName}.</p>
+          <div class="space-y-4">
             ${precs.map(p => {
               const isSel = selectedId === p.id;
-              const badSel = isSel && (p.quality !== 'good');
-              return `<div class="precedent-card ${isSel ? (badSel ? 'bad-selected' : 'selected') : ''}" onclick="selectPrecedent('${clauseId}', '${p.id}')">
+              return `<div class="precedent-card ${isSel ? 'selected' : ''}" onclick="selectPrecedent('${clauseId}', '${p.id}')">
                 <div class="flex items-start justify-between gap-3 mb-2">
-                  <p class="font-ui text-sm font-medium text-gray-800">${p.label}</p>
+                  <div class="flex items-center gap-2">
+                    <div class="flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center ${isSel ? 'border-cua-bright-blue bg-cua-bright-blue' : 'border-gray-300'}">
+                      ${isSel ? '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="white" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>' : ''}
+                    </div>
+                    <p class="font-ui text-sm font-medium text-gray-800">${p.label}</p>
+                  </div>
                   <div class="flex gap-1.5 flex-shrink-0">
                     <span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">${p.jurisdiction}</span>
                     <span class="text-xs font-ui font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded">${p.date}</span>
                   </div>
                 </div>
-                <p class="font-ui text-xs text-gray-500 mb-2">${p.source}</p>
-                <p class="font-ui text-xs text-gray-600 mb-3">${p.summary}</p>
-                <details class="group">
-                  <summary class="font-ui text-xs text-cua-bright-blue cursor-pointer hover:underline">View full clause text</summary>
-                  <div class="clause-text text-gray-700 text-sm mt-2 p-3 bg-gray-50 rounded-lg border border-gray-100">${annotateClauseText(p.text)}</div>
-                  <p class="font-ui text-xs text-gray-400 mt-1 italic">Dotted-underlined terms are interactive — click to learn more.</p>
+                <p class="font-ui text-xs text-gray-500 mb-3 ml-7">${p.source}</p>
+                <div class="clause-text text-gray-700 text-sm p-4 rounded-lg ml-7" style="background:var(--bg-topbar); border:1px solid var(--border-topbar);">${annotateClauseText(p.text)}</div>
+                <p class="font-ui text-xs text-gray-400 mt-1 ml-7 italic">Dotted-underlined terms are interactive — hover or click to learn more.</p>
+                <details class="mt-2 ml-7">
+                  <summary class="font-ui text-xs text-cua-bright-blue cursor-pointer hover:underline">Need help parsing this clause?</summary>
+                  <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p class="font-ui text-xs text-gray-600">${p.summary}</p>
+                  </div>
                 </details>
-                ${p.jurisdiction !== 'General' ? jurisFlag(p.jurisdiction, p.jurisdiction === 'CA' ? 'California law — may not apply in New York. Verify before using.' : p.jurisdiction === 'NY' ? 'New York jurisdiction — directly applicable.' : 'Check jurisdiction compatibility.') : ''}
-                ${isSel ? `<div class="feedback-box ${p.quality === 'good' ? 'feedback-good' : p.quality === 'subtle_defect' ? 'feedback-nudge' : 'feedback-warn'} mt-3">
-                  <p class="font-ui text-xs text-gray-700">${p.feedback}</p>
-                  ${p.quality !== 'good' ? `<p class="font-ui text-xs text-gray-500 mt-1 italic">You may continue with this selection or choose a different precedent.</p>` : ''}
-                  ${p.quality === 'overbroad' ? `<div class="mt-2">${negoBadge('challenge', 'Opposing counsel will attack', 'A competent employee-side lawyer will move to void this provision entirely, arguing it is unconscionably broad.')}</div>` : ''}
-                  ${p.quality === 'bad_for_client' ? `<div class="mt-2">${negoBadge('challenge', 'Weakens your position', state.client === 'company' ? 'This precedent was designed for the receiving party.' : 'This precedent favors the employer.')}</div>` : ''}
-                  ${p.quality === 'subtle_defect' ? `<div class="mt-2">${consequenceToggle(p.id, 'What happens if you miss this?', 'Under Stanford v. Roche (2011), "agrees to assign" means Pico Salsa does NOT automatically own Jordan\'s inventions.')}</div>` : ''}
-                  ${p.quality === 'wrong_jurisdiction' ? `<div class="mt-2">${jurisFlag(p.jurisdiction, 'This precedent is from a different jurisdiction.')}</div>` : ''}
-                  ${p.quality === 'good' ? `<div class="mt-2">${negoBadge('standard', 'Commercially standard', 'This approach reflects prevailing market practice.')}</div>` : ''}
-                </div>` : ''}
               </div>`;
             }).join('')}
           </div>
+          ${selectedId ? `<div class="mt-4 p-4 rounded-xl" style="background:var(--bg-topbar); border:1px solid var(--border-topbar);">
+            <label class="font-ui text-sm font-medium block mb-2" style="color:var(--text-primary);">Why did you choose this precedent for ${clientName}?</label>
+            <p class="font-ui text-xs text-gray-400 mb-2">In 1–2 sentences, explain what makes this the best option for your client. Consider the language, jurisdiction, date, and how it addresses the specific facts of this engagement.</p>
+            <textarea id="prec-reflect-${clauseId}" class="draft-textarea" style="min-height: 80px;"
+              placeholder="I chose this precedent because..."
+              oninput="savePrecedentReflection('${clauseId}', this.value)">${escapeHtml(reflection)}</textarea>
+          </div>` : ''}
         </div>`;
       }).join('')}
     </div>
-    ${allMySelected ? `<div class="mt-8 flex justify-end">
-      <button onclick="submitPrecedents()" class="btn-primary font-ui">Confirm Selections & Continue</button>
-    </div>` : `<p class="font-ui text-xs text-gray-400 mt-6">Select a precedent for each of your assigned clauses to continue.</p>`}
+    <div id="precedent-submit-area" class="mt-8 flex justify-end">
+      ${allMyReady ? `<button onclick="submitPrecedents()" class="btn-primary font-ui">Confirm Selections & Continue</button>` : `<p class="font-ui text-xs text-gray-400">Select a precedent and explain your reasoning for each clause to continue.</p>`}
+    </div>
   </div>`;
 }
 
@@ -2257,8 +2551,30 @@ function selectPrecedent(clauseId, precId) {
   render();
 }
 
+function savePrecedentReflection(clauseId, text) {
+  if (!state.decisions.precedentReflections) state.decisions.precedentReflections = {};
+  state.decisions.precedentReflections[clauseId] = text;
+  saveState();
+  updatePrecedentSubmitButton();
+}
+
+function updatePrecedentSubmitButton() {
+  const assigned = state.decisions.assignedClauses || [];
+  const allClauseIds = state.decisions.clauses.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
+  const myClauseIds = assigned.filter(id => PRECEDENTS[id] && PRECEDENTS[id][state.client]);
+  const reflections = state.decisions.precedentReflections || {};
+  const allReady = myClauseIds.every(id => state.decisions.precedents[id] && (reflections[id] || '').trim());
+  const area = document.getElementById('precedent-submit-area');
+  if (area) {
+    area.innerHTML = allReady
+      ? `<button onclick="submitPrecedents()" class="btn-primary font-ui">Confirm Selections & Continue</button>`
+      : `<p class="font-ui text-xs text-gray-400">Select a precedent and explain your reasoning for each clause to continue.</p>`;
+  }
+}
+
 function submitPrecedents() {
   logAction('precedents_confirmed', JSON.stringify(state.decisions.precedents));
+  logAction('precedent_reflections', JSON.stringify(state.decisions.precedentReflections || {}));
   nextPhase();
 }
 
@@ -2563,18 +2879,33 @@ function renderReview() {
   const precChoices = state.decisions.precedents;
   const client = state.client;
 
-  // Assess precedent quality
-  const precAssessments = [];
+  // Assess precedent quality — build detailed per-clause assessments
+  const precDetails = [];
   Object.entries(precChoices).forEach(([clauseId, precId]) => {
     const precs = PRECEDENTS[clauseId] && PRECEDENTS[clauseId][client];
     if (!precs) return;
     const p = precs.find(x => x.id === precId);
     if (!p) return;
-    precAssessments.push({ clauseId, quality: p.quality, label: p.label });
+    const clauseMeta = (CLAUSE_TYPES[client] || []).find(c => c.id === clauseId);
+    const reflection = (state.decisions.precedentReflections || {})[clauseId] || '';
+    precDetails.push({ clauseId, clauseName: clauseMeta ? clauseMeta.label : clauseId, quality: p.quality, label: p.label, feedback: p.feedback, reflection });
   });
 
-  const goodChoices = precAssessments.filter(a => a.quality === 'good');
-  const badChoices = precAssessments.filter(a => a.quality !== 'good');
+  const goodCount = precDetails.filter(a => a.quality === 'good').length;
+  const badCount = precDetails.filter(a => a.quality !== 'good').length;
+
+  function qualityLabel(q) {
+    const map = { good: 'Strong selection', bad_for_client: 'Drafted for the other side', overbroad: 'Overbroad — would be struck down', wrong_jurisdiction: 'Wrong jurisdiction', outdated: 'Outdated precedent', subtle_defect: 'Subtle but critical defect', unenforceable: 'Unenforceable', wrong_type: 'Wrong transaction type' };
+    return map[q] || 'Needs review';
+  }
+  function qualityColor(q) {
+    return q === 'good' ? 'border-emerald-400 bg-emerald-50' : 'border-red-400 bg-red-50';
+  }
+  function qualityIcon(q) {
+    return q === 'good'
+      ? '<svg class="w-5 h-5 text-emerald-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+      : '<svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+  }
 
   // Generate completion code
   const codeBase = `${state.student.name}-${state.client}-${Date.now()}`;
@@ -2582,25 +2913,40 @@ function renderReview() {
 
   return `<div class="fade-in">
     <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Senior Partner Review</h2>
-    <p class="font-ui text-sm text-gray-500 mb-6">A senior partner has reviewed your assembled agreement.</p>
+    <p class="font-ui text-sm text-gray-500 mb-6">A senior partner has reviewed your assembled agreement and provided detailed feedback on each precedent selection.</p>
 
     <div class="bg-white border border-gray-200 rounded-xl p-6 md:p-8 shadow-sm">
       <div class="memo-text text-gray-700 space-y-4">
         <p><strong>TO:</strong> ${state.student.name}<br><strong>FROM:</strong> Senior Partner<br><strong>RE:</strong> Review of ${client === 'company' ? 'Pico Salsa Employment Agreement' : 'Jordan Webb — Employment Agreement Review'}<br><strong>DATE:</strong> [Today]</p>
 
-        <p>I've reviewed your draft. Here are my comments.</p>
+        <p>I've reviewed your draft and each precedent you selected. Below is my clause-by-clause assessment.</p>
 
-        ${goodChoices.length ? `<p><strong>Strengths:</strong></p><ul class="list-disc pl-5 space-y-1">
-          ${goodChoices.map(c => `<li class="text-sm">Good instinct on the ${c.label.toLowerCase()}. This is well-suited to our client's needs and the New York legal landscape.</li>`).join('')}
-        </ul>` : ''}
+        ${dtsaResult === 'phase6' || dtsaResult === 'missed_phase3' ? `<div class="border-l-4 border-red-500 bg-red-50 p-4 rounded-r-lg mb-4"><p class="font-ui text-sm text-red-800"><strong>Critical oversight:</strong> You missed the DTSA § 1833(b) immunity notice in the architecture phase. This is a $0-cost provision that, if omitted, permanently forfeits exemplary damages and attorney's fees. Every employment agreement signed after May 2016 must include it. This is the kind of mistake that generates malpractice claims.</p></div>` : dtsaResult === 'phase3' ? `<div class="border-l-4 border-emerald-500 bg-emerald-50 p-4 rounded-r-lg mb-4"><p class="font-ui text-sm text-emerald-800"><strong>Good catch</strong> on including the DTSA notice from the start. Many associates miss this.</p></div>` : ''}
+      </div>
+    </div>
 
-        ${badChoices.length ? `<p><strong>Issues to address:</strong></p><ul class="list-disc pl-5 space-y-1">
-          ${badChoices.map(c => `<li class="text-sm">${c.label}: Review the feedback on this selection. ${c.quality === 'wrong_jurisdiction' ? 'Check the jurisdiction — this precedent may not apply in New York.' : c.quality === 'overbroad' ? 'This is overbroad and may not survive judicial scrutiny.' : c.quality === 'outdated' ? 'Check the date on this precedent — the law may have changed.' : c.quality === 'subtle_defect' ? 'There\'s a subtle but critical drafting defect here. Review Stanford v. Roche.' : 'This may not serve our client\'s interests as well as alternatives.'}</li>`).join('')}
-        </ul>` : ''}
+    <h3 class="font-headline text-lg text-cua-blue uppercase tracking-wide mt-8 mb-4">Clause-by-Clause Assessment</h3>
 
-        ${dtsaResult === 'phase6' || dtsaResult === 'missed_phase3' ? `<p><strong>Critical oversight:</strong> You missed the DTSA § 1833(b) immunity notice in the architecture phase. This is a $0-cost provision that, if omitted, permanently forfeits exemplary damages and attorney's fees. Every employment agreement signed after May 2016 must include it. This is the kind of mistake that generates malpractice claims.</p>` : dtsaResult === 'phase3' ? `<p><strong>Good catch</strong> on including the DTSA notice from the start. Many associates miss this.</p>` : ''}
+    <div class="space-y-4">
+      ${precDetails.map(d => `
+        <div class="border-l-4 ${qualityColor(d.quality)} rounded-r-xl p-5 shadow-sm">
+          <div class="flex items-start gap-3 mb-3">
+            ${qualityIcon(d.quality)}
+            <div class="flex-1">
+              <p class="font-ui text-sm font-bold text-gray-800">${d.clauseName}</p>
+              <p class="font-ui text-xs text-gray-500">Selected: ${d.label}</p>
+              <span class="inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${d.quality === 'good' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">${qualityLabel(d.quality)}</span>
+            </div>
+          </div>
+          ${d.reflection ? `<div class="bg-white/60 border border-gray-200 rounded-lg p-3 mb-3"><p class="font-ui text-xs text-gray-400 mb-1">Your reasoning:</p><p class="font-body text-sm text-gray-700 italic">"${escapeHtml(d.reflection)}"</p></div>` : '<p class="font-ui text-xs text-gray-400 italic mb-3">(No reflection provided)</p>'}
+          <div class="font-body text-sm text-gray-700">${d.feedback}</div>
+        </div>
+      `).join('')}
+    </div>
 
-        <p>Overall: ${goodChoices.length >= badChoices.length ? 'Solid work. With the adjustments noted above, this is ready for client review.' : 'The foundation is there, but several selections need reconsideration before this goes to the client. Review my notes and revise.'}</p>
+    <div class="bg-white border border-gray-200 rounded-xl p-6 mt-6 shadow-sm">
+      <div class="memo-text text-gray-700">
+        <p><strong>Overall Assessment:</strong> ${goodCount >= badCount ? `Solid work, ${state.student.name.split(' ')[0]}. You made ${goodCount} strong selection${goodCount !== 1 ? 's' : ''} out of ${precDetails.length} clauses. With the adjustments noted above, this agreement is ready for client review.` : `The foundation is there, ${state.student.name.split(' ')[0]}, but ${badCount} of your ${precDetails.length} selections need reconsideration before this goes to the client. Review my notes carefully — the details matter in employment agreements.`}</p>
       </div>
     </div>
 
@@ -2745,6 +3091,11 @@ async function generateDocx() {
 
   // ── Phase 4: Precedent Selection ──
   children.push(heading('IV. Precedent Selection', 1));
+  const reflections = state.decisions.precedentReflections || {};
+  function qualityLabelDocx(q) {
+    const map = { good: 'Strong selection', bad_for_client: 'Drafted for the other side', overbroad: 'Overbroad — would be struck down', wrong_jurisdiction: 'Wrong jurisdiction', outdated: 'Outdated precedent', subtle_defect: 'Subtle but critical defect', unenforceable: 'Unenforceable', wrong_type: 'Wrong transaction type' };
+    return map[q] || 'Needs review';
+  }
   Object.entries(state.decisions.precedents).forEach(([clauseId, precId]) => {
     const c = clauses.find(x => x.id === clauseId);
     const precs = PRECEDENTS[clauseId] && PRECEDENTS[clauseId][state.client];
@@ -2752,7 +3103,14 @@ async function generateDocx() {
     children.push(heading(c ? c.label : clauseId, 3));
     if (p) {
       children.push(bodyP(`Selected: ${p.label} (${p.source}, ${p.jurisdiction}, ${p.date})`));
-      children.push(bodyP(`Quality: ${p.quality === 'good' ? 'Good' : p.quality === 'subtle_defect' ? 'Subtle defect' : p.quality === 'bad_for_client' ? 'Bad for client' : p.quality === 'overbroad' ? 'Overbroad' : p.quality === 'wrong_jurisdiction' ? 'Wrong jurisdiction' : p.quality}`, { italics: true, color: p.quality === 'good' ? '006633' : 'CC3300' }));
+      children.push(bodyP(`Partner assessment: ${qualityLabelDocx(p.quality)}`, { italics: true, color: p.quality === 'good' ? '006633' : 'CC3300' }));
+      const ref = reflections[clauseId];
+      if (ref && ref.trim()) {
+        children.push(bodyP(`Student rationale: "${ref}"`, { italics: true }));
+      } else {
+        children.push(bodyP('Student rationale: (not provided)', { italics: true, color: '999999' }));
+      }
+      children.push(bodyP(`Partner feedback: ${p.feedback}`));
     }
   });
 
