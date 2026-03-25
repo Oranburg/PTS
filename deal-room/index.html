@@ -1642,6 +1642,7 @@ function annotateClauseText(text) {
 }
 
 function toggleTermTip(el) {
+  event.stopPropagation(); // prevent card onclick from firing
   document.querySelectorAll('.legal-term.show-tip').forEach(e => { if (e !== el) e.classList.remove('show-tip'); });
   el.classList.toggle('show-tip');
 }
@@ -2490,7 +2491,7 @@ function renderPrecedents() {
                 <p class="font-ui text-xs text-gray-500 mb-3 ml-7">${p.source}</p>
                 <div class="clause-text text-gray-700 text-sm p-4 rounded-lg ml-7" style="background:var(--bg-topbar); border:1px solid var(--border-topbar);">${annotateClauseText(p.text)}</div>
                 <p class="font-ui text-xs text-gray-400 mt-1 ml-7 italic">Dotted-underlined terms are interactive — hover or click to learn more.</p>
-                <details class="mt-2 ml-7">
+                <details class="mt-2 ml-7" onclick="event.stopPropagation()">
                   <summary class="font-ui text-xs text-cua-bright-blue cursor-pointer hover:underline">Need help parsing this clause?</summary>
                   <div class="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                     <p class="font-ui text-xs text-gray-600">${p.summary}</p>
@@ -2545,6 +2546,7 @@ function reassignClauses() {
 }
 
 function selectPrecedent(clauseId, precId) {
+  if (state.decisions.precedents[clauseId] === precId) return; // already selected
   state.decisions.precedents[clauseId] = precId;
   logAction('precedent_selected', `${clauseId}: ${precId}`);
   saveState();
