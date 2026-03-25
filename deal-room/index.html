@@ -2217,7 +2217,8 @@ function renderArchitecture() {
     return `<div class="fade-in">
       <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Agreement Architecture</h2>
       <p class="font-ui text-sm text-gray-500 mb-1">For each risk you identified, match the contract provision(s) that address it.</p>
-      <p class="font-ui text-xs text-gray-400 mb-6">Drag a provision from the bank below and drop it onto the matching risk. A provision can address multiple risks.</p>
+      <p class="font-ui text-xs text-gray-400 mb-4">Drag a provision from the bank below and drop it onto the matching risk. A provision can address multiple risks.</p>
+      <div class="feedback-box feedback-partner mb-4"><p class="font-ui text-xs text-gray-700"><strong>Note:</strong> You don't have to place every provision — only the ones that address your identified risks. Some provisions may not fit any risk you selected, and that's fine. But think carefully: is there a provision in the bank that addresses a risk you <em>didn't</em> identify? You'll have a chance to revise after submission.</p></div>
 
       <div class="mb-6">
         <p class="font-ui text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Provision Bank</p>
@@ -2327,9 +2328,10 @@ function renderArchitecture() {
       </div>`).join('')}
     </div>
 
-    ${requiredMissed.length ? `<div class="feedback-box feedback-nudge mt-4">
-      <p class="font-ui text-sm font-medium text-amber-800">Provisions you didn't match to any risk:</p>
-      ${requiredMissed.map(c => `<p class="font-ui text-xs text-gray-600 mt-1">- <strong>${c.label}</strong>${c.trap ? ' — this omission has consequences you\'ll discover later' : ''}</p>`).join('')}
+    ${requiredMissed.length ? `<div class="feedback-box feedback-warn mt-4">
+      <p class="font-ui text-sm font-medium text-amber-800">Unplaced provisions — consider whether your risk assessment missed something:</p>
+      ${requiredMissed.map(c => `<p class="font-ui text-xs text-gray-600 mt-1">- <strong>${c.label}</strong>${c.trap ? ' — leaving this out of your agreement may have consequences' : ' — does this address a risk you didn\'t identify?'}</p>`).join('')}
+      <p class="font-ui text-xs text-gray-500 mt-2 italic">You can go back to add these provisions. Any provision left unplaced will not appear in your agreement.</p>
     </div>` : ''}
 
     ${!requiredMissed.length && feedbackItems.every(f => f.type === 'good') ? `<div class="feedback-box feedback-good mt-4"><p class="font-ui text-sm text-emerald-800">Excellent. Every risk is addressed by the right provision.</p></div>` : ''}
