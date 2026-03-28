@@ -238,16 +238,6 @@
       margin-bottom: 4px;
     }
 
-    /* Case citation links */
-    .case-cite {
-      color: #2459A9;
-      border-bottom: 1px solid #2459A9;
-      cursor: pointer;
-      transition: color 0.15s;
-      font-style: italic;
-    }
-    .case-cite:hover { color: #0A3255; }
-
     /* Consequence toggle */
     .consequence-toggle {
       display: inline-flex;
@@ -366,7 +356,6 @@
     .btn-outline:hover { background: #f0f7ff; box-shadow: 0 2px 8px rgba(36,89,169,0.1); }
 
     /* Section headers */
-    .section-divider { height: 1px; background: linear-gradient(90deg, #e5e7eb 0%, transparent 100%); margin: 32px 0; }
 
     /* Dark mode overrides for Tailwind utility classes — double specificity to beat Tailwind CDN */
     html[data-theme="dark"] .bg-white, [data-theme="dark"] div.bg-white, [data-theme="dark"] aside.bg-white { background-color: var(--bg-card) !important; }
@@ -428,7 +417,7 @@
 <body>
 
 <!-- LOGIN GATE -->
-<div id="login-overlay" class="login-overlay" style="background: #0A3255;">
+<div id="login-overlay" class="login-overlay" style="background: #0A3255;" role="dialog" aria-modal="true" aria-label="Deal Room Login">
   <div class="bg-white rounded-2xl shadow-2xl p-8 md:p-10 max-w-md w-full mx-4 fade-in">
     <div class="text-center mb-6">
       <div class="inline-flex items-center justify-center w-14 h-14 rounded-xl bg-cua-blue mb-4">
@@ -439,15 +428,15 @@
     </div>
     <div class="space-y-4">
       <div>
-        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Your Full Name</label>
+        <label for="login-name" class="block text-xs font-ui font-medium text-gray-600 mb-1">Your Full Name</label>
         <input id="login-name" type="text" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none" placeholder="First and Last Name" autocomplete="name">
       </div>
       <div>
-        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Team / Group Name</label>
+        <label for="login-team" class="block text-xs font-ui font-medium text-gray-600 mb-1">Team / Group Name</label>
         <input id="login-team" type="text" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none" placeholder="e.g., Team Alpha">
       </div>
       <div id="scenario-selector" class="hidden">
-        <label class="block text-xs font-ui font-medium text-gray-600 mb-1">Scenario</label>
+        <label for="login-scenario" class="block text-xs font-ui font-medium text-gray-600 mb-1">Scenario</label>
         <select id="login-scenario" class="w-full border-2 border-gray-200 rounded-lg px-4 py-2.5 text-sm font-ui focus:border-cua-bright-blue focus:outline-none bg-white"></select>
       </div>
       <div class="bg-gray-50 rounded-lg p-3 mt-2">
@@ -460,7 +449,7 @@
 </div>
 
 <!-- RESET CONFIRMATION MODAL -->
-<div id="reset-modal" class="modal-overlay" style="display:none;">
+<div id="reset-modal" class="modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Reset Confirmation">
   <div class="modal-box">
     <div class="flex items-center gap-3 mb-4">
       <div class="w-10 h-10 rounded-full bg-cua-light-red/10 flex items-center justify-center flex-shrink-0">
@@ -2218,7 +2207,7 @@ function renderArchitecture() {
       <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Agreement Architecture</h2>
       <p class="font-ui text-sm text-gray-500 mb-1">For each risk you identified, match the contract provision(s) that address it.</p>
       <p class="font-ui text-xs text-gray-400 mb-4">Drag a provision from the bank below and drop it onto the matching risk. A provision can address multiple risks.</p>
-      <div class="feedback-box feedback-partner mb-4"><p class="font-ui text-xs text-gray-700"><strong>Note:</strong> You don't have to place every provision — only the ones that address your identified risks. Some provisions may not fit any risk you selected, and that's fine. But think carefully: is there a provision in the bank that addresses a risk you <em>didn't</em> identify? You'll have a chance to revise after submission.</p></div>
+      <div class="feedback-box feedback-partner mb-4"><p class="font-ui text-xs text-gray-700"><strong>Note:</strong> Match each risk to the provision(s) that address it. You don't have to place every provision from the bank — only the ones relevant to your identified risks. Unplaced provisions will not appear in your agreement.</p></div>
 
       <div class="mb-6">
         <p class="font-ui text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Provision Bank</p>
@@ -2305,8 +2294,9 @@ function renderArchitecture() {
     }
   });
 
-  // Check for required clauses the student missed entirely
-  const requiredMissed = clauses.filter(c => c.required && !allMatchedProvisions.includes(c.id));
+  // Check for required clauses the student missed entirely — but exclude trap provisions
+  // (like DTSA) so they get caught at Senior Partner Review instead of being telegraphed here
+  const requiredMissed = clauses.filter(c => c.required && !c.trap && !allMatchedProvisions.includes(c.id));
 
   return `<div class="fade-in">
     <h2 class="font-headline text-2xl text-cua-blue uppercase tracking-wide mb-2">Agreement Architecture — Review</h2>
@@ -2328,10 +2318,10 @@ function renderArchitecture() {
       </div>`).join('')}
     </div>
 
-    ${requiredMissed.length ? `<div class="feedback-box feedback-warn mt-4">
-      <p class="font-ui text-sm font-medium text-amber-800">Unplaced provisions — consider whether your risk assessment missed something:</p>
-      ${requiredMissed.map(c => `<p class="font-ui text-xs text-gray-600 mt-1">- <strong>${c.label}</strong>${c.trap ? ' — leaving this out of your agreement may have consequences' : ' — does this address a risk you didn\'t identify?'}</p>`).join('')}
-      <p class="font-ui text-xs text-gray-500 mt-2 italic">You can go back to add these provisions. Any provision left unplaced will not appear in your agreement.</p>
+    ${requiredMissed.length ? `<div class="feedback-box feedback-nudge mt-4">
+      <p class="font-ui text-sm font-medium text-amber-800">Unplaced provisions:</p>
+      ${requiredMissed.map(c => `<p class="font-ui text-xs text-gray-600 mt-1">- <strong>${c.label}</strong> — not matched to any risk</p>`).join('')}
+      <p class="font-ui text-xs text-gray-500 mt-2 italic">You can revise your matching if you'd like to include these, or continue without them.</p>
     </div>` : ''}
 
     ${!requiredMissed.length && feedbackItems.every(f => f.type === 'good') ? `<div class="feedback-box feedback-good mt-4"><p class="font-ui text-sm text-emerald-800">Excellent. Every risk is addressed by the right provision.</p></div>` : ''}
@@ -2683,14 +2673,6 @@ function renderCustomize() {
   const unassignedWithPrecedents = state.decisions.clauses.filter(id => state.decisions.precedents[id] && !clauseIds.includes(id));
   const clientResponse = state.decisions.clientResponses.customize || '';
   const hasResponse = clientResponse.trim().length > 0;
-
-  // Check if each clause has been edited (differs from original)
-  const allEdited = clauseIds.every(id => {
-    const precs = PRECEDENTS[id] && PRECEDENTS[id][state.client];
-    const precId = state.decisions.precedents[id];
-    const prec = precs ? precs.find(p => p.id === precId) : null;
-    return prec && state.decisions.customizations[id] && state.decisions.customizations[id] !== prec.text;
-  });
 
   const canSubmit = hasResponse;
 
