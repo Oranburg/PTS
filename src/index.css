@@ -13,20 +13,20 @@
   --text: #0f172a;
   --muted: #475569;
 
-  /* Catholic Brand Colors */
-  --catholic-red:   #B21F2C;
-  --catholic-blue:  #0A3255;
-  --bright-red:     #E82F35;
-  --bright-blue:    #2459A9;
-  --light-red:      #E96955;
-  --light-blue:     #6DACDE;
-  --yellow:         #FFD65C;
-  --light-blue-green: #B5E1E1;
+  /* Brand Colors */
+  --red-deep:      #B21F2C;
+  --blue-deep:     #0A3255;
+  --red-bright:    #E82F35;
+  --blue-bright:   #2459A9;
+  --red-light:     #E96955;
+  --blue-light:    #6DACDE;
+  --yellow:        #FFD65C;
+  --teal:          #B5E1E1;
 
-  --primary:       var(--catholic-blue);
-  --primary-light: var(--bright-blue);
+  --primary:       var(--blue-deep);
+  --primary-light: var(--blue-bright);
   --accent:        var(--yellow);
-  --radius: 12px;
+  --radius: 8px;
   --shadow: 0 1px 3px rgba(15,23,42,0.08);
 }
 
@@ -34,7 +34,7 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Roboto', sans-serif;
   background: var(--bg);
   color: var(--text);
   font-size: 16px;
@@ -199,7 +199,7 @@ h1, h2, h3, h4 { line-height: 1.25; }
   font-weight: 600;
 }
 .chapter-card .card-arrow { color: var(--primary-light); }
-.activity-card .card-arrow { color: var(--catholic-red); }
+.activity-card .card-arrow { color: var(--red-deep); }
 /* Class Activities Section */
 .activities-section {
   margin-top: 3rem;
@@ -208,7 +208,7 @@ h1, h2, h3, h4 { line-height: 1.25; }
 }
 .activities-heading {
   font-size: clamp(1.2rem, 2.5vw, 1.6rem);
-  color: var(--catholic-red);
+  color: var(--red-deep);
   font-weight: 700;
   margin: 0 0 0.4rem;
   text-align: center;
@@ -233,12 +233,12 @@ h1, h2, h3, h4 { line-height: 1.25; }
   flex-direction: column;
   gap: 0.5rem;
   box-shadow: var(--shadow);
-  border-left: 4px solid var(--catholic-red);
+  border-left: 4px solid var(--red-deep);
 }
 .activity-card:hover {
   box-shadow: 0 4px 16px rgba(178,31,44,0.15);
   transform: translateY(-2px);
-  border-color: var(--bright-red);
+  border-color: var(--red-bright);
   text-decoration: none;
 }
 .activity-card .ch-num {
@@ -246,7 +246,7 @@ h1, h2, h3, h4 { line-height: 1.25; }
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--catholic-red);
+  color: var(--red-deep);
 }
 .activity-card h2 {
   margin: 0;

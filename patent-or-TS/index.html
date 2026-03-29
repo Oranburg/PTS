@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Patent or Trade Secret? — Interactive Teaching Tool</title>
+    <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/oranburg-theme.css" />
     <style>
-        body { font-family: "Inter", sans-serif; }
+        body { font-family: 'Roboto', sans-serif; }
         :root {
-            --catholic-red:   #B21F2C;
-            --bright-red:     #E82F35;
-            --light-red:      #E96955;
-            --catholic-blue:  #0A3255;
-            --bright-blue:    #2459A9;
-            --light-blue:     #6DACDE;
+            --red-deep:       #B21F2C;
+            --red-bright:     #E82F35;
+            --red-light:      #E96955;
+            --blue-deep:      #0A3255;
+            --blue-bright:    #2459A9;
+            --blue-light:     #6DACDE;
             --yellow:         #FFD65C;
-            --light-blue-green: #B5E1E1;
+            --teal:           #B5E1E1;
         }
         .answer-card { transition: all 0.2s ease; cursor: pointer; }
         .answer-card:has(input:checked) { border-color: #3b82f6 !important; background-color: #eff6ff !important; }
@@ -45,6 +47,30 @@
         .reveal-btn-shown { background-color: #059669 !important; }
         #instructor-panel { display: none; }
         body.instructor-mode #instructor-panel { display: block; }
+
+        /* Dark mode overrides for Tailwind classes */
+        [data-theme="dark"] .bg-gray-100 { background: var(--bg) !important; }
+        [data-theme="dark"] .bg-white { background: var(--bg-secondary) !important; color: var(--text) !important; }
+        [data-theme="dark"] .bg-gray-50 { background: var(--bg-soft) !important; }
+        [data-theme="dark"] .text-gray-900 { color: var(--text) !important; }
+        [data-theme="dark"] .text-gray-800 { color: #e5e7eb !important; }
+        [data-theme="dark"] .text-gray-700 { color: #d1d5db !important; }
+        [data-theme="dark"] .text-gray-600 { color: #9ca3af !important; }
+        [data-theme="dark"] .text-gray-500 { color: #9ca3af !important; }
+        [data-theme="dark"] .text-gray-400 { color: #6b7280 !important; }
+        [data-theme="dark"] .border-gray-200 { border-color: var(--border) !important; }
+        [data-theme="dark"] .border-gray-100 { border-color: var(--border) !important; }
+        [data-theme="dark"] .shadow-md { box-shadow: 0 4px 6px rgba(0,0,0,0.4) !important; }
+        [data-theme="dark"] .bg-blue-50 { background: rgba(36,89,169,0.2) !important; }
+        [data-theme="dark"] .bg-amber-50 { background: rgba(255,214,92,0.1) !important; }
+        [data-theme="dark"] .border-blue-200 { border-color: var(--border) !important; }
+        [data-theme="dark"] .border-amber-200 { border-color: rgba(255,214,92,0.3) !important; }
+        [data-theme="dark"] .text-blue-800 { color: var(--blue-light) !important; }
+        [data-theme="dark"] .bg-green-50 { background: rgba(16,185,129,0.1) !important; }
+        [data-theme="dark"] .bg-red-50 { background: rgba(239,68,68,0.1) !important; }
+        [data-theme="dark"] .border-green-200 { border-color: rgba(16,185,129,0.3) !important; }
+        [data-theme="dark"] .border-red-200 { border-color: rgba(239,68,68,0.3) !important; }
+        [data-theme="dark"] .rounded-2xl.shadow-2xl .bg-white { background: var(--bg-soft) !important; }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
@@ -123,28 +149,29 @@
 </div>
 
 <!-- Header -->
-<header class="fixed top-0 left-0 right-0 z-30 text-white shadow-lg" style="background: linear-gradient(135deg, var(--catholic-blue), var(--bright-blue))">
+<header class="fixed top-0 left-0 right-0 z-30 text-white shadow-lg" style="background: linear-gradient(135deg, var(--blue-deep), var(--blue-bright))">
     <div class="max-w-screen-2xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between flex-wrap gap-2">
             <div class="flex items-center gap-3">
                 <button onclick="toggleMobileNav()" class="md:hidden w-10 h-10 bg-white bg-opacity-20 rounded-lg flex items-center justify-center hover:bg-opacity-30 transition-colors" aria-label="Toggle navigation">
                     <i class="fas fa-bars text-white"></i>
                 </button>
-                <div class="w-10 h-10 rounded-lg items-center justify-center hidden md:flex" style="background:var(--catholic-red)">
+                <div class="w-10 h-10 rounded-lg items-center justify-center hidden md:flex" style="background:var(--red-deep)">
                     <i class="fas fa-balance-scale text-white text-lg"></i>
                 </div>
                 <div>
                     <h1 class="text-lg font-bold leading-tight">Patent or Trade Secret?</h1>
-                    <p class="text-xs" style="color:var(--light-blue)">Interactive IP Strategy Teaching Tool</p>
+                    <p class="text-xs" style="color:var(--blue-light)">Interactive IP Strategy Teaching Tool</p>
                 </div>
             </div>
             <div class="flex items-center gap-4 flex-wrap">
                 <div class="text-right">
-                    <p id="progressText" class="text-xs mb-1" style="color:var(--light-blue)">0 of 11 cases answered</p>
+                    <p id="progressText" class="text-xs mb-1" style="color:var(--blue-light)">0 of 11 cases answered</p>
                     <div class="w-40 rounded-full h-2" style="background:rgba(10,50,85,0.6)">
                         <div id="progressBar" class="progress-bar-fill h-2 rounded-full" style="width:0%;background:var(--yellow)"></div>
                     </div>
                 </div>
+                <button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle" style="background:rgba(255,255,255,0.15);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;display:flex;align-items:center"><svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
                 <div class="flex items-center gap-2 bg-white bg-opacity-10 rounded-lg px-3 py-2">
                     <i class="fas fa-chalkboard-teacher text-amber-300"></i>
                     <span class="text-sm font-medium">Instructor</span>
@@ -2268,5 +2295,6 @@ if (document.readyState !== "loading") {
     loadAnswers();
 }
 </script>
+<script>function toggleTheme(){var c=document.documentElement.getAttribute("data-theme"),n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("pts-theme",n)}</script>
 </body>
 </html>

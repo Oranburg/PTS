@@ -1,24 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class Activities — Patent vs. Trade Secret</title>
+    <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/oranburg-theme.css" />
     <style>
         :root {
-            --catholic-red:     #B21F2C;
-            --bright-red:       #E82F35;
-            --light-red:        #E96955;
-            --catholic-blue:    #0A3255;
-            --bright-blue:      #2459A9;
-            --light-blue:       #6DACDE;
+            --red-deep:     #B21F2C;
+            --red-bright:       #E82F35;
+            --red-light:        #E96955;
+            --blue-deep:    #0A3255;
+            --blue-bright:      #2459A9;
+            --blue-light:       #6DACDE;
             --yellow:           #FFD65C;
-            --light-blue-green: #B5E1E1;
+            --teal: #B5E1E1;
         }
-        body { font-family: "Inter", sans-serif; }
+        body { font-family: 'Roboto', sans-serif; }
         details summary { user-select: none; cursor: pointer; list-style: none; }
         details summary::-webkit-details-marker { display: none; }
         details[open] .chevron-icon { transform: rotate(180deg); }
@@ -49,26 +51,47 @@
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
         .rubric-row:nth-child(even) { background-color: #f8fafc; }
+        /* Dark mode overrides for Tailwind classes */
+        [data-theme="dark"] .bg-gray-50 { background: var(--bg) !important; }
+        [data-theme="dark"] .bg-white { background: var(--bg-secondary) !important; color: var(--text) !important; }
+        [data-theme="dark"] .bg-gray-100 { background: var(--bg-soft) !important; }
+        [data-theme="dark"] .text-gray-900 { color: var(--text) !important; }
+        [data-theme="dark"] .text-gray-800 { color: #e5e7eb !important; }
+        [data-theme="dark"] .text-gray-700 { color: #d1d5db !important; }
+        [data-theme="dark"] .text-gray-600 { color: #9ca3af !important; }
+        [data-theme="dark"] .text-gray-500 { color: #9ca3af !important; }
+        [data-theme="dark"] .text-gray-400 { color: #6b7280 !important; }
+        [data-theme="dark"] .border-gray-200 { border-color: var(--border) !important; }
+        [data-theme="dark"] .border-gray-100 { border-color: var(--border) !important; }
+        [data-theme="dark"] .border-gray-700 { border-color: var(--border) !important; }
+        [data-theme="dark"] .bg-blue-50 { background: rgba(36,89,169,0.2) !important; }
+        [data-theme="dark"] .bg-amber-50 { background: rgba(255,214,92,0.1) !important; }
+        [data-theme="dark"] .bg-green-50 { background: rgba(16,185,129,0.1) !important; }
+        [data-theme="dark"] .bg-indigo-50 { background: rgba(99,102,241,0.1) !important; }
+        [data-theme="dark"] .bg-gray-800 { background: var(--bg-secondary) !important; }
+        [data-theme="dark"] .shadow-lg { box-shadow: 0 4px 6px rgba(0,0,0,0.4) !important; }
+        [data-theme="dark"] .text-blue-100 { color: var(--blue-light) !important; }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
 <!-- ===================== HEADER ===================== -->
-<header class="text-white no-print" style="background: linear-gradient(135deg, var(--catholic-blue), var(--bright-blue))">
+<header class="text-white no-print" style="background: linear-gradient(135deg, var(--blue-deep), var(--blue-bright))">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between py-5 gap-3">
             <div>
                 <div class="flex items-center gap-3 mb-1">
-                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center" style="background:var(--catholic-red)">
+                    <div class="w-10 h-10 bg-white bg-opacity-20 rounded-xl flex items-center justify-center" style="background:var(--red-deep)">
                         <i class="fas fa-chalkboard-teacher text-white text-lg" aria-hidden="true"></i>
                     </div>
                     <div>
                         <h1 class="text-xl sm:text-2xl font-bold leading-tight">Patent vs. Trade Secret</h1>
-                        <p class="text-sm font-medium" style="color:var(--light-blue)">Class Activities &amp; Exercises</p>
+                        <p class="text-sm font-medium" style="color:var(--blue-light)">Class Activities &amp; Exercises</p>
                     </div>
                 </div>
             </div>
             <nav class="flex flex-wrap gap-2" aria-label="Site navigation">
+                <button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle" style="background:rgba(255,255,255,0.15);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;display:flex;align-items:center"><svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
                 <a href="./index.html"
                    class="inline-flex items-center gap-2 bg-white bg-opacity-15 hover:bg-opacity-25 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
                     <i class="fas fa-balance-scale text-xs" aria-hidden="true"></i>
@@ -85,7 +108,7 @@
 </header>
 
 <!-- ===================== HERO STRIP ===================== -->
-<div class="text-white no-print" style="background: linear-gradient(135deg, var(--bright-blue), var(--catholic-blue))">
+<div class="text-white no-print" style="background: linear-gradient(135deg, var(--blue-bright), var(--blue-deep))">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div class="max-w-3xl">
             <span class="inline-block bg-white bg-opacity-20 text-white text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wide mb-3">
@@ -1178,5 +1201,6 @@
     </div>
 </footer>
 
+<script>function toggleTheme(){var c=document.documentElement.getAttribute("data-theme"),n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("pts-theme",n)}</script>
 </body>
 </html>

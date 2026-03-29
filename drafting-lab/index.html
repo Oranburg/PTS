@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Internal Mitigation Drafting Lab — Pico Salsa Employment Clinic</title>
+  <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/oranburg-theme.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <style>
-    body { font-family: 'Inter', system-ui, sans-serif; }
-    .clause-text { font-family: Georgia, 'Times New Roman', serif; line-height: 1.9; font-size: 0.9375rem; }
+    body { font-family: 'Roboto', sans-serif; }
+    .clause-text { font-family: 'Crimson Text', Georgia, serif; line-height: 1.9; font-size: 0.9375rem; }
     .draft-textarea {
-      font-family: Georgia, 'Times New Roman', serif;
+      font-family: 'Crimson Text', Georgia, serif;
       line-height: 1.8;
       font-size: 0.9375rem;
       width: 100%;
       min-height: 200px;
       resize: vertical;
       border: 2px solid #cbd5e1;
-      border-radius: 12px;
+      border-radius: 8px;
       padding: 20px;
       background: #fff;
       color: #1e293b;
@@ -112,6 +115,23 @@
     .hint-content { display: none; }
     .hint-content.open { display: block; }
     .nego-side { min-height: 200px; max-height: 300px; overflow-y: auto; }
+    /* Dark mode overrides */
+    [data-theme="dark"] body { background: var(--bg) !important; color: var(--text) !important; }
+    [data-theme="dark"] .bg-white { background: var(--bg-secondary) !important; color: var(--text) !important; }
+    [data-theme="dark"] .bg-gray-50 { background: var(--bg) !important; }
+    [data-theme="dark"] .bg-slate-50 { background: var(--bg-soft) !important; }
+    [data-theme="dark"] .text-gray-900, [data-theme="dark"] .text-slate-900 { color: var(--text) !important; }
+    [data-theme="dark"] .text-gray-800, [data-theme="dark"] .text-slate-800 { color: #e5e7eb !important; }
+    [data-theme="dark"] .text-gray-700, [data-theme="dark"] .text-slate-700 { color: #d1d5db !important; }
+    [data-theme="dark"] .text-gray-600, [data-theme="dark"] .text-slate-600 { color: #9ca3af !important; }
+    [data-theme="dark"] .text-gray-500, [data-theme="dark"] .text-slate-500 { color: #9ca3af !important; }
+    [data-theme="dark"] .border-gray-200, [data-theme="dark"] .border-slate-200 { border-color: var(--border) !important; }
+    [data-theme="dark"] .border-gray-300, [data-theme="dark"] .border-slate-300 { border-color: var(--border) !important; }
+    [data-theme="dark"] .shadow-lg, [data-theme="dark"] .shadow-xl { box-shadow: 0 4px 6px rgba(0,0,0,0.4) !important; }
+    [data-theme="dark"] .draft-textarea { background: var(--bg-soft) !important; color: var(--text) !important; border-color: var(--border) !important; }
+    [data-theme="dark"] .bg-green-50 { background: rgba(16,185,129,0.1) !important; }
+    [data-theme="dark"] .bg-blue-50 { background: rgba(36,89,169,0.2) !important; }
+    [data-theme="dark"] .bg-amber-50 { background: rgba(255,214,92,0.1) !important; }
   </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -125,10 +145,11 @@
           <path d="M12 22V2M2 12h20M4.5 7.5l3 3 4.5-3 4.5 3 3-3M4.5 16.5l3-3 4.5 3 4.5-3 3 3"/>
         </svg>
       </div>
-      <div>
+      <div class="flex-1">
         <h1 class="text-lg md:text-xl font-bold tracking-tight leading-tight">Internal Mitigation Drafting Lab</h1>
         <p class="text-emerald-400 text-xs font-semibold uppercase tracking-widest">Pico Salsa, LLC — Employment Agreement Clinic</p>
       </div>
+      <button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle" style="background:rgba(255,255,255,0.15);border:none;border-radius:8px;padding:6px 10px;cursor:pointer;color:#fff;display:flex;align-items:center"><svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
     </div>
     <div class="flex items-center no-print" id="progress-bar"></div>
   </div>
@@ -1615,5 +1636,6 @@ async function generateDocx(mode) {
 // ============================================================
 render();
 </script>
+<script>function toggleTheme(){var c=document.documentElement.getAttribute("data-theme"),n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("pts-theme",n)}</script>
 </body>
 </html>

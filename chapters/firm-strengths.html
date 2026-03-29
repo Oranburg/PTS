@@ -1,15 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Firm Persona & Strengths Finder</title>
+    <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/oranburg-theme.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@300;400;600;700;900&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        .serif { font-family: 'Libre Baskerville', serif; }
+        body { font-family: var(--font-body), 'Roboto', sans-serif; background-color: var(--bg); color: var(--text); }
+        .serif { font-family: var(--font-accent), 'Crimson Text', Georgia, serif; }
+        h1, h2, h3 { font-family: var(--font-headline); }
 
         /* Custom Radio Button Styles */
         .scale-btn {
@@ -50,6 +52,48 @@
         .gradient-bg {
             background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
         }
+
+        /* Standardize border-radius */
+        .rounded-2xl { border-radius: var(--radius-md, 8px) !important; }
+        .rounded-xl { border-radius: var(--radius-md, 8px) !important; }
+
+        /* Theme toggle button */
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border, #e2e8f0);
+            border-radius: 8px;
+            padding: 6px;
+            cursor: pointer;
+            color: var(--muted, #64748b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .theme-toggle:hover { color: var(--text); border-color: var(--text); }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: inline; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+        [data-theme="light"] .theme-toggle .icon-sun { display: none; }
+        [data-theme="light"] .theme-toggle .icon-moon { display: inline; }
+
+        /* Dark mode overrides for Tailwind classes */
+        [data-theme="dark"] body { background: var(--bg) !important; color: var(--text) !important; }
+        [data-theme="dark"] .bg-white { background: var(--bg-secondary) !important; }
+        [data-theme="dark"] .bg-slate-50, [data-theme="dark"] .bg-gray-50 { background: var(--bg-soft) !important; }
+        [data-theme="dark"] .text-gray-900, [data-theme="dark"] .text-slate-900 { color: var(--text) !important; }
+        [data-theme="dark"] .text-gray-700, [data-theme="dark"] .text-slate-700 { color: var(--muted) !important; }
+        [data-theme="dark"] .text-gray-600, [data-theme="dark"] .text-gray-500 { color: var(--muted) !important; }
+        [data-theme="dark"] .border-gray-200, [data-theme="dark"] .border-slate-200 { border-color: var(--border) !important; }
+        [data-theme="dark"] .border-gray-300 { border-color: var(--border) !important; }
+        [data-theme="dark"] .divide-gray-200 > * + * { border-color: var(--border) !important; }
+        [data-theme="dark"] textarea, [data-theme="dark"] input, [data-theme="dark"] select { background: var(--bg-soft) !important; color: var(--text) !important; border-color: var(--border) !important; }
+
+        /* Print rules */
+        @media print {
+            body { background: white !important; color: black !important; }
+            .theme-toggle { display: none !important; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body class="text-slate-800 min-h-screen flex flex-col">
@@ -83,6 +127,7 @@
                 <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400" id="progress-indicator">
                     Pre-Charter Assessment
                 </div>
+                <button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle"><svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button>
             </div>
         </div>
         <!-- Progress Bar -->
@@ -726,5 +771,6 @@
             nextStep(4);
         }
     </script>
+    <script>function toggleTheme(){var c=document.documentElement.getAttribute("data-theme"),n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("pts-theme",n)}</script>
 </body>
 </html>
