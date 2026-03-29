@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Deal Room — Protecting Trade Secrets</title>
+  <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/oranburg-theme.css" />
   <script>
     tailwind.config = {
       theme: {
@@ -86,7 +88,7 @@
       font-family: 'Crimson Text', Georgia, serif;
       font-size: 1rem; line-height: 1.8;
       width: 100%; min-height: 180px; resize: vertical;
-      border: 2px solid var(--border-input); border-radius: 10px;
+      border: 2px solid var(--border-input); border-radius: 8px;
       padding: 18px; background: var(--bg-input); color: var(--text-primary);
       outline: none; transition: border-color 0.2s, box-shadow 0.2s; box-sizing: border-box;
     }
@@ -112,12 +114,12 @@
     .ref-panel.open { width: 360px; }
 
     /* Cards */
-    .precedent-card { border: 2px solid var(--border-card); border-radius: 12px; padding: 18px; background: var(--bg-card); cursor: pointer; transition: all 0.2s; }
+    .precedent-card { border: 2px solid var(--border-card); border-radius: 8px; padding: 18px; background: var(--bg-card); cursor: pointer; transition: all 0.2s; }
     .precedent-card:hover { border-color: #2459A9; box-shadow: var(--shadow-card); transform: translateY(-1px); }
     .precedent-card.selected { border-color: #0A3255; background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(36,89,169,0.12); }
     .precedent-card.bad-selected { border-color: #E96955; background: var(--bg-feedback-warn); box-shadow: 0 0 0 3px rgba(233,105,85,0.1); }
 
-    .feedback-box { border-radius: 10px; padding: 14px 18px; margin-top: 12px; }
+    .feedback-box { border-radius: 8px; padding: 14px 18px; margin-top: 12px; }
     .feedback-good { background: var(--bg-feedback-good); border: 1px solid #B5E1E1; border-left: 4px solid #B5E1E1; }
     .feedback-nudge { background: var(--bg-feedback-nudge); border: 1px solid #FFD65C; border-left: 4px solid #FFD65C; }
     .feedback-warn { background: var(--bg-feedback-warn); border: 1px solid #E96955; border-left: 4px solid #E96955; }
@@ -190,7 +192,7 @@
     }
 
     /* Client pushback */
-    .client-msg { background: #fffbeb; border-left: 4px solid #FFD65C; border-radius: 0 10px 10px 0; padding: 14px 16px; }
+    .client-msg { background: #fffbeb; border-left: 4px solid #FFD65C; border-radius: 0 8px 8px 0; padding: 14px 16px; }
 
     /* Interactive legal terms */
     .legal-term {
@@ -1776,16 +1778,16 @@ function toggleExploreMode() {
 // ============================================================
 function initTheme() {
   // Priority: localStorage > default (dark for faculty URL param, light otherwise)
-  const saved = localStorage.getItem('pts-deal-room-theme');
+  const saved = localStorage.getItem('pts-theme');
   const urlParams = new URLSearchParams(window.location.search);
   const isFaculty = urlParams.has('faculty') || urlParams.has('dark');
-  const theme = saved || (isFaculty ? 'dark' : 'light');
+  const theme = saved || 'dark';
   applyTheme(theme);
 }
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('pts-deal-room-theme', theme);
+  localStorage.setItem('pts-theme', theme);
   // Update toggle icon
   const sun = document.getElementById('dm-icon-sun');
   const moon = document.getElementById('dm-icon-moon');

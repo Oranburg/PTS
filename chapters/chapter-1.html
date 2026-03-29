@@ -1,14 +1,17 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Chapter 1 — Foundations | Protecting Trade Secrets</title>
+    <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/oranburg-theme.css" />
     <link rel="stylesheet" href="/assets/site.css" />
   </head>
   <body>
     <div class="wrap">
-      <nav class="nav"><a href="/">Home</a><a href="/chapters/">Chapter Hub</a></nav>
+      <nav class="nav"><a href="/">Home</a><a href="/chapters/">Chapter Hub</a><button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle"><svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button></nav>
       <main>
         <section class="panel">
           <h1>Chapter 1 — Foundations</h1>
@@ -21,5 +24,6 @@
         </section>
       </main>
     </div>
+    <script>function toggleTheme(){var c=document.documentElement.getAttribute("data-theme"),n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("pts-theme",n)}</script>
   </body>
 </html>
