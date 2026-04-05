@@ -32,11 +32,10 @@ export default function Chapter02() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 2<ChapterFooter chapterNum={2} />
+        <div className="ch-label">Chapter 2
 </div>
         <h1>Inventory &amp; Classification</h1>
         <p>Audit assets, classify by type, and prioritize by legal and business value.</p>
-      <ChapterFooter chapterNum={2} />
 </div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
@@ -68,7 +67,6 @@ export default function Chapter02() {
             </button>
           );
         })}
-      <ChapterFooter chapterNum={2} />
 </div>
 
       <div>
@@ -76,9 +74,7 @@ export default function Chapter02() {
         {activeTab === 'classify' && <ClassificationHub />}
         {activeTab === 'cases' && <CaseExplorer />}
         {activeTab === 'ledger' && <InventoryLedger />}
-      <ChapterFooter chapterNum={2} />
 </div>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }
@@ -128,7 +124,6 @@ function IdentificationAudit() {
         <p className="text-slate-600 max-w-2xl mx-auto">
           "You cannot protect a trade secret of which you are unaware." Use this step-by-step diagnostic to determine if an asset qualifies for protection.
         </p>
-      <ChapterFooter chapterNum={2} />
 </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -148,7 +143,6 @@ function IdentificationAudit() {
               step === idx ? 'bg-indigo-600 text-white' : 'bg-slate-300 text-slate-500'
             }`}>
               <s.icon size={20} />
-            <ChapterFooter chapterNum={2} />
 </div>
             <h3 className="font-bold text-sm mb-2">{s.title}</h3>
             {step === idx && (
@@ -158,25 +152,19 @@ function IdentificationAudit() {
                   <div className="space-y-1 mb-4">
                     <p className="text-[10px] font-bold text-emerald-600 uppercase">Examples</p>
                     {s.examples.map(ex => <div key={ex} className="text-xs flex items-center gap-1">✓ {ex}</div>)}
-                  <ChapterFooter chapterNum={2} />
 </div>
                 )}
                 {s.legalNote && (
                   <div className="bg-amber-50 p-2 rounded-lg border border-amber-100">
                     <p className="text-[10px] font-bold text-amber-700 uppercase">Legal Insight</p>
                     <p className="text-[10px] text-amber-800">{s.legalNote}</p>
-                  <ChapterFooter chapterNum={2} />
 </div>
                 )}
-              <ChapterFooter chapterNum={2} />
 </div>
             )}
-          <ChapterFooter chapterNum={2} />
 </div>
         ))}
-      <ChapterFooter chapterNum={2} />
 </div>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }
@@ -189,7 +177,6 @@ function ClassificationHub() {
         <div className="flex items-center gap-3 mb-6">
           <Layers className="text-indigo-600" size={28} />
           <h2 className="text-2xl font-bold">Secret Categories</h2>
-        <ChapterFooter chapterNum={2} />
 </div>
         <div className="space-y-6">
           <CategoryItem
@@ -210,16 +197,13 @@ function ClassificationHub() {
             color="bg-purple-50 border-purple-200 text-purple-800"
             badge="Marketing Tech"
           />
-        <ChapterFooter chapterNum={2} />
 </div>
-      <ChapterFooter chapterNum={2} />
 </div>
 
       <div className="bg-slate-900 text-white rounded-2xl p-8 shadow-sm overflow-hidden relative">
         <div className="flex items-center gap-3 mb-6 relative z-10">
           <BarChart3 className="text-indigo-400" size={28} />
           <h2 className="text-2xl font-bold">Priority Tiers</h2>
-        <ChapterFooter chapterNum={2} />
 </div>
         <div className="space-y-4 relative z-10">
           <PriorityTier
@@ -240,13 +224,10 @@ function ClassificationHub() {
             desc="Routine tweaks or old data. Still secret, but lawsuit is unlikely."
             color="border-slate-500 bg-slate-500/10"
           />
-        <ChapterFooter chapterNum={2} />
 </div>
-        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" aria-hidden="true"><ChapterFooter chapterNum={2} />
+        <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl" aria-hidden="true">
 </div>
-      <ChapterFooter chapterNum={2} />
 </div>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }
@@ -257,10 +238,8 @@ function CategoryItem({ title, desc, color, badge }) {
       <div className="flex justify-between items-start mb-2">
         <h3 className="font-bold">{title}</h3>
         <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-white/50">{badge}</span>
-      <ChapterFooter chapterNum={2} />
 </div>
       <p className="text-sm opacity-90">{desc}</p>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }
@@ -271,10 +250,8 @@ function PriorityTier({ level, title, desc, color }) {
       <div className="flex items-center gap-2 mb-1">
         <span className="text-xs font-black uppercase tracking-tighter text-white/50">{level}</span>
         <h3 className="font-bold text-lg">{title}</h3>
-      <ChapterFooter chapterNum={2} />
 </div>
       <p className="text-sm text-slate-300 leading-relaxed">{desc}</p>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }
@@ -336,7 +313,6 @@ function CaseExplorer() {
         <div className="max-w-md">
           <h2 className="text-2xl font-bold mb-2">Legal Precedents</h2>
           <p className="text-sm text-slate-600 italic">"The law only helps those who help themselves."</p>
-        <ChapterFooter chapterNum={2} />
 </div>
         <div className="flex gap-2 flex-wrap">
           {['all', 'particularity', 'efforts', 'value'].map(f => (
@@ -350,9 +326,7 @@ function CaseExplorer() {
               {f}
             </button>
           ))}
-        <ChapterFooter chapterNum={2} />
 </div>
-      <ChapterFooter chapterNum={2} />
 </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -360,7 +334,6 @@ function CaseExplorer() {
           <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex justify-between items-start mb-3">
               <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded uppercase">{c.theme}</span>
-            <ChapterFooter chapterNum={2} />
 </div>
             <h3 className="font-bold text-lg mb-3">{c.name}</h3>
             <p className="text-xs text-slate-700 leading-relaxed mb-4 bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -368,14 +341,10 @@ function CaseExplorer() {
             </p>
             <div className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest">
               <AlertCircle size={12} /> Outcome: {c.outcome}
-            <ChapterFooter chapterNum={2} />
 </div>
-          <ChapterFooter chapterNum={2} />
 </div>
         ))}
-      <ChapterFooter chapterNum={2} />
 </div>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }
@@ -445,7 +414,6 @@ function InventoryLedger() {
           <div className="flex items-center gap-3">
             <Database className="text-indigo-600" size={28} />
             <h2 className="text-2xl font-bold">Interactive Asset Ledger</h2>
-          <ChapterFooter chapterNum={2} />
 </div>
           <div className="flex gap-2 w-full md:w-auto">
             <button
@@ -460,9 +428,7 @@ function InventoryLedger() {
             >
               {isAdding ? <><X size={16} /> Cancel</> : <><Plus size={16} /> New Entry</>}
             </button>
-          <ChapterFooter chapterNum={2} />
 </div>
-        <ChapterFooter chapterNum={2} />
 </div>
 
         {isAdding && (
@@ -480,7 +446,6 @@ function InventoryLedger() {
                   placeholder="e.g. Algorithm V2"
                   className="w-full border border-indigo-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
-              <ChapterFooter chapterNum={2} />
 </div>
               <div>
                 <label className="block text-xs font-bold text-indigo-700 uppercase mb-1">Category</label>
@@ -493,7 +458,6 @@ function InventoryLedger() {
                   <option value="Business">Business</option>
                   <option value="Hybrid">Hybrid</option>
                 </select>
-              <ChapterFooter chapterNum={2} />
 </div>
               <div>
                 <label className="block text-xs font-bold text-indigo-700 uppercase mb-1">Priority</label>
@@ -506,7 +470,6 @@ function InventoryLedger() {
                   <option value="Medium">Medium (Operational)</option>
                   <option value="Low">Low (Administrative)</option>
                 </select>
-              <ChapterFooter chapterNum={2} />
 </div>
               <div className="lg:col-span-2">
                 <label className="block text-xs font-bold text-indigo-700 uppercase mb-1">Location</label>
@@ -517,7 +480,6 @@ function InventoryLedger() {
                   placeholder="Where does this live?"
                   className="w-full border border-indigo-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
-              <ChapterFooter chapterNum={2} />
 </div>
               <div className="lg:col-span-2">
                 <label className="block text-xs font-bold text-indigo-700 uppercase mb-1">Primary Protection</label>
@@ -528,7 +490,6 @@ function InventoryLedger() {
                   placeholder="e.g. Restricted Access + NDA"
                   className="w-full border border-indigo-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
-              <ChapterFooter chapterNum={2} />
 </div>
               <div className="flex items-end">
                 <button
@@ -537,11 +498,8 @@ function InventoryLedger() {
                 >
                   Save Entry
                 </button>
-              <ChapterFooter chapterNum={2} />
 </div>
-            <ChapterFooter chapterNum={2} />
 </div>
-          <ChapterFooter chapterNum={2} />
 </div>
         )}
 
@@ -584,7 +542,6 @@ function InventoryLedger() {
                       <div className="flex items-center gap-2">
                         <ShieldCheck size={14} className="shrink-0" />
                         <span className="truncate">{row.protection}</span>
-                      <ChapterFooter chapterNum={2} />
 </div>
                     </td>
                     <td className="px-4 py-4 text-center">
@@ -602,7 +559,6 @@ function InventoryLedger() {
               )}
             </tbody>
           </table>
-        <ChapterFooter chapterNum={2} />
 </div>
 
         <div className="mt-8 bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
@@ -612,11 +568,9 @@ function InventoryLedger() {
           <p className="text-sm text-indigo-800 leading-relaxed">
             "A stale inventory is dangerous because it creates a false sense of security." Best practices require an <strong>annual audit</strong> to ensure assets still qualify as secrets and priority levels match the current business roadmap.
           </p>
-        <ChapterFooter chapterNum={2} />
+</div>
 </div>
       <ChapterFooter chapterNum={2} />
-</div>
-    <ChapterFooter chapterNum={2} />
 </div>
   );
 }

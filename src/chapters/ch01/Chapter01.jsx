@@ -28,11 +28,10 @@ export default function Chapter01() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 1<ChapterFooter chapterNum={1} />
+        <div className="ch-label">Chapter 1
 </div>
         <h1>Foundations of Trade Secret Law</h1>
         <p>Companion diagrams and visualizations for Chapter 1.</p>
-      <ChapterFooter chapterNum={1} />
 </div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
@@ -51,7 +50,6 @@ export default function Chapter01() {
             {t.label}
           </button>
         ))}
-      <ChapterFooter chapterNum={1} />
 </div>
 
       <div className="card">
@@ -89,11 +87,9 @@ export default function Chapter01() {
                   <li>Confidential markings</li>
                 </ul>
               </article>
-            <ChapterFooter chapterNum={1} />
 </div>
             <div className="note">
               <strong>Result:</strong> Protection can last indefinitely while secrecy is maintained.
-            <ChapterFooter chapterNum={1} />
 </div>
           </section>
         )}
@@ -141,7 +137,6 @@ export default function Chapter01() {
                   <li>Prevents consumer confusion</li>
                 </ul>
               </article>
-            <ChapterFooter chapterNum={1} />
 </div>
           </section>
         )}
@@ -177,7 +172,6 @@ export default function Chapter01() {
                 </ul>
                 <p><strong>Misappropriation</strong></p>
               </article>
-            <ChapterFooter chapterNum={1} />
 </div>
           </section>
         )}
@@ -202,18 +196,15 @@ export default function Chapter01() {
                   <li>Reasonable royalty</li>
                 </ul>
               </article>
-            <ChapterFooter chapterNum={1} />
 </div>
             <div className="note">
               <strong>3. Enhanced Damages &amp; Fees:</strong> For willful and malicious conduct, courts may award
               exemplary damages and attorney fees.
-            <ChapterFooter chapterNum={1} />
 </div>
           </section>
         )}
-      <ChapterFooter chapterNum={1} />
 </div>
-    <ChapterFooter chapterNum={1} />
+      <ChapterFooter chapterNum={1} />
 </div>
   );
 }

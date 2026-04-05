@@ -53,11 +53,10 @@ export default function Chapter06() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 6<ChapterFooter chapterNum={6} />
+        <div className="ch-label">Chapter 6
 </div>
         <h1>Enforcement &amp; Remedies</h1>
         <p>Complaint quality, emergency injunctive relief, and damages theories.</p>
-      <ChapterFooter chapterNum={6} />
 </div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
@@ -82,16 +81,13 @@ export default function Chapter06() {
             {t.label}
           </button>
         ))}
-      <ChapterFooter chapterNum={6} />
 </div>
 
       <div>
         {activeTab === 'complaint' && <ComplaintSimulator complaint={complaint} setComplaint={setComplaint} onNext={() => setActiveTab('injunction')} />}
         {activeTab === 'injunction' && <InjunctionBoard type={injunctionType} setType={setInjunctionType} factors={seizureFactors} setFactors={setSeizureFactors} onNext={() => setActiveTab('damages')} />}
         {activeTab === 'damages' && <DamagesCalculator damages={damages} setDamages={setDamages} />}
-      <ChapterFooter chapterNum={6} />
 </div>
-    <ChapterFooter chapterNum={6} />
 </div>
   );
 }
@@ -133,14 +129,11 @@ function ComplaintSimulator({ complaint, setComplaint, onNext }) {
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-blue-50 rounded-2xl text-blue-600">
             <FileText size={32} />
-          <ChapterFooter chapterNum={6} />
 </div>
           <div>
             <h2 className="text-3xl font-bold">Rule 12(b)(6) Simulator</h2>
             <p className="text-slate-500">Draft the initial federal complaint. If you fail to plead the statutory elements with specificity, the judge will dismiss your case before discovery begins.</p>
-          <ChapterFooter chapterNum={6} />
 </div>
-        <ChapterFooter chapterNum={6} />
 </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -169,7 +162,6 @@ function ComplaintSimulator({ complaint, setComplaint, onNext }) {
               ]}
               current={complaint.conduct} onSelect={val => setComplaint({...complaint, conduct: val})}
             />
-          <ChapterFooter chapterNum={6} />
 </div>
 
           <div className="lg:col-span-5">
@@ -183,19 +175,16 @@ function ComplaintSimulator({ complaint, setComplaint, onNext }) {
               
               <div className="bg-white/60 p-4 rounded-xl text-sm font-medium leading-relaxed mb-4">
                 <strong>Finding:</strong> {result.reason}
-              <ChapterFooter chapterNum={6} />
 </div>
               
               <div className="text-xs font-bold text-slate-500 italic flex items-center gap-2">
                 <Scale size={14} /> Authority: {result.caseRef}
-              <ChapterFooter chapterNum={6} />
 </div>
 
               {result.tsppFailure && (
                 <div className="mt-4 bg-amber-50 border border-amber-200 p-3 rounded-xl text-xs font-semibold text-amber-800 flex items-start gap-2">
                   <AlertTriangle size={16} className="shrink-0 mt-0.5" />
                   <span><strong>TSPP Diagnosis:</strong> {result.tsppFailure}</span>
-                <ChapterFooter chapterNum={6} />
 </div>
               )}
 
@@ -204,15 +193,10 @@ function ComplaintSimulator({ complaint, setComplaint, onNext }) {
                   Seek Emergency Relief <ArrowRight size={18} />
                 </button>
               )}
-            <ChapterFooter chapterNum={6} />
 </div>
-          <ChapterFooter chapterNum={6} />
 </div>
-        <ChapterFooter chapterNum={6} />
 </div>
-      <ChapterFooter chapterNum={6} />
 </div>
-    <ChapterFooter chapterNum={6} />
 </div>
   );
 }
@@ -232,15 +216,13 @@ function DraftingToggle({ label, options, current, onSelect }) {
                 : 'border-slate-100 bg-white hover:border-slate-300'
             }`}
           >
-            <div className="font-bold text-sm mb-1">{opt.label}<ChapterFooter chapterNum={6} />
+            <div className="font-bold text-sm mb-1">{opt.label}
 </div>
-            <div className="text-xs text-slate-500 leading-tight">{opt.desc}<ChapterFooter chapterNum={6} />
+            <div className="text-xs text-slate-500 leading-tight">{opt.desc}
 </div>
           </button>
         ))}
-      <ChapterFooter chapterNum={6} />
 </div>
-    <ChapterFooter chapterNum={6} />
 </div>
   );
 }
@@ -261,21 +243,17 @@ function InjunctionBoard({ type, setType, factors, setFactors, onNext }) {
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-indigo-50 rounded-2xl text-indigo-600">
             <Siren size={32} />
-          <ChapterFooter chapterNum={6} />
 </div>
           <div>
             <h2 className="text-3xl font-bold">Emergency Relief Board</h2>
             <p className="text-slate-500">The defendant has the files. Select your intervention level.</p>
-          <ChapterFooter chapterNum={6} />
 </div>
-        <ChapterFooter chapterNum={6} />
 </div>
 
         <div className="flex flex-wrap gap-4 mb-8 border-b pb-8">
           <button onClick={() => setType('tro')} className={`px-6 py-3 rounded-xl font-bold border-2 transition-all ${type === 'tro' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>Temporary Restraining Order</button>
           <button onClick={() => setType('preliminary')} className={`px-6 py-3 rounded-xl font-bold border-2 transition-all ${type === 'preliminary' ? 'border-indigo-600 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>Preliminary Injunction</button>
           <button onClick={() => setType('seizure')} className={`px-6 py-3 rounded-xl font-bold border-2 transition-all ${type === 'seizure' ? 'border-rose-600 bg-rose-50 text-rose-700' : 'border-slate-200 text-slate-500 hover:border-slate-300'}`}>Ex Parte Seizure (DTSA)</button>
-        <ChapterFooter chapterNum={6} />
 </div>
 
         {type !== 'seizure' ? (
@@ -283,7 +261,6 @@ function InjunctionBoard({ type, setType, factors, setFactors, onNext }) {
             <h3 className="text-xl font-bold mb-2">Standard Injunctive Relief</h3>
             <p className="text-slate-600 mb-6">Requires showing of likelihood of success on the merits, irreparable harm, and favorable balance of equities. The court orders the defendant to stop using the secret.</p>
             <button onClick={onNext} className="bg-slate-900 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-black transition-all">Proceed to Trial <ArrowRight size={16}/></button>
-          <ChapterFooter chapterNum={6} />
 </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 transition-opacity duration-300">
@@ -300,10 +277,8 @@ function InjunctionBoard({ type, setType, factors, setFactors, onNext }) {
                 <Checkbox label="6. Secret and misappropriation specified" checked={factors.specificity} disabled />
                 <Checkbox label="7. Balance of harms favors plaintiff" checked={factors.balance} disabled />
                 <Checkbox label="8. Defendant is in ACTUAL POSSESSION at specific location" checked={factors.possession} onChange={() => toggleFactor('possession')} />
-              <ChapterFooter chapterNum={6} />
 </div>
               <p className="text-xs text-slate-400 italic mt-2">*Some factors auto-checked based on earlier pleading success.</p>
-            <ChapterFooter chapterNum={6} />
 </div>
 
             <div className={`p-6 rounded-2xl border-2 flex flex-col justify-center transition-colors duration-500 ${isSeizureValid ? 'bg-emerald-50 border-emerald-200' : 'bg-rose-50 border-rose-200'}`}>
@@ -314,9 +289,7 @@ function InjunctionBoard({ type, setType, factors, setFactors, onNext }) {
                   <p className="text-sm text-rose-700 mb-4">You failed to establish all eight elements (such as actual possession at the target location, spoliation risk, or immediate irreparable harm). The court denies the extreme remedy.</p>
                   <div className="bg-white/60 p-3 rounded-lg text-xs font-medium text-slate-700">
                     <strong>Authority:</strong> Janssen Products LP v. Evenus Pharmaceuticals (3d Cir. 2023) — Ex parte seizure denied for failing 5 of 8 factors; Third Circuit dismissed appeal holding seizure orders are not appealable injunctions.
-                  <ChapterFooter chapterNum={6} />
 </div>
-                <ChapterFooter chapterNum={6} />
 </div>
               ) : (
                 <div>
@@ -326,23 +299,17 @@ function InjunctionBoard({ type, setType, factors, setFactors, onNext }) {
                   <button onClick={onNext} className="bg-emerald-600 text-white px-6 py-3 rounded-xl font-bold flex justify-center items-center gap-2 hover:bg-emerald-700 w-full transition-all shadow-md">
                     Proceed to Damages Phase <ArrowRight size={16}/>
                   </button>
-                <ChapterFooter chapterNum={6} />
 </div>
               )}
-            <ChapterFooter chapterNum={6} />
 </div>
             
             <div className="col-span-1 md:col-span-2 mt-4 hidden">
                {/* Visual Diagram Tag for LLM/Document processing */}
               <span></span>
-            <ChapterFooter chapterNum={6} />
 </div>
-          <ChapterFooter chapterNum={6} />
 </div>
         )}
-      <ChapterFooter chapterNum={6} />
 </div>
-    <ChapterFooter chapterNum={6} />
 </div>
   );
 }
@@ -352,7 +319,6 @@ function Checkbox({ label, checked, onChange, disabled }) {
     <label className={`flex items-center gap-3 p-3 rounded-xl border transition-all ${disabled ? 'opacity-60 bg-slate-50' : 'cursor-pointer hover:bg-slate-50 bg-white shadow-sm'}`}>
       <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${checked ? 'bg-indigo-600 border-indigo-600' : 'border-slate-300'}`}>
         {checked && <CheckCircle2 className="text-white" size={14} />}
-      <ChapterFooter chapterNum={6} />
 </div>
       <span className="text-sm font-semibold text-slate-700">{label}</span>
     </label>
@@ -399,14 +365,11 @@ function DamagesCalculator({ damages, setDamages }) {
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600">
             <DollarSign size={32} />
-          <ChapterFooter chapterNum={6} />
 </div>
           <div>
             <h2 className="text-3xl font-bold">Damages & Remedies</h2>
             <p className="text-slate-500">You won the trial. Now elect your damages theory and argue for enhancements.</p>
-          <ChapterFooter chapterNum={6} />
 </div>
-        <ChapterFooter chapterNum={6} />
 </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -419,9 +382,7 @@ function DamagesCalculator({ damages, setDamages }) {
                 <RadioCard id="actual" label="Actual Loss" desc="Plaintiff's direct financial injury (e.g., lost sales or lost licensing)." current={damages.theory} onChange={val => setDamages({...damages, theory: val})} />
                 <RadioCard id="unjust" label="Unjust Enrichment" desc="Defendant's illicit gains (e.g., 'Head Start' avoided R&D costs)." current={damages.theory} onChange={val => setDamages({...damages, theory: val})} />
                 <RadioCard id="royalty" label="Reasonable Royalty" desc="Hypothetical negotiated license fee." current={damages.theory} onChange={val => setDamages({...damages, theory: val})} />
-              <ChapterFooter chapterNum={6} />
 </div>
-            <ChapterFooter chapterNum={6} />
 </div>
 
             <div className="p-6 bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
@@ -429,10 +390,8 @@ function DamagesCalculator({ damages, setDamages }) {
                 <div>
                   <h3 className="font-bold text-slate-800 flex items-center gap-2"><Gavel size={16}/> Seek Exemplary Damages?</h3>
                   <p className="text-xs text-slate-500 mt-1">Requires proving "willful and malicious" conduct.</p>
-                <ChapterFooter chapterNum={6} />
 </div>
                 <Toggle checked={damages.willful} onChange={() => setDamages({...damages, willful: !damages.willful})} />
-              <ChapterFooter chapterNum={6} />
 </div>
 
               {damages.willful && (
@@ -441,19 +400,14 @@ function DamagesCalculator({ damages, setDamages }) {
                     <div>
                       <h3 className="font-bold text-slate-800 flex items-center gap-2"><Building2 size={16}/> Corporate Scienter</h3>
                       <p className="text-xs text-slate-500 mt-1">Did the hiring corporation (not just the rogue employee) know of the theft?</p>
-                    <ChapterFooter chapterNum={6} />
 </div>
                     <Toggle checked={damages.scienter} onChange={() => setDamages({...damages, scienter: !damages.scienter})} />
-                  <ChapterFooter chapterNum={6} />
 </div>
-                <ChapterFooter chapterNum={6} />
 </div>
               )}
-            <ChapterFooter chapterNum={6} />
 </div>
             {/* Visual Diagram Tag for LLM/Document processing */}
             <span className="hidden"></span>
-          <ChapterFooter chapterNum={6} />
 </div>
 
           {/* Right Column: The Verdict */}
@@ -462,39 +416,31 @@ function DamagesCalculator({ damages, setDamages }) {
             
             <div className="space-y-6">
               <div>
-                <div className="text-emerald-400 text-sm font-bold uppercase tracking-wider mb-1">Base Award<ChapterFooter chapterNum={6} />
+                <div className="text-emerald-400 text-sm font-bold uppercase tracking-wider mb-1">Base Award
 </div>
-                <div className="text-xl font-bold mb-2">{output.base}<ChapterFooter chapterNum={6} />
+                <div className="text-xl font-bold mb-2">{output.base}
 </div>
                 <div className="text-sm text-slate-300 bg-white/5 p-3 rounded-lg border border-white/10 leading-relaxed">
                   {output.baseCase}
-                <ChapterFooter chapterNum={6} />
 </div>
-              <ChapterFooter chapterNum={6} />
 </div>
 
               {damages.willful && (
                 <div className="transition-opacity duration-500">
-                  <div className={`${damages.scienter ? 'text-amber-400' : 'text-rose-400'} text-sm font-bold uppercase tracking-wider mb-1 mt-4`}>Enhancement Ruling<ChapterFooter chapterNum={6} />
+                  <div className={`${damages.scienter ? 'text-amber-400' : 'text-rose-400'} text-sm font-bold uppercase tracking-wider mb-1 mt-4`}>Enhancement Ruling
 </div>
-                  <div className="text-xl font-bold mb-2">{output.multiplierText}<ChapterFooter chapterNum={6} />
+                  <div className="text-xl font-bold mb-2">{output.multiplierText}
 </div>
                   <div className="text-sm text-slate-300 bg-white/5 p-3 rounded-lg border border-white/10 leading-relaxed">
                     {output.multiplierCase}
-                  <ChapterFooter chapterNum={6} />
 </div>
-                <ChapterFooter chapterNum={6} />
 </div>
               )}
-            <ChapterFooter chapterNum={6} />
 </div>
-          <ChapterFooter chapterNum={6} />
 </div>
-        <ChapterFooter chapterNum={6} />
+</div>
 </div>
       <ChapterFooter chapterNum={6} />
-</div>
-    <ChapterFooter chapterNum={6} />
 </div>
   );
 }
@@ -508,9 +454,9 @@ function RadioCard({ id, label, desc, current, onChange }) {
         active ? 'border-emerald-500 bg-emerald-50 shadow-sm ring-1 ring-emerald-200' : 'border-slate-200 bg-white hover:border-slate-300 hover:shadow-sm'
       }`}
     >
-      <div className={`font-bold text-sm mb-1 ${active ? 'text-emerald-900' : 'text-slate-800'}`}>{label}<ChapterFooter chapterNum={6} />
+      <div className={`font-bold text-sm mb-1 ${active ? 'text-emerald-900' : 'text-slate-800'}`}>{label}
 </div>
-      <div className="text-xs text-slate-500">{desc}<ChapterFooter chapterNum={6} />
+      <div className="text-xs text-slate-500">{desc}
 </div>
     </button>
   );

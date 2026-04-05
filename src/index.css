@@ -6,7 +6,7 @@
 /* Global Reset & Base */
 *, *::before, *::after { box-sizing: border-box; }
 
-:root {
+:root, [data-theme="light"] {
   --bg: #f8fafc;
   --card: #ffffff;
   --border: #e2e8f0;
@@ -28,6 +28,17 @@
   --accent:        var(--yellow);
   --radius: 8px;
   --shadow: 0 1px 3px rgba(15,23,42,0.08);
+}
+
+[data-theme="dark"] {
+  --bg: #000000;
+  --card: #0A3255;
+  --border: #1E5080;
+  --text: #FFFFFF;
+  --muted: #9CA3AF;
+  --primary: #0A3255;
+  --primary-light: #6DACDE;
+  --shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 html { scroll-behavior: smooth; }
@@ -432,6 +443,43 @@ label { font-size: 0.85rem; font-weight: 600; color: var(--muted); display: bloc
 .mt-1 { margin-top: 0.5rem; }
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 1.5rem; }
+
+/* Theme toggle button */
+.theme-toggle-btn {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: background 0.15s;
+}
+.theme-toggle-btn:hover { background: rgba(255,255,255,0.25); }
+
+/* Dark mode overrides */
+[data-theme="dark"] .tab-btn:hover { background: var(--card); color: var(--text); }
+[data-theme="dark"] .panel { background: var(--card); }
+[data-theme="dark"] .note { background: #0D3D68; border-color: var(--border); }
+[data-theme="dark"] .note-success { background: #052e16; border-color: #166534; }
+[data-theme="dark"] .note-warning { background: #422006; border-color: #854d0e; }
+[data-theme="dark"] .note-danger { background: #450a0a; border-color: #991b1b; }
+[data-theme="dark"] th { background: var(--card); }
+[data-theme="dark"] td { border-bottom-color: var(--border); }
+[data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea {
+  background: var(--card);
+  border-color: var(--border);
+  color: var(--text);
+}
+[data-theme="dark"] .btn-ghost { color: var(--muted); border-color: var(--border); }
+[data-theme="dark"] .btn-ghost:hover { background: var(--card); color: var(--text); }
+[data-theme="dark"] .chapter-card { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .chapter-card:hover { border-color: var(--primary-light); }
+[data-theme="dark"] .chapter-card h2 { color: var(--text); }
+[data-theme="dark"] .activity-card { background: var(--card); border-color: var(--border); }
+[data-theme="dark"] .activity-card:hover { border-color: var(--red-bright); }
+[data-theme="dark"] .home-hero h1 { color: var(--primary-light); }
 
 /* Responsive */
 @media (max-width: 600px) {

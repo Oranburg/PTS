@@ -39,11 +39,10 @@ export default function Chapter07() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 7<ChapterFooter chapterNum={7} />
+        <div className="ch-label">Chapter 7
 </div>
         <h1>Governance Capstone</h1>
         <p>Growth stress tests, charter design, and living governance protocol.</p>
-      <ChapterFooter chapterNum={7} />
 </div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
@@ -68,7 +67,6 @@ export default function Chapter07() {
             {t.label}
           </button>
         ))}
-      <ChapterFooter chapterNum={7} />
 </div>
 
       <div>
@@ -89,9 +87,7 @@ export default function Chapter07() {
         {activeTab === 'charter' && (
           <TSPPCharter />
         )}
-      <ChapterFooter chapterNum={7} />
 </div>
-    <ChapterFooter chapterNum={7} />
 </div>
   );
 }
@@ -157,7 +153,6 @@ function GrowthCrucible({ state, setState, onNext }) {
         <p className="text-amber-800 text-lg leading-relaxed">
           The company is growing from 50 to 500 employees. Static policies will fracture. You must configure the Contract-Culture Interface before the next funding round closes.
         </p>
-      <ChapterFooter chapterNum={7} />
 </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -181,9 +176,7 @@ function GrowthCrucible({ state, setState, onNext }) {
                 active={state.nda === 'resilient'}
                 onClick={() => setState({...state, nda: 'resilient'})}
               />
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
 
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
@@ -203,12 +196,8 @@ function GrowthCrucible({ state, setState, onNext }) {
                 active={state.culture === 'resilient'}
                 onClick={() => setState({...state, culture: 'resilient'})}
               />
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
-
-        <ChapterFooter chapterNum={7} />
 </div>
 
         {/* Right Column: Feedback */}
@@ -218,7 +207,6 @@ function GrowthCrucible({ state, setState, onNext }) {
               <div className="bg-slate-100 rounded-3xl p-8 border border-slate-200 text-center flex flex-col items-center justify-center h-full text-slate-500">
                 <Shield size={48} className="mb-4 opacity-50" />
                 <p className="font-medium">Select options to view structural analysis.</p>
-              <ChapterFooter chapterNum={7} />
 </div>
             ) : (
               <div className={`rounded-3xl p-8 border-2 transition-all duration-300 flex flex-col h-full ${feedback.wrapClass}`}>
@@ -230,7 +218,6 @@ function GrowthCrucible({ state, setState, onNext }) {
                 <div className={`p-4 rounded-xl font-bold text-sm flex items-center gap-3 ${feedback.statusClass}`}>
                   <AlertTriangle size={18} className={`shrink-0 ${feedback.iconClass}`} />
                   <span>Risk Level: {feedback.risk} — {feedback.statusText}</span>
-                <ChapterFooter chapterNum={7} />
 </div>
 
                 <button 
@@ -244,16 +231,11 @@ function GrowthCrucible({ state, setState, onNext }) {
                 >
                   Next: Frontier Test <ArrowRight size={18} />
                 </button>
-              <ChapterFooter chapterNum={7} />
 </div>
             )}
-          <ChapterFooter chapterNum={7} />
 </div>
-        <ChapterFooter chapterNum={7} />
 </div>
-      <ChapterFooter chapterNum={7} />
 </div>
-    <ChapterFooter chapterNum={7} />
 </div>
   );
 }
@@ -292,7 +274,6 @@ function FrontierStressTest({ state, setState, onNext }) {
         <p className="text-indigo-800 text-lg leading-relaxed">
           The CEO wants to deploy Generative AI in the R&D pipeline and is opening operations in the EU. The TSPP must adapt to both simultaneously — or it will fail in both theaters.
         </p>
-      <ChapterFooter chapterNum={7} />
 </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -320,9 +301,7 @@ function FrontierStressTest({ state, setState, onNext }) {
                 active={state.ai === 'closed'}
                 onClick={() => setState({...state, ai: 'closed'})}
               />
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
 
           <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-4">
@@ -340,12 +319,8 @@ function FrontierStressTest({ state, setState, onNext }) {
                 active={state.eu === 'localized'}
                 onClick={() => setState({...state, eu: 'localized'})}
               />
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
-
-        <ChapterFooter chapterNum={7} />
 </div>
 
         {/* Right Column: Feedback */}
@@ -357,12 +332,10 @@ function FrontierStressTest({ state, setState, onNext }) {
               <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${THEME_CLASSES[aiFeedback.theme].wrap}`}>
                 <h4 className="font-bold text-sm uppercase tracking-widest mb-2 opacity-80">AI Integration Analysis</h4>
                 <p className="text-sm leading-relaxed">{aiFeedback.text}</p>
-              <ChapterFooter chapterNum={7} />
 </div>
             ) : (
               <div className="p-6 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 text-sm text-center">
                 Select an AI deployment model to view analysis.
-              <ChapterFooter chapterNum={7} />
 </div>
             )}
 
@@ -371,12 +344,10 @@ function FrontierStressTest({ state, setState, onNext }) {
               <div className={`p-6 rounded-2xl border-2 transition-all duration-300 ${THEME_CLASSES[euFeedback.theme].wrap}`}>
                 <h4 className="font-bold text-sm uppercase tracking-widest mb-2 opacity-80">EU Alignment Analysis</h4>
                 <p className="text-sm leading-relaxed">{euFeedback.text}</p>
-              <ChapterFooter chapterNum={7} />
 </div>
             ) : (
               <div className="p-6 rounded-2xl border-2 border-dashed border-slate-200 text-slate-400 text-sm text-center">
                 Select a cross-border legal alignment to view analysis.
-              <ChapterFooter chapterNum={7} />
 </div>
             )}
 
@@ -391,13 +362,9 @@ function FrontierStressTest({ state, setState, onNext }) {
             >
               Generate Final Charter <ArrowRight size={18} />
             </button>
-          <ChapterFooter chapterNum={7} />
 </div>
-        <ChapterFooter chapterNum={7} />
 </div>
-      <ChapterFooter chapterNum={7} />
 </div>
-    <ChapterFooter chapterNum={7} />
 </div>
   );
 }
@@ -415,11 +382,10 @@ function SelectionCard({ title, desc, icon: Icon, iconColor, active, onClick }) 
     >
       {Icon && <Icon size={24} className={`shrink-0 ${iconColor} mt-0.5`} />}
       <div>
-        <div className="font-bold text-slate-800 mb-1">{title}<ChapterFooter chapterNum={7} />
+        <div className="font-bold text-slate-800 mb-1">{title}
 </div>
-        <div className="text-sm text-slate-500 leading-relaxed">{desc}<ChapterFooter chapterNum={7} />
+        <div className="text-sm text-slate-500 leading-relaxed">{desc}
 </div>
-      <ChapterFooter chapterNum={7} />
 </div>
     </button>
   );
@@ -444,9 +410,7 @@ function TSPPCharter() {
           <span>{new Date().getFullYear()}</span>
           <span>|</span>
           <span className="text-rose-600 font-bold">CONFIDENTIAL</span>
-        <ChapterFooter chapterNum={7} />
 </div>
-      <ChapterFooter chapterNum={7} />
 </div>
 
       <div className="p-12 space-y-10">
@@ -465,9 +429,7 @@ function TSPPCharter() {
             <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900 font-medium">
               <ArrowRight size={14} className="inline mr-2" />
               Next Review Trigger: Any new product line, acquisition target, or key employee departure.
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
         </CharterSection>
 
@@ -485,9 +447,7 @@ function TSPPCharter() {
             <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-900 font-medium">
               <ArrowRight size={14} className="inline mr-2" />
               Residual Exposure: Tacit knowledge, irretrievable disclosures, and reverse-engineerable product elements carry forward to Phase 3.
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
         </CharterSection>
 
@@ -507,16 +467,13 @@ function TSPPCharter() {
               <p className="text-sm"><ArrowRight size={12} className="inline mr-2 text-amber-600"/>Tier 2: Cease-and-Desist</p>
               <p className="text-sm"><ArrowRight size={12} className="inline mr-2 text-amber-600"/>Tier 3: Preliminary Injunction</p>
               <p className="text-sm"><ArrowRight size={12} className="inline mr-2 text-amber-600"/>Tier 4: Full Litigation (Last Resort)</p>
-            <ChapterFooter chapterNum={7} />
 </div>
 
             <p><span className="font-bold text-slate-900">Budget Constraint Acknowledgment:</span> Enforcement cost projections reviewed against annual revenue baseline.</p>
             
             <div className="p-3 bg-slate-100 rounded-lg text-sm text-slate-600 italic">
               Note: This Enforcement Plan constitutes documented evidence of 'reasonable efforts' under DTSA § 1839(3) and UTSA § 1(4)(ii).
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
         </CharterSection>
 
@@ -540,12 +497,10 @@ function TSPPCharter() {
                 <li className="flex items-center gap-2"><div className="w-3 h-3 border border-slate-400 rounded-sm"></div> Regulatory or legislative change (state NDA law, FTC rulemaking, EU Directive amendment)</li>
                 <li className="flex items-center gap-2"><div className="w-3 h-3 border border-slate-400 rounded-sm"></div> Cybersecurity incident or near-miss</li>
               </ul>
-            <ChapterFooter chapterNum={7} />
 </div>
 
             <p><span className="font-bold text-slate-900">AI Deployment Policy:</span> Closed-source enterprise deployment with audit logging — classified per Phase 1 inventory tiers.</p>
             <p><span className="font-bold text-slate-900">International Alignment:</span> Localized EU Directive 2016/943 compliance parallel to US DTSA standards.</p>
-          <ChapterFooter chapterNum={7} />
 </div>
         </CharterSection>
 
@@ -562,26 +517,19 @@ function TSPPCharter() {
             
             <div className="flex flex-col sm:flex-row justify-between gap-8 pt-8">
               <div className="flex-1">
-                <div className="border-b border-slate-400 w-full mb-2"><ChapterFooter chapterNum={7} />
+                <div className="border-b border-slate-400 w-full mb-2">
 </div>
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Chief Executive Officer</p>
-              <ChapterFooter chapterNum={7} />
 </div>
               <div className="w-48">
-                <div className="border-b border-slate-400 w-full mb-2"><ChapterFooter chapterNum={7} />
+                <div className="border-b border-slate-400 w-full mb-2">
 </div>
                 <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">Date</p>
-              <ChapterFooter chapterNum={7} />
 </div>
-            <ChapterFooter chapterNum={7} />
 </div>
-          <ChapterFooter chapterNum={7} />
 </div>
         </CharterSection>
-
-      <ChapterFooter chapterNum={7} />
 </div>
-    <ChapterFooter chapterNum={7} />
 </div>
   );
 }
@@ -591,18 +539,15 @@ function CharterSection({ number, title, icon: Icon, children }) {
     <div className="relative pl-10 md:pl-16">
       <div className="absolute left-0 top-0 w-8 h-8 md:w-10 md:h-10 bg-amber-500 text-white font-bold rounded-full flex items-center justify-center text-lg shadow-sm">
         {number}
-      <ChapterFooter chapterNum={7} />
 </div>
       <div className="mb-4 flex items-center gap-3">
         <Icon className="text-amber-500" size={24} />
         <h3 className="text-2xl font-bold text-slate-900">{title}</h3>
-      <ChapterFooter chapterNum={7} />
 </div>
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
         {children}
-      <ChapterFooter chapterNum={7} />
 </div>
-    <ChapterFooter chapterNum={7} />
+      <ChapterFooter chapterNum={7} />
 </div>
   );
 }

@@ -48,11 +48,10 @@ export default function Chapter05() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 5<ChapterFooter chapterNum={5} />
+        <div className="ch-label">Chapter 5
 </div>
         <h1>External Controls</h1>
         <p>Relationship-specific architecture for contracts and system controls.</p>
-      <ChapterFooter chapterNum={5} />
 </div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
@@ -77,7 +76,6 @@ export default function Chapter05() {
             {t.label}
           </button>
         ))}
-      <ChapterFooter chapterNum={5} />
 </div>
 
       <div>
@@ -100,9 +98,7 @@ export default function Chapter05() {
             ? <StageCOutput external={external} />
             : <SelectRelationshipPrompt onGoBack={() => setActiveTab('selector')} />
         )}
-      <ChapterFooter chapterNum={5} />
 </div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -117,7 +113,6 @@ function SelectRelationshipPrompt({ onGoBack }) {
       <button onClick={onGoBack} className="bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-emerald-700 transition-all">
         Go to Step 1
       </button>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -136,13 +131,11 @@ function InsightCard({ type, title, text, caseRef }) {
         {type === 'warning' && <AlertTriangle className="text-amber-500" size={20} />}
         {type === 'success' && <CheckCircle2 className="text-emerald-500" size={20} />}
         <h4 className="font-bold text-lg text-white">{title}</h4>
-      <ChapterFooter chapterNum={5} />
 </div>
       <p className="text-sm text-slate-300 leading-relaxed pl-8">{text}</p>
       {caseRef && (
         <p className="text-xs italic mt-2 text-slate-400 pl-8 border-t border-white/10 pt-2">{caseRef}</p>
       )}
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -153,7 +146,6 @@ function ClauseBlock({ title, desc, options, current, onSelect }) {
       <div>
         <h3 className="font-bold text-lg">{title}</h3>
         <p className="text-sm text-slate-500">{desc}</p>
-      <ChapterFooter chapterNum={5} />
 </div>
       <div className="flex flex-col sm:flex-row gap-3">
         {options.map(opt => (
@@ -166,15 +158,13 @@ function ClauseBlock({ title, desc, options, current, onSelect }) {
                 : 'border-slate-100 bg-white hover:border-slate-300'
             }`}
           >
-            <div className="font-bold text-sm mb-1 text-slate-800">{opt.label}<ChapterFooter chapterNum={5} />
+            <div className="font-bold text-sm mb-1 text-slate-800">{opt.label}
 </div>
-            <div className="text-[11px] text-slate-500 leading-tight">{opt.sub}<ChapterFooter chapterNum={5} />
+            <div className="text-[11px] text-slate-500 leading-tight">{opt.sub}
 </div>
           </button>
         ))}
-      <ChapterFooter chapterNum={5} />
 </div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -195,14 +185,11 @@ function RelationshipSelector({ external, setExternal, onNext }) {
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600">
             <Users size={32} />
-          <ChapterFooter chapterNum={5} />
 </div>
           <div>
             <h2 className="text-3xl font-bold">Step 1: Choose the Perimeter</h2>
             <p className="text-slate-500 italic">Your organization is sharing confidential information beyond its walls. Identify the type of external relationship to begin configuring protections.</p>
-          <ChapterFooter chapterNum={5} />
 </div>
-        <ChapterFooter chapterNum={5} />
 </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -230,28 +217,22 @@ function RelationshipSelector({ external, setExternal, onNext }) {
             active={external.relationshipType === 'distributor'}
             onSelect={() => setExternal({...external, relationshipType: 'distributor'})}
           />
-        <ChapterFooter chapterNum={5} />
 </div>
 
         {external.relationshipType && (
           <div className="bg-slate-900 rounded-2xl p-8 text-white animate-in slide-in-from-top-4 duration-500">
             <div className="flex items-center gap-3 mb-4 text-emerald-400 uppercase tracking-widest text-xs font-bold">
               <AlertTriangle size={16} /> Threat Narrative
-            <ChapterFooter chapterNum={5} />
 </div>
             <p className="text-lg leading-relaxed text-slate-200 italic">"{narratives[external.relationshipType]}"</p>
             <div className="mt-8 flex justify-end">
               <button onClick={onNext} className="bg-emerald-600 hover:bg-emerald-500 px-8 py-3 rounded-xl font-bold flex items-center gap-2 transition-all">
                 Configure Contract Architecture <ArrowRight size={18} />
               </button>
-            <ChapterFooter chapterNum={5} />
 </div>
-          <ChapterFooter chapterNum={5} />
 </div>
         )}
-      <ChapterFooter chapterNum={5} />
 </div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -267,11 +248,10 @@ function RelationshipCard({ id, title, desc, active, onSelect }) {
       }`}
     >
       <div>
-        <div className={`font-bold text-lg mb-1 ${active ? 'text-emerald-900' : 'text-slate-800'}`}>{title}<ChapterFooter chapterNum={5} />
+        <div className={`font-bold text-lg mb-1 ${active ? 'text-emerald-900' : 'text-slate-800'}`}>{title}
 </div>
-        <div className="text-sm text-slate-500">{desc}<ChapterFooter chapterNum={5} />
+        <div className="text-sm text-slate-500">{desc}
 </div>
-      <ChapterFooter chapterNum={5} />
 </div>
       <ChevronRight className={`transition-transform ${active ? 'text-emerald-500 translate-x-2' : 'text-slate-200 group-hover:translate-x-1'}`} />
     </button>
@@ -408,7 +388,6 @@ function ContractArchitectureLab({ external, setExternal, onNext }) {
         <div className="flex items-center gap-4 mb-2">
           <FileText className="text-emerald-600" />
           <h2 className="text-2xl font-bold uppercase tracking-tight">Contractual Clauses</h2>
-        <ChapterFooter chapterNum={5} />
 </div>
 
         {visible.includes('audit') && (
@@ -464,9 +443,7 @@ function ContractArchitectureLab({ external, setExternal, onNext }) {
           <button onClick={onNext} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-black transition-all">
             Architect System Controls <ArrowRight size={18} />
           </button>
-        <ChapterFooter chapterNum={5} />
 </div>
-      <ChapterFooter chapterNum={5} />
 </div>
 
       <div className="lg:col-span-5">
@@ -478,13 +455,9 @@ function ContractArchitectureLab({ external, setExternal, onNext }) {
             {insights.map((insight, idx) => (
               <InsightCard key={idx} {...insight} />
             ))}
-          <ChapterFooter chapterNum={5} />
 </div>
-        <ChapterFooter chapterNum={5} />
 </div>
-      <ChapterFooter chapterNum={5} />
 </div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -515,32 +488,25 @@ function ArchitecturalSafeguards({ external, setExternal, onNext }) {
           <div className="flex items-center gap-4">
             <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600">
               <Monitor size={32} />
-            <ChapterFooter chapterNum={5} />
 </div>
             <div>
               <h2 className="text-3xl font-bold">Step 3: Containment Architecture</h2>
               <p className="text-slate-500">Reasonable efforts require technical locks, not just legal promises.</p>
-            <ChapterFooter chapterNum={5} />
 </div>
-          <ChapterFooter chapterNum={5} />
 </div>
           
           <div className="w-full md:w-64 space-y-2">
             <div className="flex justify-between text-xs font-black uppercase tracking-tighter">
               <span>Risk Status</span>
               <span>{getStatus().label}</span>
-            <ChapterFooter chapterNum={5} />
 </div>
             <div className="h-4 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
               <div 
                 className={`h-full transition-all duration-1000 ${getStatus().color}`} 
                 style={{ width: `${score}%` }} 
               />
-            <ChapterFooter chapterNum={5} />
 </div>
-          <ChapterFooter chapterNum={5} />
 </div>
-        <ChapterFooter chapterNum={5} />
 </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
@@ -591,18 +557,14 @@ function ArchitecturalSafeguards({ external, setExternal, onNext }) {
             onChange={val => setExternal({...external, nda: val})}
             caseNarrative="18 U.S.C. §1833(b) requires the whistleblower notice for ALL external contractors to get enhanced remedies."
           />
-        <ChapterFooter chapterNum={5} />
 </div>
 
         <div className="flex justify-end">
           <button onClick={onNext} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-black transition-all">
             Generate Stage C Output <ArrowRight size={18} />
           </button>
-        <ChapterFooter chapterNum={5} />
 </div>
-      <ChapterFooter chapterNum={5} />
 </div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -613,7 +575,6 @@ function SafeguardToggle({ label, sublabel, value, options, onChange, caseNarrat
       <div>
         <h3 className="font-bold text-lg">{label}</h3>
         <p className="text-xs text-slate-500 uppercase font-bold tracking-widest">{sublabel}</p>
-      <ChapterFooter chapterNum={5} />
 </div>
       
       <div className="flex flex-col gap-2">
@@ -625,19 +586,16 @@ function SafeguardToggle({ label, sublabel, value, options, onChange, caseNarrat
               value === opt.id ? 'bg-emerald-600 border-emerald-600 text-white shadow-sm' : 'bg-slate-50 border-slate-100 text-slate-400 hover:border-slate-200'
             }`}
           >
-            <div className={`text-xs font-bold ${value === opt.id ? 'text-white' : 'text-slate-700'}`}>{opt.label}<ChapterFooter chapterNum={5} />
+            <div className={`text-xs font-bold ${value === opt.id ? 'text-white' : 'text-slate-700'}`}>{opt.label}
 </div>
             {opt.desc && <div className={`text-[10px] mt-0.5 ${value === opt.id ? 'text-emerald-50' : 'text-slate-500'}`}>{opt.desc}</div>}
           </button>
         ))}
-      <ChapterFooter chapterNum={5} />
 </div>
 
       <div className="p-3 bg-slate-50 rounded-xl text-[11px] text-slate-600 border border-slate-100">
         <span className="font-bold text-slate-800">Legal Context:</span> {caseNarrative}
-      <ChapterFooter chapterNum={5} />
 </div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
@@ -764,7 +722,6 @@ function StageCOutput({ external }) {
             Configuration: {typeLabels[external.relationshipType]}
           </p>
           <p className="text-slate-500">Generated from your lab selections. Copy or screenshot this for your Stage C submission.</p>
-        <ChapterFooter chapterNum={5} />
 </div>
 
         <div className="overflow-x-auto border border-slate-200 rounded-xl mb-6 shadow-inner">
@@ -796,7 +753,6 @@ function StageCOutput({ external }) {
               ))}
             </tbody>
           </table>
-        <ChapterFooter chapterNum={5} />
 </div>
 
         <div className="flex items-center gap-4">
@@ -807,11 +763,9 @@ function StageCOutput({ external }) {
             <Download size={18} /> Copy to Clipboard
           </button>
           {copied && <span className="text-emerald-600 font-bold animate-in fade-in flex items-center gap-1"><CheckCircle2 size={18}/> Copied!</span>}
-        <ChapterFooter chapterNum={5} />
+</div>
 </div>
       <ChapterFooter chapterNum={5} />
-</div>
-    <ChapterFooter chapterNum={5} />
 </div>
   );
 }
