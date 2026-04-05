@@ -49,12 +49,23 @@ data/
 
 ## Features (as of 2026-04-04)
 
-- **Progress tracking**: localStorage per chapter, progress bar on home page
-- **PDF certificate export**: jsPDF CDN, branded landscape certificates
-- **Chapter navigation**: prev/next links + home link at bottom of every chapter
-- **Podcast integration**: 23 episodes mapped to 7 chapters via data/media-map.json
-- **Completion flow**: "Mark Complete" → success message → certificate download
+- **Dark mode**: Theme toggle in header, persists to localStorage, full CSS variable system
+- **Progress tracking**: localStorage per chapter, progress bar on home page, completion checkmarks
+- **PDF certificate export**: jsPDF CDN, branded landscape certificates per chapter
+- **Chapter navigation**: prev/next links + home link at bottom of every chapter (ChapterFooter component)
+- **Podcast integration**: 23 episodes mapped to 7 chapters via data/media-map.json, shown in ChapterFooter
+- **Completion flow**: "Mark Complete" → success message → certificate download option
 - **Cross-site links**: oranburg.law, course page, podcast, YouTube in header/footer
+
+## ChapterFooter Component (src/ChapterFooter.jsx)
+
+Shared component added to every chapter. Provides:
+- "Mark Chapter Complete" button → saves to localStorage
+- PDF certificate download (jsPDF CDN, prompted name)
+- Podcast episode links for the current chapter
+- Prev/Next chapter navigation
+
+**IMPORTANT**: ChapterFooter must appear exactly ONCE per chapter, inside the main component's outermost return div, NOT inside tab panels or cards. The previous automated insertion was catastrophically wrong — it injected 335 copies across all chapters.
 
 ## Deal Room (deal-room/index.html)
 
@@ -80,7 +91,8 @@ This repo is part of the Oranburg teaching ecosystem. See `.claude/projects/` me
 
 ## What Remains
 
-1. Dark mode for React app (static chapters have oranburg-theme.css, React app doesn't)
-2. Extract shared tab/card/table components from chapter files
-3. Add learning-objectives.json (like K has)
+1. ~~Dark mode for React app~~ — DONE (theme toggle + CSS variables)
+2. Extract shared tab/card/table components from chapter files (code quality, not user-facing)
+3. Add learning-objectives.json (like K has) for Quaere LO integration
 4. Wire media-map into Quaere when Resource model is built
+5. Add images to chapter headers (currently text-only)
