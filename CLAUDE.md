@@ -1,71 +1,86 @@
-# Protecting Trade Secrets (PTS) — Learning Site
+# Protecting Trade Secrets (PTS) — Learning Companion
 
 ## Project Overview
 
-Interactive companion site for the *Protecting Trade Secrets* textbook and audiobook by Seth C. Oranburg. Hosted on GitHub Pages via Jekyll. The site includes chapter companions, a Deal Room simulation, a Drafting Lab, and a Patent-or-Trade-Secret exercise.
+Interactive companion site for *Protecting Trade Secrets* by Seth C. Oranburg. Covers the complete trade secret protection lifecycle across 7 chapters plus interactive tools. Part of the Oranburg teaching ecosystem (K for Contracts, BA for Business Associations, PTS for Trade Secrets).
 
 ## Architecture
 
-- **Hosting**: GitHub Pages with Jekyll (`jekyll-theme-slate`)
-- **Build**: Vite + Tailwind CSS for asset compilation
-- **Structure**: Each section is a standalone HTML page or single-page app
-- **State**: Deal Room uses `localStorage` for client-side persistence — no backend
+- **Stack**: React 18 + Vite + Tailwind CSS
+- **Hosting**: GitHub Pages (base path `/PTS/`)
+- **Routing**: HashRouter (React Router 6)
+- **State**: Per-chapter `useState` + localStorage for progress tracking
+- **Build**: `npm run build` → dist/ (~327KB JS, ~42KB CSS gzipped)
 
 ## Key Directories
 
 ```
-deal-room/          # Single-page app: 7-phase contract drafting simulation
-chapters/           # Chapter companion pages (ch 1-7, firm strengths, team charter)
-drafting-lab/       # Contract drafting exercise
-patent-or-TS/       # Patent vs trade secret hypothetical exercises
-assets/             # Static assets (images, etc.)
-src/                # Tailwind source CSS
+src/
+  App.jsx                    # Router, global header/footer
+  main.jsx                   # Entry point
+  index.css                  # Tailwind + custom CSS (444 lines)
+  progress.js                # localStorage completion tracking
+  ChapterFooter.jsx          # Shared: prev/next nav, completion, PDF export, podcast links
+  pages/
+    Home.jsx                 # Chapter grid with progress dashboard
+    NotFound.jsx             # 404
+  chapters/
+    ch01-ch07/               # One JSX component per chapter (200-770 lines each)
+
+chapters/                    # Static HTML exercises (legacy, also accessible)
+deal-room/                   # 2,875-line standalone simulation
+drafting-lab/                # Contract drafting exercise
+patent-or-TS/                # Patent vs trade secret hypotheticals
+data/
+  media-map.json             # Maps 7 chapters to 23 podcast episodes
 ```
 
-## Deal Room (`deal-room/index.html`)
+## Chapter Content
 
-The Deal Room is a ~3,500-line single-page HTML app with inline CSS and JavaScript. It simulates a trade secret protection engagement across 7 phases:
+| Ch | Title | Lines | Key Exercise |
+|----|-------|-------|-------------|
+| 1 | Foundations | 207 | Tabbed panels: elements, IP landscape, misappropriation, remedies |
+| 2 | Inventory & Classification | 572 | Asset audit, category classifier, case explorer, ledger with CRUD |
+| 3 | Risk & Vulnerability | 451 | Threat vectors, risk matrix (likelihood x impact sliders), risk register |
+| 4 | Internal Mitigation | 700 | Covenant crafter, jurisdiction trap (5 states), inventions audit |
+| 5 | External Controls | 763 | Relationship selector, contract lab, system controls, stage output |
+| 6 | Enforcement & Remedies | 463 | Complaint config, 8-factor seizure checklist, damages calculator |
+| 7 | Governance Capstone | 549 | Growth crucible, frontier stress test, TSPP charter template |
 
-1. **Intake** — Choose company or employee track, read client memo, identify risks
-2. **Document Strategy** — Select agreement type
-3. **Agreement Architecture** — Match provisions to risks (drag-and-drop)
-4. **Precedent Library** — Select precedent clauses from annotated options
-5. **Customization** — Edit clause text with guided prompts
-6. **Assembly & Review** — Review assembled agreement with section numbering
-7. **Senior Partner Review** — AI-generated feedback on the complete work product
+## Features (as of 2026-04-04)
 
-### Key Design Decisions
+- **Progress tracking**: localStorage per chapter, progress bar on home page
+- **PDF certificate export**: jsPDF CDN, branded landscape certificates
+- **Chapter navigation**: prev/next links + home link at bottom of every chapter
+- **Podcast integration**: 23 episodes mapped to 7 chapters via data/media-map.json
+- **Completion flow**: "Mark Complete" → success message → certificate download
+- **Cross-site links**: oranburg.law, course page, podcast, YouTube in header/footer
 
-- **DTSA trap**: The DTSA § 1833(b) Immunity Notice is intentionally NOT flagged as missing during Agreement Architecture. Students who fail to identify DTSA compliance as a risk (Phase 1) or miss the provision (Phase 3) discover the consequence at Senior Partner Review (Phase 7). Do not add warnings that telegraph this trap.
-- **Dual tracks**: Company (Pico Salsa) and Employee (Jordan) tracks have intentionally asymmetric clauses, risks, and precedents.
-- **Distractor provisions**: Some provisions in the bank are intentional wrong answers with targeted feedback.
-- **Scenario framework**: Uses `ACTIVE_SCENARIO` constant for pluggable fact patterns (currently only `pico_salsa`).
+## Deal Room (deal-room/index.html)
 
-### State Management
+A ~2,875-line standalone HTML simulation across 7 phases:
+1. Intake → 2. Document Strategy → 3. Agreement Architecture → 4. Precedent Library → 5. Customization → 6. Assembly & Review → 7. Senior Partner Review
 
-- `var state` — single global state object
-- `saveState()` / `loadState()` — localStorage persistence
-- `render()` — re-renders current phase based on `state.currentPhase`
-- `completePhase()` / `nextPhase()` / `revisePhase()` — phase transitions
+**DTSA trap**: The DTSA § 1833(b) Immunity Notice is intentionally NOT flagged as missing during Agreement Architecture. Students discover the consequence at Senior Partner Review. Do not add warnings that telegraph this trap.
 
 ## Development
 
 ```bash
-# Serve locally (used by .claude/launch.json)
-python3 -m http.server 8765
-
-# Or with npm
-npm run dev
+npm run dev      # Vite dev server
+npm run build    # Production build → dist/
+npm run preview  # Preview production build
 ```
 
-## Deployment
+## Cross-Repo Context
 
-Push to `main` triggers GitHub Pages build. The site is at the GitHub Pages URL for the `Oranburg/PTS` repository.
+This repo is part of the Oranburg teaching ecosystem. See `.claude/projects/` memory for:
+- **ecosystem.md** — Full cross-repo map (K, BA, PTS, Quaere, oranburg.law)
+- **media-map.json** references podcast data from oranburg.github.io/_data/podcasts.yml
+- Quaere has 157 MCQs for this course (LAW-502)
 
-## Code Style
+## What Remains
 
-- Single-file HTML apps with inline `<style>` and `<script>` tags
-- Tailwind utility classes + custom CSS for branded components
-- No framework — vanilla JavaScript with direct DOM manipulation
-- Font stack: `font-headline` (Playfair Display), `font-ui` (Inter)
-- Brand colors: CUA Blue `#0A3255`, CUA Red `#B21F2C`, CUA Bright Blue `#2459A9`
+1. Dark mode for React app (static chapters have oranburg-theme.css, React app doesn't)
+2. Extract shared tab/card/table components from chapter files
+3. Add learning-objectives.json (like K has)
+4. Wire media-map into Quaere when Resource model is built
