@@ -1,29 +1,164 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chapter 1 — Foundations | Protecting Trade Secrets</title>
-    <script>(function(){var t=localStorage.getItem('pts-theme')||'dark';document.documentElement.setAttribute('data-theme',t)})()</script>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Oswald:wght@700&family=Roboto+Mono:wght@400&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/oranburg-theme.css" />
-    <link rel="stylesheet" href="/assets/site.css" />
+    <title>Protecting Trade Secrets — Chapter 1</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f8fafc;
+        --card: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #475569;
+        --primary: #2563eb;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+      .wrap { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+      }
+      header { text-align: center; padding: 1.5rem; margin-bottom: 1rem; }
+      h1 { margin: 0; font-size: clamp(1.6rem, 3.2vw, 2.2rem); }
+      h2 { margin-top: 0; }
+      p { color: var(--muted); }
+
+      .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; }
+      .tab {
+        border: 1px solid var(--border);
+        background: #fff;
+        color: #334155;
+        border-radius: 10px;
+        padding: 0.65rem 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .tab[aria-selected="true"] {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+
+      main { padding: 1.25rem; min-height: 540px; }
+      section { display: none; animation: fade 0.2s ease; }
+      section.active { display: block; }
+      @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+      .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.8rem; }
+      .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.8rem; }
+      .panel { border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem; background: #fff; }
+      .panel h3 { margin-top: 0; }
+      ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+      li + li { margin-top: 0.35rem; }
+      .note {
+        margin-top: 1rem;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #f1f5f9;
+        padding: 0.9rem;
+      }
+      .small { font-size: 0.92rem; }
+    </style>
   </head>
   <body>
     <div class="wrap">
-      <nav class="nav"><a href="/">Home</a><a href="/chapters/">Chapter Hub</a><button onclick="toggleTheme()" aria-label="Toggle theme" class="theme-toggle"><svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg></button></nav>
-      <main>
-        <section class="panel">
-          <h1>Chapter 1 — Foundations</h1>
-          <ul>
-            <li>Trade secret qualification: information, economic value, reasonable efforts</li>
-            <li>How trade secrets compare with patents, copyrights, and trademarks</li>
-            <li>Proper means versus misappropriation</li>
-            <li>Core remedies: injunctions, damages, and enhanced awards</li>
-          </ul>
+      <header class="card">
+        <h1>Protecting Trade Secrets</h1>
+        <p>Chapter 1: Companion Diagrams &amp; Visualizations</p>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Chapter sections">
+        <button id="tab-elements" class="tab" role="tab" aria-controls="elements" aria-selected="true" tabindex="0" data-target="elements">1. Three Elements</button>
+        <button id="tab-landscape" class="tab" role="tab" aria-controls="landscape" aria-selected="false" tabindex="-1" data-target="landscape">2. IP Landscape</button>
+        <button id="tab-misappropriation" class="tab" role="tab" aria-controls="misappropriation" aria-selected="false" tabindex="-1" data-target="misappropriation">3. Misappropriation</button>
+        <button id="tab-remedies" class="tab" role="tab" aria-controls="remedies" aria-selected="false" tabindex="-1" data-target="remedies">4. Remedies</button>
+      </nav>
+
+      <main class="card">
+        <section id="elements" class="active" role="tabpanel" aria-labelledby="tab-elements" tabindex="0">
+          <h2>The Three Essential Elements</h2>
+          <p class="small">Under the UTSA, information must meet all three criteria simultaneously to qualify for trade secret protection.</p>
+          <div class="grid-3">
+            <article class="panel"><h3>1. Information</h3><ul><li>Concrete, definable content</li><li>Formulas &amp; recipes</li><li>Algorithms &amp; programs</li><li>Methods &amp; techniques</li></ul></article>
+            <article class="panel"><h3>2. Economic Value</h3><ul><li>Value derives from secrecy</li><li>Not generally known</li><li>Not readily ascertainable</li><li>Competitive edge</li></ul></article>
+            <article class="panel"><h3>3. Reasonable Efforts</h3><ul><li>NDA and contract controls</li><li>Password protections</li><li>Need-to-know access</li><li>Confidential markings</li></ul></article>
+          </div>
+          <div class="note"><strong>Result:</strong> Protection can last indefinitely while secrecy is maintained.</div>
+        </section>
+
+        <section id="landscape" role="tabpanel" aria-labelledby="tab-landscape" tabindex="0">
+          <h2>The Intellectual Property Framework</h2>
+          <p class="small">Comparing the four primary forms of intellectual property.</p>
+          <div class="grid-2">
+            <article class="panel"><h3>Trade Secret</h3><ul><li>Hidden methods, formulas, data</li><li>Requires secrecy + value</li><li>Indefinite until leaked</li><li>No registration required</li></ul></article>
+            <article class="panel"><h3>Patent</h3><ul><li>Novel inventions &amp; processes</li><li>Requires public disclosure</li><li>Typically 20 years</li><li>Government registration</li></ul></article>
+            <article class="panel"><h3>Copyright</h3><ul><li>Original creative expression</li><li>Fixed in tangible medium</li><li>Life + 70 years</li><li>Protects expression, not idea</li></ul></article>
+            <article class="panel"><h3>Trademark</h3><ul><li>Brand names and logos</li><li>Public use in commerce</li><li>Can be indefinite</li><li>Prevents consumer confusion</li></ul></article>
+          </div>
+        </section>
+
+        <section id="misappropriation" role="tabpanel" aria-labelledby="tab-misappropriation" tabindex="0">
+          <h2>Misappropriation vs. Proper Means</h2>
+          <div class="grid-3">
+            <article class="panel"><h3>Proper Means (Lawful)</h3><ul><li>Independent discovery</li><li>Reverse engineering public product</li><li>Public-source information</li></ul><p><strong>No Liability</strong></p></article>
+            <article class="panel"><h3>Improper Acquisition (Unlawful)</h3><ul><li>Theft or trespass</li><li>Hacking / cyber espionage</li><li>Bribery / inducing NDA breach</li></ul><p><strong>Misappropriation</strong></p></article>
+            <article class="panel"><h3>Improper Use / Disclosure (Unlawful)</h3><ul><li>Exceeding NDA scope</li><li>Unauthorized external sharing</li><li>Using entrusted data to compete</li></ul><p><strong>Misappropriation</strong></p></article>
+          </div>
+        </section>
+
+        <section id="remedies" role="tabpanel" aria-labelledby="tab-remedies" tabindex="0">
+          <h2>Remedies for Misappropriation</h2>
+          <div class="grid-2">
+            <article class="panel"><h3>1. Injunctive Relief</h3><ul><li>Preliminary injunction during litigation</li><li>Permanent injunction post-trial</li><li>Possible head-start injunction</li></ul></article>
+            <article class="panel"><h3>2. Monetary Damages</h3><ul><li>Actual loss</li><li>Unjust enrichment</li><li>Reasonable royalty</li></ul></article>
+          </div>
+          <div class="note"><strong>3. Enhanced Damages &amp; Fees:</strong> For willful and malicious conduct, courts may award exemplary damages and attorney fees.</div>
         </section>
       </main>
     </div>
-    <script>function toggleTheme(){var c=document.documentElement.getAttribute("data-theme"),n=c==="dark"?"light":"dark";document.documentElement.setAttribute("data-theme",n);localStorage.setItem("pts-theme",n)}</script>
+
+    <script>
+      const tabs = Array.from(document.querySelectorAll('.tab'));
+      const sections = Array.from(document.querySelectorAll('main section'));
+
+      function activateTab(targetId) {
+        tabs.forEach((tab) => {
+          const isActive = tab.dataset.target === targetId;
+          tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+          tab.setAttribute('tabindex', isActive ? '0' : '-1');
+        });
+        sections.forEach((section) => {
+          section.classList.toggle('active', section.id === targetId);
+        });
+      }
+
+      tabs.forEach((tab) => {
+        tab.addEventListener('click', () => activateTab(tab.dataset.target));
+        tab.addEventListener('keydown', (event) => {
+          const index = tabs.indexOf(tab);
+          let nextIndex = index;
+          if (event.key === 'ArrowRight') nextIndex = (index + 1) % tabs.length;
+          if (event.key === 'ArrowLeft') nextIndex = (index - 1 + tabs.length) % tabs.length;
+          if (event.key === 'Home') nextIndex = 0;
+          if (event.key === 'End') nextIndex = tabs.length - 1;
+          if (nextIndex !== index) {
+            event.preventDefault();
+            const nextTab = tabs[nextIndex];
+            activateTab(nextTab.dataset.target);
+            nextTab.focus();
+          }
+        });
+      });
+    </script>
   </body>
 </html>

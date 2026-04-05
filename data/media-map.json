@@ -1,0 +1,77 @@
+{
+  "_comment": "Maps PTS chapters to podcast episodes and videos. IDs reference oranburg.github.io/_data/videos.yml and podcasts.yml.",
+  "_source": "oranburg.github.io/_data/podcasts.yml (Season: Protecting Trade Secrets)",
+  "_updated": "2026-04-04",
+  "chapters": {
+    "1": {
+      "title": "Foundations",
+      "podcast_episodes": [
+        { "id": "PTS-1A", "title": "The Paradox of Sharing Secrets -- Foundations" },
+        { "id": "PTS-1B", "title": "Trade Secrets and Patents -- Choosing Protection" },
+        { "id": "PTS-1C", "title": "The UTSA, the DTSA, and Global Framework" }
+      ],
+      "topics": ["trade secret qualification", "economic value", "UTSA", "DTSA", "proper means vs misappropriation"]
+    },
+    "2": {
+      "title": "Inventory & Classification",
+      "podcast_episodes": [
+        { "id": "PTS-2A", "title": "What Makes a Secret a Trade Secret" },
+        { "id": "PTS-2B", "title": "Reasonable Efforts -- Winning Protection" }
+      ],
+      "topics": ["subject matter", "reasonable efforts", "classification protocols"]
+    },
+    "3": {
+      "title": "Risk & Vulnerability",
+      "podcast_episodes": [
+        { "id": "PTS-3A", "title": "Risk, Uncertainty, and the Trade Secret Paradox" },
+        { "id": "PTS-3B", "title": "Mapping Risk -- How to Know What's Worth Protecting" },
+        { "id": "PTS-3C", "title": "Valuing Trade Secrets -- Why Worth Depends on Who Holds It" }
+      ],
+      "topics": ["risk assessment", "vulnerability mapping", "trade secret valuation"]
+    },
+    "4": {
+      "title": "Internal Mitigation",
+      "podcast_episodes": [
+        { "id": "PTS-4A", "title": "Contracts That (Reasonably) Protect Secrets -- Drafting Enforceable Agreements" },
+        { "id": "PTS-4B", "title": "The Joiner-Mover-Leaver Protocol" },
+        { "id": "PTS-4C", "title": "Culture of Secrecy -- Training, Enforcement, and the Human Side of Compliance" }
+      ],
+      "topics": ["NDAs", "non-compete agreements", "employee protocols", "training programs"]
+    },
+    "5": {
+      "title": "External Controls",
+      "podcast_episodes": [
+        { "id": "PTS-5A", "title": "Crossing the Boundary -- Third-Party NDAs and the Paradox of Necessary Disclosure" },
+        { "id": "PTS-5B", "title": "Vendors, Supply Chains, and Cybersecurity -- Managing Distributed Risk" },
+        { "id": "PTS-5C", "title": "Staged Disclosure -- Protecting Trade Secrets in M&A and Venture Capital Due Diligence" }
+      ],
+      "topics": ["third-party NDAs", "supply chain security", "M&A due diligence", "staged disclosure"]
+    },
+    "6": {
+      "title": "Enforcement & Remedies",
+      "podcast_episodes": [
+        { "id": "PTS-6A", "title": "Misappropriation -- The Legal Threshold for Trade Secret Enforcement" },
+        { "id": "PTS-6B", "title": "Injunctive Relief -- Stopping Misappropriation Before Secrets Leak" },
+        { "id": "PTS-6C", "title": "Damages, Fees, and Litigation Strategy -- Valuing Secrets After Misappropriation" }
+      ],
+      "topics": ["misappropriation elements", "injunctions", "damages", "attorney fees"]
+    },
+    "7": {
+      "title": "Governance Capstone",
+      "podcast_episodes": [
+        { "id": "PTS-7A", "title": "The Six Pillars of Trade Secret Protection" },
+        { "id": "PTS-7B", "title": "Implementing a Trade Secret Protection Plan" },
+        { "id": "PTS-7C", "title": "Living with Trade Secrets: Governance that Lasts" },
+        { "id": "PTS-7D", "title": "Network Theory of Trade Secret -- Why Law Doesn't Always Matter" }
+      ],
+      "topics": ["six pillars", "protection plan", "governance", "network theory"]
+    }
+  },
+  "special_episodes": [
+    { "id": "PTS-overview", "title": "Overview of this Law Course" },
+    { "id": "PTS-conclusion", "title": "Trade Secret Law as Discipline and Infrastructure" }
+  ],
+  "video_playlists": [
+    { "title": "Overview of Trade Secrets", "count": 5 }
+  ]
+}
