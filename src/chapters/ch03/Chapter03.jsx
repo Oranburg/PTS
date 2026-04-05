@@ -1,3 +1,4 @@
+import ChapterFooter from '../../ChapterFooter.jsx';
 import React, { useState } from 'react';
 import {
   ShieldAlert,
@@ -28,10 +29,12 @@ export default function Chapter03() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 3</div>
+        <div className="ch-label">Chapter 3<ChapterFooter chapterNum={3} />
+</div>
         <h1>Risk &amp; Vulnerability</h1>
         <p>Threat vectors, risk matrix, and a practical risk register workflow.</p>
-      </div>
+      <ChapterFooter chapterNum={3} />
+</div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
         {TABS.map((t, idx) => {
@@ -62,14 +65,17 @@ export default function Chapter03() {
             </button>
           );
         })}
-      </div>
+      <ChapterFooter chapterNum={3} />
+</div>
 
       <div>
         {activeTab === 'threats' && <ThreatVectorMap />}
         {activeTab === 'matrix' && <RiskMatrixTool />}
         {activeTab === 'register' && <RiskRegister />}
-      </div>
-    </div>
+      <ChapterFooter chapterNum={3} />
+</div>
+    <ChapterFooter chapterNum={3} />
+</div>
   );
 }
 
@@ -82,7 +88,8 @@ function ThreatVectorMap() {
         <p className="text-slate-600 max-w-2xl mx-auto">
           "Trade secrets do not typically leak because of a single catastrophic failure, but through a combination of vulnerabilities."
         </p>
-      </div>
+      <ChapterFooter chapterNum={3} />
+</div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <ThreatCard
@@ -121,8 +128,10 @@ function ThreatVectorMap() {
           ]}
           caseStudy="Rockwell v. DEV: Emphasized that mapping access movement is a critical component of 'reasonable efforts'."
         />
-      </div>
-    </div>
+      <ChapterFooter chapterNum={3} />
+</div>
+    <ChapterFooter chapterNum={3} />
+</div>
   );
 }
 
@@ -137,7 +146,8 @@ function ThreatCard({ icon: Icon, title, points, color, caseStudy }) {
     <div className="p-6 rounded-2xl border-2 border-slate-200 bg-white shadow-sm flex flex-col">
       <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 border ${colors[color]}`}>
         <Icon size={24} />
-      </div>
+      <ChapterFooter chapterNum={3} />
+</div>
       <h3 className="text-xl font-bold mb-4">{title}</h3>
       <ul className="space-y-3 mb-6 flex-1">
         {points.map((p, i) => (
@@ -150,8 +160,10 @@ function ThreatCard({ icon: Icon, title, points, color, caseStudy }) {
       <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 italic text-xs text-slate-500">
         <span className="font-bold text-slate-700 block mb-1">Legal Precedent:</span>
         {caseStudy}
-      </div>
-    </div>
+      <ChapterFooter chapterNum={3} />
+</div>
+    <ChapterFooter chapterNum={3} />
+</div>
   );
 }
 
@@ -181,7 +193,8 @@ function RiskMatrixTool() {
             <div className="flex justify-between mb-4">
               <label htmlFor="likelihood-slider" className="font-bold text-sm uppercase tracking-wider text-slate-500">Likelihood</label>
               <span className="text-sm font-bold text-rose-600">Level {likelihood}</span>
-            </div>
+            <ChapterFooter chapterNum={3} />
+</div>
             <input
               id="likelihood-slider"
               type="range" min="1" max="5" step="1"
@@ -192,14 +205,17 @@ function RiskMatrixTool() {
             <div className="flex justify-between text-[10px] mt-2 font-bold text-slate-400 uppercase" aria-hidden="true">
               <span>Highly Unlikely</span>
               <span>Highly Probable</span>
-            </div>
-          </div>
+            <ChapterFooter chapterNum={3} />
+</div>
+          <ChapterFooter chapterNum={3} />
+</div>
 
           <div>
             <div className="flex justify-between mb-4">
               <label htmlFor="impact-slider" className="font-bold text-sm uppercase tracking-wider text-slate-500">Impact (Catastrophe)</label>
               <span className="text-sm font-bold text-rose-600">Level {impact}</span>
-            </div>
+            <ChapterFooter chapterNum={3} />
+</div>
             <input
               id="impact-slider"
               type="range" min="1" max="5" step="1"
@@ -210,9 +226,12 @@ function RiskMatrixTool() {
             <div className="flex justify-between text-[10px] mt-2 font-bold text-slate-400 uppercase" aria-hidden="true">
               <span>Minor Friction</span>
               <span>Catastrophic</span>
-            </div>
-          </div>
-        </div>
+            <ChapterFooter chapterNum={3} />
+</div>
+          <ChapterFooter chapterNum={3} />
+</div>
+        <ChapterFooter chapterNum={3} />
+</div>
 
         <div className={`mt-12 p-6 rounded-2xl border-2 border-dashed transition-all duration-300 ${risk.border} ${risk.bg}`}>
           <div className="flex items-center justify-between mb-2">
@@ -220,11 +239,14 @@ function RiskMatrixTool() {
               {risk.label}
             </span>
             <AlertTriangle className={risk.text} size={24} aria-hidden="true" />
-          </div>
+          <ChapterFooter chapterNum={3} />
+</div>
           <p className="text-slate-800 font-bold mb-1">Decision Metric</p>
           <p className="text-sm text-slate-600">{risk.desc}</p>
-        </div>
-      </div>
+        <ChapterFooter chapterNum={3} />
+</div>
+      <ChapterFooter chapterNum={3} />
+</div>
 
       <div className="bg-slate-900 rounded-2xl p-8 shadow-xl text-white relative overflow-hidden">
         <h2 className="text-xl font-bold mb-8 relative z-10">Matrix Visualization</h2>
@@ -243,17 +265,23 @@ function RiskMatrixTool() {
                 `}
               >
                 {isSelected && <Target size={16} />}
-              </div>
+              <ChapterFooter chapterNum={3} />
+</div>
             );
           })}
-        </div>
+        <ChapterFooter chapterNum={3} />
+</div>
         <div className="flex justify-between mt-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest relative z-10">
           <span>Likelihood →</span>
           <span>Impact ↑</span>
-        </div>
-        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl" aria-hidden="true"></div>
-      </div>
-    </div>
+        <ChapterFooter chapterNum={3} />
+</div>
+        <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-rose-500/10 rounded-full blur-3xl" aria-hidden="true"><ChapterFooter chapterNum={3} />
+</div>
+      <ChapterFooter chapterNum={3} />
+</div>
+    <ChapterFooter chapterNum={3} />
+</div>
   );
 }
 
@@ -327,7 +355,8 @@ function RiskRegister() {
           <div>
             <h2 className="text-2xl font-bold">Interactive Risk Register</h2>
             <p className="text-sm text-slate-500">Translate assessment into concrete mitigation action.</p>
-          </div>
+          <ChapterFooter chapterNum={3} />
+</div>
           <div className="flex gap-2 w-full md:w-auto">
             <button onClick={exportCSV} className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-slate-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold border border-slate-200 hover:bg-slate-200 transition-all">
               <Download size={16} /> Export
@@ -335,8 +364,10 @@ function RiskRegister() {
             <button onClick={() => setIsAdding(!isAdding)} className="flex-1 md:flex-none flex items-center justify-center gap-2 bg-rose-600 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-rose-700 transition-all">
               {isAdding ? <><X size={16} /> Cancel</> : <><Plus size={16} /> Log Risk</>}
             </button>
-          </div>
-        </div>
+          <ChapterFooter chapterNum={3} />
+</div>
+        <ChapterFooter chapterNum={3} />
+</div>
 
         {isAdding && (
           <div className="bg-rose-50 border border-rose-100 p-6 rounded-2xl mb-8">
@@ -348,7 +379,8 @@ function RiskRegister() {
                   value={newRisk.asset} onChange={e => setNewRisk({ ...newRisk, asset: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-rose-200 focus:ring-2 focus:ring-rose-500 outline-none text-sm"
                 />
-              </div>
+              <ChapterFooter chapterNum={3} />
+</div>
               <div className="md:col-span-2">
                 <label className="block text-xs font-black uppercase text-rose-700 mb-1">Specific Vulnerability</label>
                 <input
@@ -356,7 +388,8 @@ function RiskRegister() {
                   value={newRisk.vulnerability} onChange={e => setNewRisk({ ...newRisk, vulnerability: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-rose-200 focus:ring-2 focus:ring-rose-500 outline-none text-sm"
                 />
-              </div>
+              <ChapterFooter chapterNum={3} />
+</div>
               <div>
                 <label className="block text-xs font-black uppercase text-rose-700 mb-1">Likelihood (1-5)</label>
                 <select
@@ -365,7 +398,8 @@ function RiskRegister() {
                 >
                   {[1, 2, 3, 4, 5].map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
-              </div>
+              <ChapterFooter chapterNum={3} />
+</div>
               <div>
                 <label className="block text-xs font-black uppercase text-rose-700 mb-1">Impact (1-5)</label>
                 <select
@@ -374,7 +408,8 @@ function RiskRegister() {
                 >
                   {[1, 2, 3, 4, 5].map(v => <option key={v} value={v}>{v}</option>)}
                 </select>
-              </div>
+              <ChapterFooter chapterNum={3} />
+</div>
               <div className="lg:col-span-3">
                 <label className="block text-xs font-black uppercase text-rose-700 mb-1">Mitigation Plan</label>
                 <textarea
@@ -382,12 +417,15 @@ function RiskRegister() {
                   value={newRisk.mitigation} onChange={e => setNewRisk({ ...newRisk, mitigation: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-rose-200 focus:ring-2 focus:ring-rose-500 outline-none text-sm h-20"
                 />
-              </div>
-            </div>
+              <ChapterFooter chapterNum={3} />
+</div>
+            <ChapterFooter chapterNum={3} />
+</div>
             <button onClick={handleAddRisk} className="mt-4 w-full bg-emerald-600 text-white font-bold py-3 rounded-xl hover:bg-emerald-700 transition-all">
               Submit to Register
             </button>
-          </div>
+          <ChapterFooter chapterNum={3} />
+</div>
         )}
 
         <div className="overflow-x-auto border border-slate-100 rounded-xl">
@@ -407,8 +445,10 @@ function RiskRegister() {
                 <tr key={r.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                   <td className="px-4 py-6 font-mono text-xs text-slate-400">{r.id}</td>
                   <td className="px-4 py-6">
-                    <div className="font-bold text-slate-900">{r.asset}</div>
-                    <div className="text-xs text-slate-500 mt-1">{r.vulnerability}</div>
+                    <div className="font-bold text-slate-900">{r.asset}<ChapterFooter chapterNum={3} />
+</div>
+                    <div className="text-xs text-slate-500 mt-1">{r.vulnerability}<ChapterFooter chapterNum={3} />
+</div>
                   </td>
                   <td className="px-4 py-6 text-center">
                     <span className="text-xs font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md">
@@ -437,15 +477,20 @@ function RiskRegister() {
               ))}
             </tbody>
           </table>
-        </div>
+        <ChapterFooter chapterNum={3} />
+</div>
 
         <div className="mt-8 bg-rose-50 p-6 rounded-2xl border border-rose-100 flex items-start gap-4">
           <Info className="text-rose-600 shrink-0 mt-1" size={20} aria-hidden="true" />
           <div className="text-sm text-rose-900 leading-relaxed">
             <strong>The OmniRoute Principle:</strong> Risk assessment is not a theoretical exercise. By mapping assets and evaluating likelihood vs. impact, you move from general anxiety to targeted, defensible action—the key to proving <strong>"Reasonable Efforts"</strong> in court.
-          </div>
-        </div>
-      </div>
-    </div>
+          <ChapterFooter chapterNum={3} />
+</div>
+        <ChapterFooter chapterNum={3} />
+</div>
+      <ChapterFooter chapterNum={3} />
+</div>
+    <ChapterFooter chapterNum={3} />
+</div>
   );
 }

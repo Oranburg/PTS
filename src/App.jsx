@@ -45,7 +45,14 @@ function Header() {
 function Footer() {
   return (
     <footer className="global-footer">
-      © 2026 Seth C. Oranburg · <em>Protecting Trade Secrets</em> Learning Companion
+      <div>© 2026 Seth C. Oranburg · <em>Protecting Trade Secrets</em> Learning Companion</div>
+      <div style={{ marginTop: '0.4rem', fontSize: '0.78rem' }}>
+        <a href="https://oranburg.law" style={{ color: 'rgba(255,255,255,0.6)' }}>oranburg.law</a>
+        {' · '}
+        <a href="https://oranburg.law/courses/trade-secrets/" style={{ color: 'rgba(255,255,255,0.6)' }}>Course Page</a>
+        {' · '}
+        <a href="https://bizlawbreakdown.podbean.com" style={{ color: 'rgba(255,255,255,0.6)' }}>Podcast</a>
+      </div>
     </footer>
   );
 }

@@ -1,3 +1,4 @@
+import ChapterFooter from '../../ChapterFooter.jsx';
 import React, { useState, useCallback } from 'react';
 
 const TABS = [
@@ -27,10 +28,12 @@ export default function Chapter01() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 1</div>
+        <div className="ch-label">Chapter 1<ChapterFooter chapterNum={1} />
+</div>
         <h1>Foundations of Trade Secret Law</h1>
         <p>Companion diagrams and visualizations for Chapter 1.</p>
-      </div>
+      <ChapterFooter chapterNum={1} />
+</div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
         {TABS.map((t, idx) => (
@@ -48,7 +51,8 @@ export default function Chapter01() {
             {t.label}
           </button>
         ))}
-      </div>
+      <ChapterFooter chapterNum={1} />
+</div>
 
       <div className="card">
         {activeTab === 'elements' && (
@@ -85,10 +89,12 @@ export default function Chapter01() {
                   <li>Confidential markings</li>
                 </ul>
               </article>
-            </div>
+            <ChapterFooter chapterNum={1} />
+</div>
             <div className="note">
               <strong>Result:</strong> Protection can last indefinitely while secrecy is maintained.
-            </div>
+            <ChapterFooter chapterNum={1} />
+</div>
           </section>
         )}
 
@@ -135,7 +141,8 @@ export default function Chapter01() {
                   <li>Prevents consumer confusion</li>
                 </ul>
               </article>
-            </div>
+            <ChapterFooter chapterNum={1} />
+</div>
           </section>
         )}
 
@@ -170,7 +177,8 @@ export default function Chapter01() {
                 </ul>
                 <p><strong>Misappropriation</strong></p>
               </article>
-            </div>
+            <ChapterFooter chapterNum={1} />
+</div>
           </section>
         )}
 
@@ -194,14 +202,18 @@ export default function Chapter01() {
                   <li>Reasonable royalty</li>
                 </ul>
               </article>
-            </div>
+            <ChapterFooter chapterNum={1} />
+</div>
             <div className="note">
               <strong>3. Enhanced Damages &amp; Fees:</strong> For willful and malicious conduct, courts may award
               exemplary damages and attorney fees.
-            </div>
+            <ChapterFooter chapterNum={1} />
+</div>
           </section>
         )}
-      </div>
-    </div>
+      <ChapterFooter chapterNum={1} />
+</div>
+    <ChapterFooter chapterNum={1} />
+</div>
   );
 }

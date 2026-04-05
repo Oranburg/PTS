@@ -1,3 +1,4 @@
+import ChapterFooter from '../../ChapterFooter.jsx';
 import React, { useState } from 'react';
 import { 
   FileText, 
@@ -44,10 +45,12 @@ export default function Chapter04() {
   return (
     <div>
       <div className="chapter-header">
-        <div className="ch-label">Chapter 4</div>
+        <div className="ch-label">Chapter 4<ChapterFooter chapterNum={4} />
+</div>
         <h1>Internal Mitigation</h1>
         <p>Restrictive covenants, jurisdiction choices, and invention assignment controls.</p>
-      </div>
+      <ChapterFooter chapterNum={4} />
+</div>
 
       <div className="tab-bar" role="tablist" aria-label="Chapter sections">
         {TABS.map((t, idx) => (
@@ -71,7 +74,8 @@ export default function Chapter04() {
             {t.label}
           </button>
         ))}
-      </div>
+      <ChapterFooter chapterNum={4} />
+</div>
 
       <div>
         {activeTab === 'crafter' && (
@@ -97,8 +101,10 @@ export default function Chapter04() {
             employedToInvent={employedToInvent} 
           />
         )}
-      </div>
-    </div>
+      <ChapterFooter chapterNum={4} />
+</div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }
 
@@ -217,12 +223,15 @@ function CovenantCrafter({ clauses, setClauses }) {
         <div className="flex items-center gap-4 mb-6">
           <div className="p-3 bg-emerald-50 rounded-2xl">
             <FileText className="text-emerald-600" size={32} />
-          </div>
+          <ChapterFooter chapterNum={4} />
+</div>
           <div>
             <h2 className="text-3xl font-bold text-slate-900">Employment Agreement Lab</h2>
             <p className="text-slate-500">Evan Lopez, Pico Salsa's R&D technician, just submitted his two-week notice. He's joining SalsaTech — your primary competitor. Configure the employment agreement you should have had in place. Every clause you get wrong is a weapon Evan's new employer can use against you.</p>
-          </div>
-        </div>
+          <ChapterFooter chapterNum={4} />
+</div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Drafting Panel */}
@@ -274,7 +283,8 @@ function CovenantCrafter({ clauses, setClauses }) {
               ]}
               current={clauses.dtsa} onSelect={(val) => setClauses({...clauses, dtsa: val})}
             />
-          </div>
+          <ChapterFooter chapterNum={4} />
+</div>
 
           {/* Feedback Panel */}
           <div className="bg-slate-900 rounded-3xl p-8 text-white shadow-xl h-fit sticky top-32">
@@ -292,18 +302,25 @@ function CovenantCrafter({ clauses, setClauses }) {
                     {insight.type === 'warning' && <AlertTriangle className="text-amber-500" size={20} />}
                     {insight.type === 'success' && <CheckCircle2 className="text-emerald-500" size={20} />}
                     <h4 className="font-bold text-lg">{insight.title}</h4>
-                  </div>
+                  <ChapterFooter chapterNum={4} />
+</div>
                   <p className="text-sm text-slate-300 leading-relaxed pl-8">{insight.text}</p>
                   {insight.caseRef && (
                     <p className="text-xs italic mt-2 text-slate-400 pl-8 border-t border-white/10 pt-2">{insight.caseRef}</p>
                   )}
-                </div>
+                <ChapterFooter chapterNum={4} />
+</div>
               ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <ChapterFooter chapterNum={4} />
+</div>
+          <ChapterFooter chapterNum={4} />
+</div>
+        <ChapterFooter chapterNum={4} />
+</div>
+      <ChapterFooter chapterNum={4} />
+</div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }
 
@@ -313,7 +330,8 @@ function ClauseBlock({ title, desc, options, current, onSelect }) {
       <div>
         <h3 className="font-bold text-lg">{title}</h3>
         <p className="text-sm text-slate-500">{desc}</p>
-      </div>
+      <ChapterFooter chapterNum={4} />
+</div>
       <div className="flex flex-col sm:flex-row gap-3">
         {options.map(opt => (
           <button
@@ -325,12 +343,16 @@ function ClauseBlock({ title, desc, options, current, onSelect }) {
                 : 'border-slate-100 bg-white hover:border-slate-300'
             }`}
           >
-            <div className="font-bold text-sm mb-1 text-slate-800">{opt.label}</div>
-            <div className="text-[11px] text-slate-500 leading-tight">{opt.sub}</div>
+            <div className="font-bold text-sm mb-1 text-slate-800">{opt.label}<ChapterFooter chapterNum={4} />
+</div>
+            <div className="text-[11px] text-slate-500 leading-tight">{opt.sub}<ChapterFooter chapterNum={4} />
+</div>
           </button>
         ))}
-      </div>
-    </div>
+      <ChapterFooter chapterNum={4} />
+</div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }
 
@@ -378,7 +400,8 @@ function JurisdictionSimulator({ jurisdiction, setJurisdiction }) {
           <Map className="text-emerald-600 mx-auto mb-4" size={40} />
           <h2 className="text-3xl font-bold mb-2">The Jurisdiction Trap</h2>
           <p className="text-slate-600">Evan Lopez worked in your Austin, TX facility but the SalsaTech job is in California. Where does your non-compete get enforced? Pick a state to find out why the answer could ruin your case before it starts.</p>
-        </div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="flex flex-wrap justify-center gap-4 mb-10">
           {Object.keys(jurisdictions).map(k => (
@@ -392,38 +415,48 @@ function JurisdictionSimulator({ jurisdiction, setJurisdiction }) {
               {jurisdictions[k].name}
             </button>
           ))}
-        </div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
             <div className="flex items-center gap-2 mb-4 text-slate-800">
               <UserCheck size={20} className="text-emerald-600"/>
               <h3 className="font-bold text-lg">Non-Competes</h3>
-            </div>
+            <ChapterFooter chapterNum={4} />
+</div>
             <p className="text-sm text-slate-600 leading-relaxed">{current.noncompete}</p>
-          </div>
+          <ChapterFooter chapterNum={4} />
+</div>
           
           <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200">
             <div className="flex items-center gap-2 mb-4 text-slate-800">
               <Users size={20} className="text-emerald-600"/>
               <h3 className="font-bold text-lg">Non-Solicits</h3>
-            </div>
+            <ChapterFooter chapterNum={4} />
+</div>
             <p className="text-sm text-slate-600 leading-relaxed">{current.nonsolicit}</p>
-          </div>
+          <ChapterFooter chapterNum={4} />
+</div>
 
           <div className="p-6 rounded-2xl bg-emerald-50 border border-emerald-200">
             <div className="flex items-center gap-2 mb-4 text-emerald-900">
               <Briefcase size={20} className="text-emerald-700"/>
               <h3 className="font-bold text-lg">In-House Strategy</h3>
-            </div>
+            <ChapterFooter chapterNum={4} />
+</div>
             <p className="text-sm text-emerald-800 leading-relaxed font-medium">{current.strategy}</p>
             <p className="mt-4 p-3 bg-amber-50 text-amber-800 text-xs font-bold rounded-xl border border-amber-200">
               ⚠️ Federal Note: The FTC issued a near-total non-compete ban in April 2024. A Texas federal court permanently blocked it in August 2024, and the FTC dropped its appeal on September 5, 2025, abandoning the rule entirely. Non-competes remain exclusively a matter of state law. No federal ban is on the horizon.
             </p>
-          </div>
-        </div>
-      </div>
-    </div>
+          <ChapterFooter chapterNum={4} />
+</div>
+        <ChapterFooter chapterNum={4} />
+</div>
+      <ChapterFooter chapterNum={4} />
+</div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }
 
@@ -469,12 +502,15 @@ function InventionsAudit({ hasContract, setHasContract, usedResources, setUsedRe
         <div className="flex items-center gap-4 mb-8">
           <div className="p-3 bg-amber-50 rounded-2xl">
             <Lightbulb className="text-amber-500" size={32} />
-          </div>
+          <ChapterFooter chapterNum={4} />
+</div>
           <div>
             <h2 className="text-3xl font-bold text-slate-900">Who Owns the Invention?</h2>
             <p className="text-slate-500">During his time at Pico Salsa, Evan Lopez noticed that shortening the anaerobic fermentation window by 18 minutes at 34°C produced a consistently brighter capsaicin profile. He mentioned it to Miguel, who adopted it immediately — it's now encoded as FermentCurves_v8. Evan developed it during work hours. Toggle the facts to determine who owns it.</p>
-          </div>
-        </div>
+          <ChapterFooter chapterNum={4} />
+</div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div className="space-y-6">
@@ -495,30 +531,38 @@ function InventionsAudit({ hasContract, setHasContract, usedResources, setUsedRe
               onChange={setUsedResources}
               disabled={hasContract || employedToInvent}
             />
-          </div>
+          <ChapterFooter chapterNum={4} />
+</div>
 
           <div className={`p-8 rounded-3xl border-2 flex flex-col justify-center transition-colors duration-500 ${outcome.color}`}>
             <p className="text-xs font-black uppercase tracking-widest mb-2 opacity-70">Legal Owner</p>
             <h3 className="text-3xl font-black mb-4">{outcome.owner}</h3>
             <div className="bg-white/50 p-4 rounded-xl text-sm font-medium leading-relaxed">
               {outcome.rationale}
-            </div>
+            <ChapterFooter chapterNum={4} />
+</div>
             
             {!hasContract && (
               <div className="mt-4 flex items-center gap-2 text-xs font-bold opacity-80">
                 <AlertTriangle size={14} /> Without a contract, default property laws apply.
-              </div>
+              <ChapterFooter chapterNum={4} />
+</div>
             )}
-          </div>
-        </div>
+          <ChapterFooter chapterNum={4} />
+</div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="mt-12 flex justify-end">
           <button onClick={onNext} className="bg-slate-900 text-white px-8 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-slate-800 transition-all">
             Generate Stage C Output <ArrowRight size={18} />
           </button>
-        </div>
-      </div>
-    </div>
+        <ChapterFooter chapterNum={4} />
+</div>
+      <ChapterFooter chapterNum={4} />
+</div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }
 
@@ -533,7 +577,8 @@ function ToggleRow({ label, value, onChange, disabled }) {
       >
         <div className={`w-6 h-6 rounded-full bg-white absolute transition-transform shadow-sm ${value ? 'translate-x-7' : 'translate-x-1'}`} />
       </button>
-    </div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }
 
@@ -652,7 +697,8 @@ function StageC({ clauses, jurisdiction, hasContract, usedResources, employedToI
           <h2 className="text-3xl font-bold text-slate-900 mb-2">Chapter 4 Stage C — Internal Risk Mitigation Table</h2>
           <p className="text-lg text-emerald-700 font-semibold mb-1">Pico Salsa, LLC — Employment Agreement Compliance Audit</p>
           <p className="text-slate-500">Generated from your lab selections. Copy or screenshot this for your Stage C submission.</p>
-        </div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="overflow-x-auto border border-slate-200 rounded-xl mb-6">
           <table className="w-full text-left border-collapse min-w-[900px]">
@@ -683,7 +729,8 @@ function StageC({ clauses, jurisdiction, hasContract, usedResources, employedToI
               ))}
             </tbody>
           </table>
-        </div>
+        <ChapterFooter chapterNum={4} />
+</div>
 
         <div className="flex items-center gap-4">
           <button 
@@ -693,8 +740,11 @@ function StageC({ clauses, jurisdiction, hasContract, usedResources, employedToI
             <Download size={18} /> Copy to Clipboard
           </button>
           {copied && <span className="text-emerald-600 font-bold animate-in fade-in flex items-center gap-1"><CheckCircle2 size={18}/> Copied!</span>}
-        </div>
-      </div>
-    </div>
+        <ChapterFooter chapterNum={4} />
+</div>
+      <ChapterFooter chapterNum={4} />
+</div>
+    <ChapterFooter chapterNum={4} />
+</div>
   );
 }

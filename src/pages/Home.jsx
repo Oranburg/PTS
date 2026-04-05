@@ -1,48 +1,49 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { isChapterComplete, getCompletedCount } from '../progress';
 
 const CHAPTERS = [
   {
     path: '/ch1',
-    num: 'Chapter 1',
+    num: 1,
     title: 'Foundations',
     desc: 'Three elements of a trade secret, the IP landscape, misappropriation, and remedies.',
   },
   {
     path: '/ch2',
-    num: 'Chapter 2',
+    num: 2,
     title: 'Inventory & Classification',
     desc: 'Audit assets, classify by type, and prioritize by legal and business value.',
   },
   {
     path: '/ch3',
-    num: 'Chapter 3',
+    num: 3,
     title: 'Risk & Vulnerability',
     desc: 'Threat vectors, risk matrix, and a practical risk register workflow.',
   },
   {
     path: '/ch4',
-    num: 'Chapter 4',
+    num: 4,
     title: 'Internal Mitigation',
-    desc: 'Covenants, jurisdiction choices, invention assignment, and stage output logic.',
+    desc: 'Covenants, jurisdiction choices, invention assignment, and compliance architecture.',
   },
   {
     path: '/ch5',
-    num: 'Chapter 5',
+    num: 5,
     title: 'External Controls',
-    desc: 'Relationship-specific architecture for contracts and system controls.',
+    desc: 'Relationship-specific architecture for contracts, system controls, and staged disclosure.',
   },
   {
     path: '/ch6',
-    num: 'Chapter 6',
+    num: 6,
     title: 'Enforcement & Remedies',
-    desc: 'Complaint quality, emergency injunctive relief, and damages theories.',
+    desc: 'Complaint quality, emergency injunctive relief, and damages theories under UTSA and DTSA.',
   },
   {
     path: '/ch7',
-    num: 'Chapter 7',
+    num: 7,
     title: 'Governance Capstone',
-    desc: 'Growth stress tests, charter design, and living governance protocol.',
+    desc: 'Growth stress tests, frontier compliance, and a living Trade Secret Protection Plan.',
   },
 ];
 
@@ -51,82 +52,110 @@ const CLASS_ACTIVITIES = [
     href: './chapters/team-charter.html',
     tag: 'Team Exercise',
     title: 'TSPP Team Charter',
-    desc: 'Build a trade secret protection plan for your team — roles, responsibilities, and governance commitments.',
-    arrow: 'Open activity →',
+    desc: 'Build a trade secret protection plan for your team.',
   },
   {
     href: './chapters/firm-strengths.html',
     tag: 'Self-Assessment',
     title: 'Firm Strengths Finder',
-    desc: 'Identify and map your firm\'s unique strengths to trade secret protection strategies.',
-    arrow: 'Open activity →',
+    desc: 'Map your firm\'s strengths to trade secret protection strategies.',
   },
   {
     href: './patent-or-TS/index.html',
     tag: 'IP Strategy Tool',
     title: 'Patent vs. Trade Secret',
-    desc: 'Interactive hypotheticals to sharpen your judgment on when to patent and when to keep it secret.',
-    arrow: 'Open tool →',
-  },
-  {
-    href: './patent-or-TS/class-activities.html',
-    tag: 'Structured Exercises',
-    title: 'Patent/TS Class Activities',
-    desc: 'Guided classroom exercises with rubrics, discussion prompts, and group activities.',
-    arrow: 'Open exercises →',
+    desc: 'Interactive hypotheticals: when to patent and when to keep it secret.',
   },
   {
     href: './drafting-lab/index.html',
     tag: 'Drafting Lab',
     title: 'Internal Mitigation Drafting Lab',
-    desc: 'Audit a defective employment agreement clause-by-clause, find every legal flaw, and redraft toward a compliant agreement.',
-    arrow: 'Open lab →',
+    desc: 'Audit a defective employment agreement clause-by-clause.',
   },
   {
     href: './deal-room/index.html',
     tag: 'Deal Room',
-    title: 'Deal Room — Pico Salsa Engagement',
-    desc: 'Step into a simulated law firm deal room. Choose your client, identify risks, select precedents from a closed library, and assemble a complete employment agreement.',
-    arrow: 'Enter deal room →',
+    title: 'Deal Room Simulation',
+    desc: 'Step into a simulated law firm deal room. Choose your client, identify risks, and assemble a complete agreement.',
   },
 ];
 
 export default function Home() {
+  const completed = getCompletedCount();
+  const pct = Math.round((completed / 7) * 100);
+
   return (
     <div>
       <div className="home-hero">
         <h1>Protecting Trade Secrets</h1>
         <p>
-          An interactive learning companion for students, practitioners, and audiobook listeners.
-          Each chapter provides visualizations, tools, and exercises rooted in real legal frameworks.
+          An interactive learning companion for <em>Protecting Trade Secrets</em> by Seth C. Oranburg.
+          Seven chapters covering the complete trade secret protection lifecycle — from foundations through governance.
         </p>
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap', marginTop: '1rem' }}>
+          <a href="https://bizlawbreakdown.podbean.com" target="_blank" rel="noopener noreferrer" className="btn">
+            Podcast (23 episodes)
+          </a>
+          <a href="https://oranburg.law/courses/trade-secrets/" target="_blank" rel="noopener noreferrer" className="btn btn-ghost">
+            Course Page
+          </a>
+        </div>
       </div>
+
+      {completed > 0 && (
+        <div className="note" style={{ marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <strong>Your Progress</strong>
+            <span style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>{completed} of 7 chapters ({pct}%)</span>
+          </div>
+          <div style={{ height: '6px', borderRadius: '999px', background: '#e2e8f0', overflow: 'hidden' }}>
+            <div style={{ height: '100%', background: 'var(--primary-light)', width: pct + '%', transition: 'width 0.3s' }} />
+          </div>
+        </div>
+      )}
+
       <div className="chapter-grid">
-        {CHAPTERS.map(({ path, num, title, desc }) => (
-          <Link key={path} to={path} className="chapter-card">
-            <span className="ch-num">{num}</span>
-            <h2>{title}</h2>
-            <p>{desc}</p>
-            <span className="card-arrow">Open chapter →</span>
-          </Link>
-        ))}
+        {CHAPTERS.map(({ path, num, title, desc }) => {
+          const done = isChapterComplete(num);
+          return (
+            <Link key={path} to={path} className="chapter-card" style={done ? { borderColor: 'var(--primary-light)', background: '#f0f9ff' } : {}}>
+              <span className="ch-num" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                Chapter {num}
+                {done && <span style={{ color: '#16a34a', fontSize: '0.9rem' }}>&#10003;</span>}
+              </span>
+              <h2>{title}</h2>
+              <p>{desc}</p>
+              <span className="card-arrow">{done ? 'Review' : 'Open'} chapter &rarr;</span>
+            </Link>
+          );
+        })}
       </div>
 
       <div className="activities-section">
-        <h2 className="activities-heading">Class Activities</h2>
+        <h2 className="activities-heading">Interactive Tools</h2>
         <p className="activities-subheading">
-          Hands-on exercises, interactive tools, and drafting labs to reinforce each chapter's concepts.
+          Hands-on exercises, drafting labs, and simulations.
         </p>
         <div className="chapter-grid">
-          {CLASS_ACTIVITIES.map(({ href, tag, title, desc, arrow }) => (
+          {CLASS_ACTIVITIES.map(({ href, tag, title, desc }) => (
             <a key={href} href={href} className="activity-card">
               <span className="ch-num">{tag}</span>
               <h2>{title}</h2>
               <p>{desc}</p>
-              <span className="card-arrow">{arrow}</span>
+              <span className="card-arrow">Open &rarr;</span>
             </a>
           ))}
         </div>
+      </div>
+
+      <div style={{ textAlign: 'center', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
+        <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>
+          <a href="https://oranburg.law" style={{ color: 'var(--primary-light)' }}>oranburg.law</a>
+          {' \u00b7 '}
+          <a href="https://oranburg.law/courses/trade-secrets/" style={{ color: 'var(--primary-light)' }}>Course Page</a>
+          {' \u00b7 '}
+          <a href="https://www.youtube.com/@BizLaw" style={{ color: 'var(--primary-light)' }}>Video Lectures</a>
+        </p>
       </div>
     </div>
   );
