@@ -9,6 +9,7 @@ import Chapter05 from './chapters/ch05/Chapter05.jsx';
 import Chapter06 from './chapters/ch06/Chapter06.jsx';
 import Chapter07 from './chapters/ch07/Chapter07.jsx';
 import NotFound from './pages/NotFound.jsx';
+import Sources from './pages/Sources.jsx';
 
 const NAV_CHAPTERS = [
   { path: '/ch1', label: 'Ch 1' },
@@ -18,6 +19,7 @@ const NAV_CHAPTERS = [
   { path: '/ch5', label: 'Ch 5' },
   { path: '/ch6', label: 'Ch 6' },
   { path: '/ch7', label: 'Ch 7' },
+  { path: '/sources', label: 'Sources' },
 ];
 
 function toggleTheme() {
@@ -86,6 +88,7 @@ export default function App() {
             <Route path="/ch5" element={<Chapter05 />} />
             <Route path="/ch6" element={<Chapter06 />} />
             <Route path="/ch7" element={<Chapter07 />} />
+            <Route path="/sources" element={<Sources />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
