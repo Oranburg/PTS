@@ -62,9 +62,8 @@ export default function Sources() {
         c.name.toLowerCase().includes(q) ||
         c.citation.toLowerCase().includes(q) ||
         (c.court || '').toLowerCase().includes(q) ||
-        (c.notes || '').toLowerCase().includes(q) ||
-        c.statutes.some(s => s.toLowerCase().includes(q)) ||
-        c.doctrines.some(d => d.toLowerCase().includes(q))
+        (c.rule || '').toLowerCase().includes(q) ||
+        (c.category || '').toLowerCase().includes(q)
       );
     }
 
@@ -211,32 +210,44 @@ export default function Sources() {
       {/* Statutes View */}
       {view === 'statutes' && (
         <div className="statutes-section">
-          <StatuteCard
-            title="Uniform Trade Secrets Act (1985)"
-            citation="UTSA §§ 1–6"
-            description="The model act adopted in 48 states. Defines trade secrets, misappropriation, and remedies including reasonable royalties. Section 3 establishes the damages framework central to this course."
-            sections={[
-              { num: '§ 1', title: 'Definitions', highlight: '"Trade secret" and "misappropriation" defined' },
-              { num: '§ 2', title: 'Injunctive Relief', highlight: 'Preliminary and permanent injunctions' },
-              { num: '§ 3', title: 'Damages', highlight: 'Actual loss, unjust enrichment, reasonable royalty hierarchy' },
-              { num: '§ 4', title: "Attorney's Fees", highlight: 'Willful and malicious misappropriation' },
-              { num: '§ 5', title: 'Preservation of Secrecy', highlight: 'Protective orders during litigation' },
-              { num: '§ 6', title: 'Statute of Limitations', highlight: 'Three-year period from discovery' },
-            ]}
-          />
-          <StatuteCard
-            title="Defend Trade Secrets Act (2016)"
-            citation="18 U.S.C. § 1836"
-            description="Federal trade secret statute providing a federal cause of action for misappropriation. Mirrors UTSA's damages framework but adds ex parte seizure and whistleblower immunity (§ 1833(b))."
-            sections={[
-              { num: '§ 1831', title: 'Economic Espionage', highlight: 'Criminal: foreign government benefit' },
-              { num: '§ 1832', title: 'Theft of Trade Secrets', highlight: 'Criminal: commercial advantage' },
-              { num: '§ 1833', title: 'Exceptions / Immunity', highlight: '§ 1833(b): whistleblower immunity notice' },
+          {(data.statutes || []).map(statute => (
+            <StatuteCard
+              key={statute.id}
+              title={statute.title}
+              citation={statute.citation}
+              description=""
+              sections={(statute.sections || []).map(s => ({
+                num: s.num, title: s.title, highlight: s.text
+              }))}
+            />
+          ))}
+          {(!data.statutes || data.statutes.length === 0) && (
+            <>
+            <StatuteCard
+              title="Uniform Trade Secrets Act (1985)"
+              citation="UTSA §§ 1–6"
+              description="The model act adopted in 48 states."
+              sections={[
+                { num: '§ 1', title: 'Definitions', highlight: '"Trade secret" and "misappropriation" defined' },
+                { num: '§ 2', title: 'Injunctive Relief', highlight: 'Preliminary and permanent injunctions' },
+                { num: '§ 3', title: 'Damages', highlight: 'Actual loss, unjust enrichment, reasonable royalty hierarchy' },
+                { num: '§ 4', title: "Attorney's Fees", highlight: 'Willful and malicious misappropriation' },
+              ]}
+            />
+            <StatuteCard
+              title="Defend Trade Secrets Act (2016)"
+              citation="18 U.S.C. § 1836"
+              description="Federal trade secret statute."
+              sections={[
+                { num: '§ 1832', title: 'Theft of Trade Secrets', highlight: 'Criminal: commercial advantage' },
+                { num: '§ 1833', title: 'Exceptions / Immunity', highlight: '§ 1833(b): whistleblower immunity notice' },
               { num: '§ 1836', title: 'Civil Proceedings', highlight: 'Private right of action, remedies, ex parte seizure' },
               { num: '§ 1837', title: 'Applicability', highlight: 'Interstate or foreign commerce requirement' },
               { num: '§ 1839', title: 'Definitions', highlight: 'Broad "trade secret" definition' },
             ]}
           />
+          </>
+          )}
         </div>
       )}
     </div>
@@ -275,13 +286,17 @@ function CaseCard({ caseData, expanded, onToggle }) {
               <strong>Doctrines:</strong> {c.doctrines.join('; ')}
             </div>
           )}
+          {c.rule && (
+            <div className="detail-row rule">
+              <strong>Rule:</strong> {c.rule}
+            </div>
+          )}
           <div className="detail-row">
             <strong>Chapters:</strong> {c.chapters.map(ch => `Ch ${ch}: ${CHAPTER_NAMES[ch]}`).join(', ')}
           </div>
-          {c.notes && (
+          {c.unpublished && (
             <div className="detail-row notes">
-              {c.unpublished && <p className="unpub-warning"><AlertTriangle size={14} /> This is an unpublished opinion. Check court rules before citing.</p>}
-              <p>{c.notes}</p>
+              <p className="unpub-warning"><AlertTriangle size={14} /> This is an unpublished opinion. Check court rules before citing.</p>
             </div>
           )}
         </div>
