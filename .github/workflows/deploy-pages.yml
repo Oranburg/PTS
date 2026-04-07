@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install
@@ -50,6 +50,8 @@ jobs:
           cp drafting-lab/index.html dist/drafting-lab/
           mkdir -p dist/deal-room
           cp deal-room/index.html dist/deal-room/
+          mkdir -p dist/data
+          cp data/*.json dist/data/ 2>/dev/null || true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
