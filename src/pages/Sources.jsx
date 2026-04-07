@@ -276,12 +276,12 @@ function CaseCard({ caseData, expanded, onToggle }) {
           <div className="detail-row">
             <strong>Citation:</strong> <span className="citation">{c.citation}</span>
           </div>
-          {c.statutes.length > 0 && (
+          {c.statutes && c.statutes.length > 0 && (
             <div className="detail-row">
               <strong>Statutes:</strong> {c.statutes.join('; ')}
             </div>
           )}
-          {c.doctrines.length > 0 && (
+          {c.doctrines && c.doctrines.length > 0 && (
             <div className="detail-row">
               <strong>Doctrines:</strong> {c.doctrines.join('; ')}
             </div>
