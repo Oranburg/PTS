@@ -1,0 +1,164 @@
+[
+  {
+    "number": "1",
+    "title": "Definitions",
+    "article": "Uniform Trade Secrets Act",
+    "text": "As used in this [Act], unless the context requires otherwise:\n\n(1) “Improper means” includes theft, bribery, misrepresentation, breach or inducement of a breach of a duty to maintain secrecy, or espionage through electronic or other means;\n\n(2) “Misappropriation” means:\n\n(i) acquisition of a trade secret of another by a person who knows or has reason to know that the trade secret was acquired by improper means; or\n\n(ii) disclosure or use of a trade secret of another without express or implied consent by a person who\n\n(A) used improper means to acquire knowledge of the trade secret; or\n\n(B) at the time of disclosure or use, knew or had reason to know that his knowledge of the trade secret was\n\n(I) derived from or through a person who had utilized improper means to acquire it;\n\n(II) acquired under circumstances giving rise to a duty to maintain its secrecy or limit its use; or\n\n(III) derived from or through a person who owed a duty to the person seeking relief to maintain its secrecy or limit its use; or\n\n(C) before a material change of his [or her] position, knew or had reason to know that it was a trade secret and that knowledge of it had been acquired by accident or mistake.\n\n(3) “Person” means a natural person, corporation, business trust, estate, trust, partnership, association, joint venture, government, governmental subdivision or agency, or any other legal or commercial entity.\n\n(4) “Trade secret” means information, including a formula, pattern, compilation, program, device, method, technique, or process, that:\n\n(i) derives independent economic value, actual or potential, from not being generally known to, and not being readily ascertainable by proper means by, other persons who can obtain economic value from its disclosure or use, and\n\n(ii) is the subject of efforts that are reasonable under the circumstances to maintain its secrecy.\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "misappropriation",
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      1,
+      2
+    ]
+  },
+  {
+    "number": "2",
+    "title": "Injunctive Relief",
+    "article": "Uniform Trade Secrets Act",
+    "text": "(a) Actual or threatened misappropriation may be enjoined. Upon application to the court, an injunction shall be terminated when the trade secret has ceased to exist, but the injunction may be continued for an additional reasonable period of time in order to eliminate commercial advantage that otherwise would be derived from the misappropriation.\n\n(b) If the court determines that it would be unreasonable to prohibit future use In exceptional circumstances, an injunction may condition future use upon payment of a reasonable royalty for no longer than the period of time the for which use could have been prohibited. Exceptional circumstances include, but are not limited to, a material and prejudicial change of position prior to acquiring knowledge or reason to know of misappropriation that renders a prohibitive injunction inequitable.\n\n(c) In appropriate circumstances, affirmative acts to protect a trade secret may be compelled by court order.\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "damages",
+      "injunction",
+      "misappropriation",
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      6
+    ]
+  },
+  {
+    "number": "3",
+    "title": "Damages",
+    "article": "Uniform Trade Secrets Act",
+    "text": "(a) In addition to or in lieu of injunctive relief Except to the extent that a material and prejudicial change of position prior to acquiring knowledge or reason to know of misappropriation renders a monetary recovery inequitable, a complainant may is entitled to recover damages for the actual loss caused by misappropriation. A complainant also may recover for Damages can include both the actual loss caused by misappropriation and the unjust enrichment caused by misappropriation that is not taken into account in computing damages for actual loss. In lieu of damages measured by any other methods, the damages caused by misappropriation may be measured by imposition of liability for a reasonable royalty for a misappropriator’s unauthorized disclosure or use of a trade secret.\n\n(b) If willful and malicious misappropriation exists, the court may award exemplary damages in an amount not exceeding twice any award made under subsection (a).\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "damages",
+      "misappropriation",
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      6
+    ]
+  },
+  {
+    "number": "4",
+    "title": "Attorney’s Fees",
+    "article": "Uniform Trade Secrets Act",
+    "text": "If (i) a claim of misappropriation is made in bad faith, (ii) a motion to terminate an injunction is made or resisted in bad faith, or (iii) willful and malicious misappropriation exists, the court may award reasonable attorney’s fees to the prevailing party.\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "injunction",
+      "misappropriation"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      6
+    ]
+  },
+  {
+    "number": "5",
+    "title": "Preservation of Secrecy",
+    "article": "Uniform Trade Secrets Act",
+    "text": "In an action under this [Act], a court shall preserve the secrecy of an alleged trade secret by reasonable means, which may include granting protective orders in connection with discovery proceedings, holding in-camera hearings, sealing the records of the action, and ordering any person involved in the litigation not to disclose an alleged trade secret without prior court approval.\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      6
+    ]
+  },
+  {
+    "number": "6",
+    "title": "Statute of Limitations",
+    "article": "Uniform Trade Secrets Act",
+    "text": "An action for misappropriation must be brought within 3 years after the misappropriation is discovered or by the exercise of reasonable diligence should have been discovered. For the purposes of this section, a continuing misappropriation constitutes a single claim.\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "misappropriation"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      6
+    ]
+  },
+  {
+    "number": "7",
+    "title": ")] because they arose from a single factual episode, namely misappropriation of bidding and pricing information.”",
+    "article": "Uniform Trade Secrets Act",
+    "text": "Weins v. Sporleder, 605 N.W.2d 488, 491-92 (S.D.2000). “South Dakota’s adoption of the [UTSA] prevents a plaintiff from merely restating their trade secret claims as separate tort claims. In analyzing claims for the purpose of applying the displacement provision, the issue is not what label the plaintiff puts on their claims. Rather, the court is to look beyond the label to the facts being asserted in support of the claims. A plaintiff ‘may not rely on acts that constitute trade secret misappropriation to support other causes of action.’ [¶] In examining a plaintiff’s claims to determine if claims are related, numerous courts have specifically found that tort claims such as fraud, unfair competition, and breach of fiduciary duty are preempted by the [UTSA].”\n\nAngelica Textile Servs. v. Park (4th Dist.2013) 220 Cal.App.4th 495, 505, modified, No. D062405 (4th Dist.2013) (order; 11-7-13). “[T]he determination of whether a claim is based on trade secret misappropriation is largely factual. At 506: In considering whether a particular claim has been displaced, we must recognize a prime purpose of the law was to sweep away the adopting states’ bewildering web of rules and rationales and replace it with a uniform set of principles for determining when one is--and is not--liable for acquiring, disclosing, or using information of value. In general, the acquisition, disclosure or transfer of information that does not fit UTSA’s definition of a trade secret does not give rise to any liability, even when that liability is couched in terms of a separate tort or statutory violation. [¶] However, … UTSA by its terms does not displace a contract claim, even if it is based on the misappropriation of a trade secret. Moreover, UTSA does not displace noncontract claims that, although related to a trade secret misappropriation, are independent and based on facts distinct from the facts that support the misappropriation claim. At 507: Our review of the record shows that none of the non-UTSA claims asserted [by P] were displaced. [P’s] claims for breach of contract, breach of fiduciary duty, unfair competition, interference with business relations and conversion each have a basis independent of any misappropriation of a trade secret.” (Internal quotes omitted.)",
+    "concepts": [
+      "misappropriation",
+      "preemption",
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      1
+    ]
+  },
+  {
+    "number": "8",
+    "title": "Uniformity of Application and Construction",
+    "article": "Uniform Trade Secrets Act",
+    "text": "This [Act] shall be applied and construed to effectuate its general purpose to make uniform the law with respect to the subject of this [Act] among states enacting it.",
+    "concepts": [],
+    "crossRefs": [],
+    "chapterUse": [
+      1
+    ]
+  },
+  {
+    "number": "9",
+    "title": "Short Title",
+    "article": "Uniform Trade Secrets Act",
+    "text": "This [Act] may be cited as the Uniform Trade Secrets Act.\n\n\n\nO’CONNOR’S CHARTS REFERENCES\nSee Chart 4, “Uniform Trade Secrets Act vs. state enactments.”",
+    "concepts": [
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      1
+    ]
+  },
+  {
+    "number": "10",
+    "title": "Severability",
+    "article": "Uniform Trade Secrets Act",
+    "text": "If any provision of this [Act] or its application to any person or circumstances is held invalid, the invalidity does not affect other provisions or applications of the [Act] which can be given effect without the invalid provision or application, and to this end the provisions of this [Act] are severable.",
+    "concepts": [],
+    "crossRefs": [],
+    "chapterUse": [
+      1
+    ]
+  },
+  {
+    "number": "11",
+    "title": "Time of Taking Effect",
+    "article": "Uniform Trade Secrets Act",
+    "text": "This [Act] takes effect on _______, and does not apply to misappropriation occurring prior to the effective date. With respect to a continuing misappropriation that began prior to the effective date, the [Act] also does not apply to the continuing misappropriation that occurs after the effective date.\n\n\n\nEditors’ Notes",
+    "concepts": [
+      "misappropriation"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      1
+    ]
+  },
+  {
+    "number": "12",
+    "title": "Repeal",
+    "article": "Uniform Trade Secrets Act",
+    "text": "The following Acts and parts of Acts are repealed:\n\n(1)\n\n(2)\n\n(3)\n\n\n\nO’CONNOR’S CHARTS REFERENCES\nSee Chart 4, “Uniform Trade Secrets Act vs. state enactments.”",
+    "concepts": [
+      "trade secret"
+    ],
+    "crossRefs": [],
+    "chapterUse": [
+      1
+    ]
+  }
+]
