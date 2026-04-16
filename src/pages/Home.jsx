@@ -47,6 +47,51 @@ const CHAPTERS = [
   },
 ];
 
+const REVIEW_VIDEOS = [
+  {
+    ch: 1,
+    title: 'Understanding Trade Secret Law',
+    review: 'Sh3Uh3mp4Zs',
+    application: '_jVyjyD_CBA',
+  },
+  {
+    ch: 2,
+    title: 'Inventorying and Classifying Trade Secrets',
+    review: '0bN34vAASic',
+    application: 'qaCeT_YaXnw',
+  },
+  {
+    ch: 3,
+    title: 'Assessing Risks and Mitigating Vulnerabilities',
+    review: 'DTtHiFpz_I4',
+    application: 'oXWFZH53T6Y',
+  },
+  {
+    ch: 4,
+    title: 'Mitigating Internal Vulnerabilities',
+    review: 'PbANGygLD1g',
+    application: 'DTfrBj5g7AU',
+  },
+  {
+    ch: 5,
+    title: 'Mitigating External Liabilities',
+    review: '-Z62eCVKzU0',
+    application: '52yS41pdJyQ',
+  },
+  {
+    ch: 6,
+    title: 'Enforcing Trade Secret Rights',
+    review: 'yE6j9NDEEWE',
+    application: '3K75LVc0jBY',
+  },
+  {
+    ch: 7,
+    title: 'Sustaining and Adapting Trade Secret Protection',
+    review: '1XwMOH3tg0Y',
+    application: 'qzcECmOgGdo',
+  },
+];
+
 const CLASS_ACTIVITIES = [
   {
     href: './chapters/team-charter.html',
@@ -146,6 +191,50 @@ export default function Home() {
             </a>
           ))}
         </div>
+      </div>
+
+      <div className="activities-section">
+        <h2 className="activities-heading">Final Review Videos</h2>
+        <p className="activities-subheading">
+          Student-created review and application videos for each chapter.
+        </p>
+        {REVIEW_VIDEOS.map(({ ch, title, review, application }) => (
+          <div key={ch} style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: 'var(--heading)' }}>
+              Chapter {ch}: {title}
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+              <div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '0.5rem', fontWeight: 500 }}>Review</p>
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px' }}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${review}`}
+                    title={`Ch ${ch} Review`}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', borderRadius: '8px' }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+              <div>
+                <p style={{ fontSize: '0.85rem', color: 'var(--muted)', marginBottom: '0.5rem', fontWeight: 500 }}>Application</p>
+                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden', borderRadius: '8px' }}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${application}`}
+                    title={`Ch ${ch} Application`}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none', borderRadius: '8px' }}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div style={{ textAlign: 'center', marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--border)' }}>
