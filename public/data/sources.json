@@ -2,8 +2,8 @@
   "meta": {
     "title": "Sources — Protecting Trade Secrets",
     "description": "Principal cases and statutes from Oranburg, Protecting Trade Secrets (1st ed., CAP 2026). Each case includes the rule as framed in the casebook and every chapter where it appears.",
-    "version": "3.0.0",
-    "lastUpdated": "2026-04-07",
+    "version": "3.1.0",
+    "lastUpdated": "2026-04-17",
     "totalCases": 55
   },
   "chapters": {
@@ -112,570 +112,552 @@
   ],
   "cases": [
     {
+      "id": "peabody-v-norfolk",
       "name": "Peabody v. Norfolk",
       "citation": "98 Mass. 452 (1868)",
+      "court": "Mass. Supreme Judicial Court",
       "year": 1868,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Secret know-how is protectable as property. Employees who gain knowledge under a duty of confidence cannot lawfully disclose or profit from it. Equity protects the relationship of trust.",
       "category": "foundations"
     },
     {
+      "id": "vickery-v-welch",
       "name": "Vickery v. Welch",
       "citation": "36 Mass. 523 (1837)",
+      "court": "Mass. Supreme Judicial Court",
       "year": 1837,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "A trade secret sold with a business is legally transferable. The seller's obligation to maintain secrecy survives the transaction.",
       "category": "foundations"
     },
     {
+      "id": "board-of-trade-v-christie",
       "name": "Board of Trade v. Christie Grain & Stock Co.",
       "citation": "198 U.S. 236 (1905)",
+      "court": "U.S. Supreme Court",
       "year": 1905,
-      "chapters": [
-        1,
-        2
-      ],
+      "chapters": [1, 2],
       "rule": "Market quotations distributed under controlled conditions retain trade secret status. The key is controlled distribution — sharing information does not destroy secrecy when access is limited and governed by agreement.",
       "category": "controlled-distribution"
     },
     {
+      "id": "dupont-v-masland",
       "name": "E.I. du Pont de Nemours Powder Co. v. Masland",
       "citation": "244 U.S. 100 (1917)",
+      "court": "U.S. Supreme Court",
       "year": 1917,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Trade secret protection rests on the duty of good faith in confidential relationships, not on property rights in the information itself. The starting point is the confidential relationship, not whether the information qualifies as 'property.'",
       "category": "foundations"
     },
     {
+      "id": "kewanee-v-bicron",
       "name": "Kewanee Oil Co. v. Bicron Corp.",
       "citation": "416 U.S. 470 (1974)",
+      "court": "U.S. Supreme Court",
       "year": 1974,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "State trade secret law is not preempted by federal patent law. The two systems serve complementary purposes: trade secret protection encourages innovation without conflicting with the patent system's disclosure goals.",
       "category": "foundations"
     },
     {
+      "id": "coca-cola-v-bottling",
       "name": "Coca-Cola Co. v. Coca-Cola Bottling Co.",
       "citation": "107 F.R.D. 288 (D. Del. 1985)",
+      "court": "D. Del.",
       "year": 1985,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Coca-Cola's formula qualified as a trade secret — independent economic value from secrecy, access restricted to only two employees at a time, written formula stored in a bank vault. The paradigm example of reasonable efforts.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "follow-me-v-shenzhen",
       "name": "Follow Me Helicopter v. Shenzhen Ruihe",
       "citation": "2024 U.S. Dist. LEXIS 136113 (S.D.N.Y. 2024)",
+      "court": "S.D.N.Y.",
       "year": 2024,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Allegations of proprietary drone design data, restricted access, and nondisclosure agreements were sufficient to state a trade secret claim under the DTSA.",
       "category": "pleading"
     },
     {
+      "id": "motorola-v-hytera",
       "name": "Motorola Solutions v. Hytera Communications",
       "citation": "436 F. Supp. 3d 1150 (N.D. Ill. 2020)",
+      "court": "N.D. Ill.",
       "year": 2020,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Systematic theft of proprietary radio technology source code violated the DTSA. Court awarded $764.6 million including punitive damages and attorneys' fees.",
       "category": "damages"
     },
     {
+      "id": "compulife-v-newman",
       "name": "Compulife Software v. Newman",
       "citation": "959 F.3d 1288 (11th Cir. 2020)",
+      "court": "11th Cir.",
       "year": 2020,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Giving numerous licensees access to a software database without consistent restrictions undermined the trade secret claim. Reasonable efforts require consistent security measures.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "bonito-boats-v-thunder-craft",
       "name": "Bonito Boats v. Thunder Craft Boats",
       "citation": "489 U.S. 141 (1989)",
+      "court": "U.S. Supreme Court",
       "year": 1989,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Reverse engineering is a permissible means of discovery. Products sold on the open market without contractual restrictions cannot be shielded from analysis.",
       "category": "reverse-engineering"
     },
     {
+      "id": "dupont-v-christopher",
       "name": "E.I. du Pont de Nemours & Co. v. Christopher",
       "citation": "431 F.2d 1012 (5th Cir. 1970)",
+      "court": "5th Cir.",
       "year": 1970,
-      "chapters": [
-        1,
-        6
-      ],
+      "chapters": [1, 6],
       "rule": "Aerial surveillance of a plant under construction to reveal a proprietary chemical process constitutes improper means. Trade secret law requires companies to guard only against reasonable commercial norms violations, not all possible intrusions.",
       "category": "improper-means"
     },
     {
+      "id": "3m-v-pribyl",
       "name": "3M v. Pribyl",
       "citation": "259 F.3d 587 (7th Cir. 2001)",
+      "court": "7th Cir.",
       "year": 2001,
-      "chapters": [
-        1,
-        6
-      ],
+      "chapters": [1, 6],
       "rule": "Using confidential manufacturing process information from prior employment, subject to ongoing confidentiality obligations, constitutes misappropriation — even without taking physical documents. The court awarded unjust enrichment damages.",
       "category": "employee-departure"
     },
     {
+      "id": "nclosures-v-block",
       "name": "nClosures v. Block & Co.",
       "citation": "770 F.3d 598 (7th Cir. 2014)",
+      "court": "7th Cir.",
       "year": 2014,
-      "chapters": [
-        1,
-        2,
-        4
-      ],
+      "chapters": [1, 2, 4],
       "rule": "Having an NDA is not enough when the owner's actual conduct does not reinforce secrecy. If a company treats information casually despite contractual protections, courts may find reasonable efforts lacking. Disclosers must practice the protections their NDAs require.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "winston-v-minnesota-mining",
       "name": "Winston Research v. Minnesota Mining",
       "citation": "350 F.2d 134 (9th Cir. 1965)",
+      "court": "9th Cir.",
       "year": 1965,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Independent discovery through lawful means is a complete defense to trade secret misappropriation. If a competitor arrives at the same information through its own research, no violation has occurred.",
       "category": "independent-discovery"
     },
     {
+      "id": "bimbo-v-botticella",
       "name": "Bimbo Bakeries v. Botticella",
       "citation": "613 F.3d 102 (3d Cir. 2010)",
+      "court": "3d Cir.",
       "year": 2010,
-      "chapters": [
-        1,
-        3,
-        4,
-        6
-      ],
+      "chapters": [1, 3, 4, 6],
       "rule": "A senior executive who accepted a competitor position while continuing to access confidential product development files posed a threat justifying injunctive relief. The new employer had reason to know the information was obtained improperly. Courts can enjoin threatened misappropriation and grant permanent injunctions to prevent ongoing use.",
       "category": "employee-departure"
     },
     {
+      "id": "american-can-v-mansukhani",
       "name": "American Can Co. v. Mansukhani",
       "citation": "742 F.2d 314 (7th Cir. 1984)",
+      "court": "7th Cir.",
       "year": 1984,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Permanent injunction granted to prevent ongoing use of misappropriated trade secrets.",
       "category": "injunction"
     },
     {
+      "id": "bianco-v-globus",
       "name": "Bianco v. Globus Medical",
       "citation": "30 F. Supp. 3d 565 (E.D. Tex. 2014)",
+      "court": "E.D. Tex.",
       "year": 2014,
-      "chapters": [
-        1,
-        5,
-        6
-      ],
+      "chapters": [1, 5, 6],
       "rule": "A solo inventor can satisfy reasonable secrecy efforts through detailed documentation, sharing only under confidentiality, and keeping the concept out of the public sphere. The court awarded damages based on lost licensing value. Absence of return/destruction obligations complicated damages but did not bar the claim.",
       "category": "collaboration"
     },
     {
+      "id": "altavion-v-konica",
       "name": "Altavion v. Konica Minolta",
       "citation": "226 Cal. App. 4th 26 (2014)",
+      "court": "Cal. Ct. App.",
       "year": 2014,
-      "chapters": [
-        1,
-        2,
-        5,
-        6
-      ],
+      "chapters": [1, 2, 5, 6],
       "rule": "Technical ideas disclosed in confidence need not be reduced to physical form to be protected. Filing patent applications covering concepts received under a confidentiality agreement constitutes misappropriation. Trade secret status depends on secrecy, value, and control — not on the stage of development.",
       "category": "misappropriation"
     },
     {
+      "id": "cognis-v-chemcentral",
       "name": "Cognis Corp. v. Chemcentral",
       "citation": "430 F. Supp. 2d 806 (N.D. Ill. 2006)",
+      "court": "N.D. Ill.",
       "year": 2006,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Punitive damages available for willful trade secret misappropriation.",
       "category": "damages"
     },
     {
+      "id": "ge-v-sung",
       "name": "General Electric v. Sung",
       "citation": "843 F. Supp. 776 (D. Mass. 1994)",
+      "court": "D. Mass.",
       "year": 1994,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Production injunction granted — court can require cessation of manufacturing using misappropriated process and limit the 'head start' advantage gained.",
       "category": "injunction"
     },
     {
+      "id": "syntel-v-trizetto",
       "name": "Syntel Sterling v. Trizetto Group",
       "citation": "68 F.4th 792 (2d Cir. 2023)",
+      "court": "2d Cir.",
       "year": 2023,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Court ordered destruction of code derived from misappropriated trade secrets.",
       "category": "injunction"
     },
     {
+      "id": "ibm-v-papermaster",
       "name": "IBM v. Papermaster",
       "citation": "No. 08-CV-9078 (S.D.N.Y. 2008)",
+      "court": "S.D.N.Y.",
       "year": 2008,
-      "chapters": [
-        1
-      ],
+      "chapters": [1],
       "rule": "Prompt action to enforce trade secret rights strengthens the plaintiff's case. Delay undermines credibility.",
       "category": "timeliness"
     },
     {
+      "id": "data-general-v-digital",
       "name": "Data General v. Digital Computer Controls",
       "citation": "357 A.2d 105 (Del. Ch. 1975)",
+      "court": "Del. Ch.",
       "year": 1975,
-      "chapters": [
-        1,
-        2
-      ],
+      "chapters": [1, 2],
       "rule": "A culture of secrecy — where the organization consistently treats information as confidential through labeling, access controls, and employee awareness — supports a finding that reasonable efforts were taken.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "fail-safe-v-ao-smith",
       "name": "Fail-Safe v. A.O. Smith",
       "citation": "674 F.3d 889 (7th Cir. 2012)",
+      "court": "7th Cir.",
       "year": 2012,
-      "chapters": [
-        2
-      ],
+      "chapters": [2],
       "rule": "Lax maintenance of secrecy protocols dooms a trade secret claim. If protections erode over time and the company does nothing to restore them, courts treat the information as abandoned.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "waymo-v-uber",
       "name": "Waymo v. Uber Technologies",
       "citation": "2017 WL 2123560 (N.D. Cal. 2017)",
+      "court": "N.D. Cal.",
       "year": 2017,
-      "chapters": [
-        2
-      ],
+      "chapters": [2],
       "rule": "Proprietary LiDAR designs and simulation tools qualified as trade secrets — significant R&D investment, strict access controls, measurable competitive advantage.",
       "category": "identification"
     },
     {
+      "id": "clearone-v-bowers",
       "name": "ClearOne Communications v. Bowers",
       "citation": "643 F.3d 735 (10th Cir. 2011)",
+      "court": "10th Cir.",
       "year": 2011,
-      "chapters": [
-        2
-      ],
+      "chapters": [2],
       "rule": "Software algorithms can qualify as trade secrets when they represent proprietary methods not generally known in the industry.",
       "category": "identification"
     },
     {
+      "id": "broker-genius-v-zalta",
       "name": "Broker Genius v. Zalta",
       "citation": "280 F. Supp. 3d 495 (S.D.N.Y. 2017)",
+      "court": "S.D.N.Y.",
       "year": 2017,
-      "chapters": [
-        2
-      ],
+      "chapters": [2],
       "rule": "A proprietary pricing algorithm qualified as a trade secret. Operational methods and analytical frameworks not known outside the business can qualify for protection.",
       "category": "identification"
     },
     {
+      "id": "chicago-lock-v-fanberg",
       "name": "Chicago Lock v. Fanberg",
       "citation": "676 F.2d 400 (9th Cir. 1982)",
+      "court": "9th Cir.",
       "year": 1982,
-      "chapters": [
-        2,
-        3
-      ],
+      "chapters": [2, 3],
       "rule": "Reverse engineering renders information 'readily ascertainable.' If a product can be lawfully acquired and analyzed, the underlying design is not protectable as a trade secret absent a contractual restriction.",
       "category": "reverse-engineering"
     },
     {
+      "id": "boeing-v-sierracin",
       "name": "Boeing v. Sierracin",
       "citation": "738 P.2d 665 (Wash. 1987)",
+      "court": "Wash. Supreme Court",
       "year": 1987,
-      "chapters": [
-        2
-      ],
+      "chapters": [2],
       "rule": "High economic value bolsters trade secret status. The more a secret contributes to competitive advantage, the more courts credit the claim.",
       "category": "identification"
     },
     {
+      "id": "hertz-v-luzenac",
       "name": "Hertz v. Luzenac Group",
       "citation": "576 F.3d 1103 (10th Cir. 2009)",
+      "court": "10th Cir.",
       "year": 2009,
-      "chapters": [
-        2
-      ],
+      "chapters": [2],
       "rule": "Over-claiming yet under-documenting 'secret' processes undermines trade secret status. Companies must be precise about what they protect.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "silvaco-v-intel",
       "name": "Silvaco Data Systems v. Intel Corp.",
       "citation": "184 Cal. App. 4th 210 (2010)",
+      "court": "Cal. Ct. App.",
       "year": 2010,
-      "chapters": [
-        3
-      ],
+      "chapters": [3],
       "rule": "A well-drafted NDA demonstrates intent and commitment to protection and is a relevant factor in the reasonable efforts analysis.",
       "category": "contracts"
     },
     {
+      "id": "tewari-v-mountain-states",
       "name": "Tewari De-Ox Systems v. Mountain States/Rosen",
       "citation": "757 F.3d 481 (5th Cir. 2014)",
+      "court": "5th Cir.",
       "year": 2014,
-      "chapters": [
-        3
-      ],
+      "chapters": [3],
       "rule": "An overbroad NDA can undermine trade secret claims by failing to define the protected information with precision.",
       "category": "contracts"
     },
     {
+      "id": "ingersoll-rand-v-ciavatta",
       "name": "Ingersoll-Rand v. Ciavatta",
       "citation": "542 A.2d 879 (N.J. 1988)",
+      "court": "N.J. Supreme Court",
       "year": 1988,
-      "chapters": [
-        3
-      ],
+      "chapters": [3],
       "rule": "Overly broad invention assignment clauses are unenforceable when they fail to distinguish between inventions using employer resources and those developed independently.",
       "category": "contracts"
     },
     {
+      "id": "edwards-v-arthur-andersen",
       "name": "Edwards v. Arthur Andersen LLP",
       "citation": "44 Cal. 4th 937 (2008)",
+      "court": "Cal. Supreme Court",
       "year": 2008,
-      "chapters": [
-        3
-      ],
+      "chapters": [3],
       "rule": "California noncompetes are void under Bus. & Prof. Code § 16600. Strong public policy favors open competition and employee mobility. The 'narrow restraint' exception was rejected.",
       "category": "noncompete"
     },
     {
+      "id": "provision-v-provision-senior",
       "name": "Provision Living v. Provision Senior Living",
       "citation": "2024 WL 3462279 (W.D. Mo. 2024)",
+      "court": "W.D. Mo.",
       "year": 2024,
-      "chapters": [
-        3
-      ],
+      "chapters": [3],
       "rule": "A narrowly tailored non-solicitation provision tied to trade secret protection was enforced — protecting confidential customer relationships and operational strategies.",
       "category": "non-solicitation"
     },
     {
+      "id": "tesla-v-tripp",
       "name": "Tesla v. Tripp",
       "citation": "2023 WL 1818280 (D. Nev. 2023)",
+      "court": "D. Nev.",
       "year": 2023,
-      "chapters": [
-        4
-      ],
+      "chapters": [4],
       "rule": "A disgruntled employee who transferred confidential manufacturing data to outside parties and the media posed a plausible internal threat justifying trade secret claims.",
       "category": "insider-threat"
     },
     {
+      "id": "halliburton-v-axis",
       "name": "Halliburton v. Axis Technologies",
       "citation": "2019 WL 2710862 (W.D. Okla. 2019)",
+      "court": "W.D. Okla.",
       "year": 2019,
-      "chapters": [
-        4
-      ],
+      "chapters": [4],
       "rule": "Systematic use of access controls, password protections, and information segmentation supported the claim that information was treated as a trade secret.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "cargill-v-sears",
       "name": "Cargill v. Sears Petroleum",
       "citation": "334 F. Supp. 2d 197 (N.D.N.Y. 2004)",
+      "court": "N.D.N.Y.",
       "year": 2004,
-      "chapters": [
-        4
-      ],
+      "chapters": [4],
       "rule": "Enforceable restrictive covenants, when paired with access controls and employee training, contribute to the reasonable efforts analysis.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "pepsico-v-redmond",
       "name": "PepsiCo v. Redmond",
       "citation": "54 F.3d 1262 (7th Cir. 1995)",
+      "court": "7th Cir.",
       "year": 1995,
-      "chapters": [
-        4,
-        6
-      ],
+      "chapters": [4, 6],
       "rule": "Inevitable disclosure doctrine: when a former executive joins a direct competitor in a competing role, injunctive relief is appropriate because the position would almost certainly lead to use of trade secrets — even without proof of actual disclosure. The court granted both preliminary and permanent injunctive relief.",
       "category": "inevitable-disclosure"
     },
     {
+      "id": "auto-channel-v-speedvision",
       "name": "Auto Channel v. Speedvision Network",
       "citation": "144 F. Supp. 2d 784 (W.D. Ky. 2001)",
+      "court": "W.D. Ky.",
       "year": 2001,
-      "chapters": [
-        5
-      ],
+      "chapters": [5],
       "rule": "Disclosing proprietary programming concepts and marketing strategies during joint venture negotiations without an NDA means the information is not protected. Even highly sensitive commercial information loses trade secret status when shared without formal controls.",
       "category": "external-disclosure"
     },
     {
+      "id": "7edu-v-ya-you",
       "name": "7EDU Impact Academy v. Ya You",
       "citation": "2024 U.S. Dist. LEXIS 230110 (N.D. Cal. 2024)",
+      "court": "N.D. Cal.",
       "year": 2024,
-      "chapters": [
-        5
-      ],
+      "chapters": [5],
       "rule": "Digital controls — login protections, document labeling, and defined user roles — strengthen trade secret rights. Platform architecture can make or break trade secret status in digital environments.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "c3ai-v-cummins",
       "name": "C3.ai v. Cummins",
       "citation": "2024 Del. Super. LEXIS 622 (2024)",
+      "court": "Del. Super. Ct.",
       "year": 2024,
-      "chapters": [
-        5
-      ],
+      "chapters": [5],
       "rule": "After a pilot project for AI fuel optimization tools ended, launching a similar product using information shared in confidence and subject to use restrictions states a plausible misappropriation claim. Courts enforce use limitations even after collaboration ends.",
       "category": "collaboration"
     },
     {
+      "id": "accent-v-leggett",
       "name": "Accent Packaging v. Leggett & Platt",
       "citation": "707 F.3d 1318 (Fed. Cir. 2013)",
+      "court": "Fed. Cir.",
       "year": 2013,
-      "chapters": [
-        5
-      ],
+      "chapters": [5],
       "rule": "Reverse engineering is permissible unless an enforceable agreement restricts it. When a product is lawfully obtained and no contract prohibits analysis, the underlying design is not shielded by trade secret law.",
       "category": "reverse-engineering"
     },
     {
+      "id": "globeranger-v-software-ag",
       "name": "GlobeRanger v. Software AG USA",
       "citation": "836 F.3d 477 (5th Cir. 2016)",
+      "court": "5th Cir.",
       "year": 2016,
-      "chapters": [
-        3,
-        5
-      ],
+      "chapters": [3, 5],
       "rule": "Having confidentiality terms in a reseller relationship is insufficient without consistent technical safeguards. Absence of access controls and monitoring made it harder to show reasonable steps were taken.",
       "category": "external-disclosure"
     },
     {
+      "id": "airfacts-v-amezaga",
       "name": "AirFacts v. de Amezaga",
       "citation": "909 F.3d 84 (4th Cir. 2018)",
+      "court": "4th Cir.",
       "year": 2018,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "Removing confidential airline revenue data from the company's control can be actionable as improper disclosure. But no signed NDAs, no documented access restrictions, and no internal protocols means the reasonable efforts requirement fails. The court granted summary judgment for the defendant because the plaintiff had not demonstrated that its data qualified as a trade secret.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "aday-v-westfield",
       "name": "Aday v. Westfield Ins. Co.",
       "citation": "2021 WL 1173003 (W.D. Ky. 2021)",
+      "court": "W.D. Ky.",
       "year": 2021,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "A 'claims handling process' described only in general terms lacks the specificity needed to qualify as a trade secret. Business acumen or professional judgment is not protectable unless tied to concrete, identifiable information. Vague allegations result in early dismissal.",
       "category": "pleading"
     },
     {
+      "id": "rtc-v-lerma",
       "name": "Religious Technology Center v. Lerma",
       "citation": "908 F. Supp. 1362 (E.D. Va. 1995)",
+      "court": "E.D. Va.",
       "year": 1995,
-      "chapters": [
-        1,
-        6
-      ],
+      "chapters": [1, 6],
       "rule": "Once content is published to the internet and circulated publicly, it no longer satisfies the secrecy requirement. Public disclosure destroys trade secret status. The court declined to impose liability for use of information already in the public domain.",
       "category": "loss-of-secrecy"
     },
     {
+      "id": "allstate-v-fougere",
       "name": "Allstate v. Fougere",
       "citation": "2021 WL 4441348 (D. Mass. 2021)",
+      "court": "D. Mass.",
       "year": 2021,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "Inconsistent application of secrecy policies — sharing some materials widely while protecting others — undermines trade secret claims. Reasonable efforts must be clear and uniform.",
       "category": "reasonable-efforts"
     },
     {
+      "id": "american-registry-v-hanaw",
       "name": "American Registry v. Hanaw",
       "citation": "2013 WL 6332971 (M.D. Fla. 2013)",
+      "court": "M.D. Fla.",
       "year": 2013,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "A complaint that fails to describe how information was protected or how the defendant's conduct was improper — amounting to a complaint about competition, not misappropriation — will be dismissed.",
       "category": "pleading"
     },
     {
+      "id": "mattel-v-mga",
       "name": "Mattel v. MGA Entertainment",
       "citation": "616 F.3d 904 (9th Cir. 2010)",
+      "court": "9th Cir.",
       "year": 2010,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "In the Bratz dolls dispute, the court awarded a reasonable royalty reflecting the licensing value of trade secrets used to develop a competing product line. Expert testimony established value in context of the doll market.",
       "category": "damages"
     },
     {
+      "id": "janssen-v-evenus",
       "name": "Janssen v. eVenus Pharmaceuticals",
       "citation": "85 F.4th 147 (3d Cir. 2023)",
+      "court": "3d Cir.",
       "year": 2023,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "Denied ex parte seizure where urgency and imminent risk were not demonstrated. Reinforced the narrow application of DTSA seizure — available only when defendant's actions pose an immediate and irreparable threat. Delay in seeking relief also weakened the case for immediate injunctive relief.",
       "category": "seizure"
     },
     {
+      "id": "amnet-v-crosscountry",
       "name": "Amnet v. CrossCountry Mortgage",
       "citation": "2020 WL 3489317 (N.D. Ill. 2020)",
+      "court": "N.D. Ill.",
       "year": 2020,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "Court awarded both attorneys' fees and enhanced damages for willful misappropriation of proprietary mortgage underwriting software and bad-faith litigation tactics. The award aimed at punishing wrongful conduct and deterring similar behavior.",
       "category": "damages"
     },
     {
+      "id": "us-v-aleynikov",
       "name": "United States v. Aleynikov",
       "citation": "676 F.3d 71 (2d Cir. 2012)",
+      "court": "2d Cir.",
       "year": 2012,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "Former Goldman Sachs employee convicted under the Economic Espionage Act for stealing high-frequency trading code. Conviction overturned on appeal due to technical issues, but the case demonstrated the reach of criminal enforcement for trade secret theft.",
       "category": "criminal"
     },
     {
+      "id": "amgen-v-sandoz",
       "name": "Amgen v. Sandoz",
       "citation": "791 F.3d 1313 (Fed. Cir. 2015)",
+      "court": "Fed. Cir.",
       "year": 2015,
-      "chapters": [
-        6
-      ],
+      "chapters": [6],
       "rule": "Strategic venue selection can provide procedural advantages in IP litigation. The court emphasized that the chosen venue had proper jurisdiction and experience handling complex intellectual property claims.",
       "category": "procedure"
     },
     {
+      "id": "us-v-jin",
       "name": "United States v. Jin",
       "citation": "733 F.3d 718 (7th Cir. 2013)",
+      "court": "7th Cir.",
       "year": 2013,
-      "chapters": [
-        3
-      ],
+      "chapters": [3],
       "rule": "System logs served as critical evidence of misappropriation under the Economic Espionage Act. Digital forensics can establish the timing, scope, and method of trade secret theft.",
       "category": "criminal"
     }

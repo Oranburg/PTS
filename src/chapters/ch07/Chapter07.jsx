@@ -88,6 +88,7 @@ export default function Chapter07() {
           <TSPPCharter />
         )}
 </div>
+      <ChapterFooter chapterNum={7} />
 </div>
   );
 }
@@ -547,7 +548,6 @@ function CharterSection({ number, title, icon: Icon, children }) {
       <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
         {children}
 </div>
-      <ChapterFooter chapterNum={7} />
 </div>
   );
 }

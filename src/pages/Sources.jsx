@@ -13,12 +13,30 @@ const CHAPTER_NAMES = {
 };
 
 const CATEGORY_LABELS = {
-  'damages-royalty': 'Damages & Royalties',
+  'foundations': 'Foundations',
+  'controlled-distribution': 'Controlled Distribution',
+  'reasonable-efforts': 'Reasonable Efforts',
+  'pleading': 'Pleading',
+  'damages': 'Damages',
+  'reverse-engineering': 'Reverse Engineering',
+  'improper-means': 'Improper Means',
+  'employee-departure': 'Employee Departure',
+  'independent-discovery': 'Independent Discovery',
   'injunction': 'Injunctions',
-  'employee-mobility': 'Employee Mobility',
+  'collaboration': 'Collaboration',
   'misappropriation': 'Misappropriation',
-  'preemption': 'Preemption',
-  'general': 'General',
+  'timeliness': 'Timeliness',
+  'identification': 'Identification',
+  'contracts': 'Contracts',
+  'noncompete': 'Noncompete',
+  'non-solicitation': 'Non-Solicitation',
+  'insider-threat': 'Insider Threat',
+  'inevitable-disclosure': 'Inevitable Disclosure',
+  'external-disclosure': 'External Disclosure',
+  'loss-of-secrecy': 'Loss of Secrecy',
+  'seizure': 'Ex Parte Seizure',
+  'criminal': 'Criminal',
+  'procedure': 'Procedure',
 };
 
 export default function Sources() {
@@ -241,11 +259,11 @@ export default function Sources() {
               sections={[
                 { num: '§ 1832', title: 'Theft of Trade Secrets', highlight: 'Criminal: commercial advantage' },
                 { num: '§ 1833', title: 'Exceptions / Immunity', highlight: '§ 1833(b): whistleblower immunity notice' },
-              { num: '§ 1836', title: 'Civil Proceedings', highlight: 'Private right of action, remedies, ex parte seizure' },
-              { num: '§ 1837', title: 'Applicability', highlight: 'Interstate or foreign commerce requirement' },
-              { num: '§ 1839', title: 'Definitions', highlight: 'Broad "trade secret" definition' },
-            ]}
-          />
+                { num: '§ 1836', title: 'Civil Proceedings', highlight: 'Private right of action, remedies, ex parte seizure' },
+                { num: '§ 1837', title: 'Applicability', highlight: 'Interstate or foreign commerce requirement' },
+                { num: '§ 1839', title: 'Definitions', highlight: 'Broad "trade secret" definition' },
+              ]}
+            />
           </>
           )}
         </div>
