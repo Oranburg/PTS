@@ -23,3 +23,14 @@ Thumbs.db
 *.log
 npm-debug.log*
 worktree/.gitignore
+
+# FERPA: never commit student grades, rosters, reflections, or per-student feedback.
+# This repo is public (GitHub Pages). Keep all student data outside the working tree.
+grading-archive/
+**/Grades-*.csv
+**/_grades.md
+**/grade_*.md
+**/_summary_grades.md
+**/student-*
+**/PTS-groups*
+*Reflections*
